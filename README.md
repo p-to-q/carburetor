@@ -86,9 +86,6 @@ pnpm sim:headless # ci mode, writes artifacts/runs/<id>/manifest.json
 - `hardware/mk2/` — kicad, freecad, bom.
 - `sim/` — `@carburetor/sim` · the playable one.
 
-## inheritance
-
-a wooden computer co., ltd. release · sibling to [`wittgenstein`](https://github.com/p-to-q/wittgenstein) · licenses: code `apache-2.0` · hardware `cern-ohl-s-2.0` · docs `cc-by-sa-4.0`.
 
 ## how to help
 
@@ -97,3 +94,4 @@ build a unit. file a postmortem. send a photograph of where you put yours. fix a
 ## License
 
 Apache-2.0.
+Sibling to [`wittgenstein`](https://github.com/p-to-q/wittgenstein)
