@@ -94,8 +94,6 @@ a wooden computer co., ltd. release · sibling to [`wittgenstein`](https://githu
 
 build a unit. file a postmortem. send a photograph of where you put yours. fix a typo. prs welcome — see `CONTRIBUTING.md`.
 
----
+## License
 
-`Q.E.D.`
-
-© 2026 wooden computer co., ltd.
+Apache-2.0.
