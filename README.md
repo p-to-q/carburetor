@@ -93,5 +93,5 @@ build a unit. file a postmortem. send a photograph of where you put yours. fix a
 
 ## License
 
-Apache-2.0.
+Apache-2.0. <br/>
 Sibling to [`wittgenstein`](https://github.com/p-to-q/wittgenstein)
