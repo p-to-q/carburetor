@@ -8,7 +8,7 @@
 
 carburetor is a feature phone whose energy source is fuel, not battery. it is a working artifact, not a metaphor. two units. one chassis convention. one telemetry codec.
 
-> 🧪 prerelease · v0.1 · mk i hardware in bench · mk ii in cad · sim in browser.
+> prerelease · v0.1 · mk i hardware in bench · mk ii in cad · sim in browser.
 
 ## two units
 
