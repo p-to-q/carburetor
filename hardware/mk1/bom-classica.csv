@@ -1,0 +1,69 @@
+# carburetor mk i · CLASSICA edition · bill of materials · v0.1
+#
+# the definitive build. ~$760 USD. multi-weekend assembly.
+# every part curated for ideal behavior in its architecture layer.
+# see ../../docs/editions.md for comparison with processta and vapore.
+# see ../../docs/architecture.md for what each layer does.
+#
+# columns: layer,part_id,description,vendor,sku,qty,unit_usd,subtotal_usd,notes
+#
+layer,part_id,description,vendor,sku,qty,unit_usd,subtotal_usd,notes
+fuel,FU-01,pyrex graduated tank 15 mL with sight glass,mcmaster,4358T11,1,8.50,8.50,or equivalent borosilicate
+fuel,FU-02,brass filler cap m10 chained,mcmaster,9483K12,1,4.20,4.20,
+fuel,FU-03,silicone fuel line 1/16in id,du-bro,799,1,3.50,3.50,1 ft sufficient
+fuel,FU-04,fuel primer bulb 3cc,du-bro,997,1,4.50,4.50,for the priming ritual
+combustor,CO-01,cox tee dee .049 model engine 0.81cc,mecoa,TD-049,1,89.00,89.00,reproduction; cox originals long out of production
+combustor,CO-02,glow plug standard short,mecoa,GP-S,2,4.00,8.00,one in service one spare
+combustor,CO-03,cox 049 muffler with extension,mecoa,M-049,1,18.00,18.00,reduces 95 dB to ~85 dB
+combustor,CO-04,t-motor 1806 bldc outrunner 2300kv,t-motor,F1806,1,18.00,18.00,used as PMG (reversed)
+combustor,CO-05,shaft coupling 1/4in to 5mm,sparkfun,ROB-12131,1,3.95,3.95,
+combustor,CO-06,k-type thermocouple bead 1m,adafruit,270,2,6.00,12.00,head temp + case temp
+combustor,CO-07,glow plug driver 1.5v 1a,sparkfun,COM-13288,1,8.95,8.95,ni-cd starter
+combustor,CO-08,prop hub adapter 5/16-24 to 5mm,du-bro,673,1,4.20,4.20,couples engine to generator shaft
+bus,BU-01,schottky bridge rectifier 1n5817 (4-pack),digikey,1n5817-bp-nd,4,0.30,1.20,Vf 0.32 V
+bus,BU-02,ltc3119 mppt buck eval board,linear/adi,DC2031A,1,75.00,75.00,or roll our own pcb
+bus,BU-03,2.7 V 300 F supercap,maxwell,BCAP0300,2,9.50,19.00,series for 5 V bus 150 F effective
+bus,BU-04,18350 li-ion 600 mAh protected,keeppower,P1834U,1,8.50,8.50,
+bus,BU-05,18350 holder vertical pcb mount,keystone,1042,1,2.40,2.40,
+bus,BU-06,low-vf schottky to compute rail,digikey,sk26-tp,2,0.45,0.90,
+bus,BU-07,inductor 47uH 2.5A shielded,digikey,SRR1280-470M,1,3.10,3.10,for ltc3119 power stage
+bus,BU-08,output filter cap 22uF X7R,digikey,GRM31CR60J226ME,4,0.45,1.80,
+compute,CP-01,nrf52840 dongle (for v0 prototype),digikey,nrf52840-dongle-ND,1,11.00,11.00,spin pcb after v0 validation
+compute,CP-02,quectel bg95-m3 module,digikey,bg95-m3-ND,1,22.00,22.00,cat-m1 + nb-iot + 2g fallback
+compute,CP-03,bg95 evaluation breakout,quectel,EVB-M3,1,55.00,55.00,for development; replace with custom carrier later
+compute,CP-04,sharp memory lcd 2.7in 400x240,adafruit,4694,1,38.00,38.00,LS027B7DH01 · 50 uW static
+compute,CP-05,sharp lcd breakout with stand,adafruit,1393,1,8.95,8.95,or solder direct
+compute,CP-06,blackberry q10 keyboard module,solderparty,Q10-KBD,1,29.00,29.00,
+compute,CP-07,solder party bb q10 carrier pmod,solderparty,BBQ10-PMOD,1,14.00,14.00,i2c
+compute,CP-08,nano-sim socket push-push,digikey,N7E50-K516VV-50-FN,1,1.20,1.20,
+compute,CP-09,u.fl to sma pigtail,digikey,A-1JK4-079B-NC,1,3.40,3.40,
+compute,CP-10,quad-band cellular antenna,molex,146153-0001,1,4.20,4.20,
+ritual,RT-01,analog voltmeter 0-6 V 1in round,adafruit,252,1,9.95,9.95,brass bezel finish
+ritual,RT-02,brass mil-toggle switch dpdt,digikey,A101sycq04,1,7.20,7.20,
+ritual,RT-03,chrome flip-guard for toggle,digikey,7101l1cqe,1,2.80,2.80,
+ritual,RT-04,brass hand-crank assembly (custom machined),custom,CK-MK1,1,18.00,18.00,ddprototype or local shop · drawing in design/
+ritual,RT-05,t1-3/4 incandescent indicator 5v,digikey,7152-1-1,1,1.10,1.10,engine-run lamp
+ritual,RT-06,piezo buzzer 30mm,digikey,668-1170,1,1.50,1.50,ringer
+ritual,RT-07,canvas case olive drab with zipper,custom,CASE-MK1,1,42.00,42.00,sewing shop · 10 oz canvas · brass zipper
+ritual,RT-08,brass banana terminal posts pair,digikey,108-0902-001,2,3.80,7.60,
+ritual,RT-09,leather strap with brass d-rings,custom,STRAP-MK1,1,24.00,24.00,2 cm width
+hardware-shared,SH-01,m2.5 brass machine screws kit,mcmaster,90591A115,1,12.00,12.00,
+hardware-shared,SH-02,heat-set inserts m2.5 brass (50),mcmaster,93365A150,50,0.20,10.00,
+hardware-shared,SH-03,silicone gasket sheet 1mm,mcmaster,86915K11,1,8.00,8.00,
+hardware-shared,SH-04,aerogel thermal blanket 5mm 100x100,buyaerogel,IP-BLANK-5,1,18.00,18.00,engine bay heat shield
+hardware-shared,SH-05,solder + flux + heatshrink + wire bundle,various,VAR,1,40.00,40.00,workshop consumables
+hardware-shared,SH-06,pcb fab v0 jlcpcb 4-layer (5 pcs),jlcpcb,JLC4L,1,80.00,80.00,estimate; final cost depends on board size
+#
+# layer subtotals
+# fuel:           ~ 20.70
+# combustor:      ~162.10
+# bus:            ~111.90
+# compute:        ~186.65
+# ritual:         ~114.15
+# hardware-shared:~168.00
+#
+# total materials: ~763.50 USD
+#
+# excludes tooling (soldering iron, oscilloscope, multimeter, calipers).
+# excludes labor (estimated 12-20 hours assembly per unit).
+# excludes test fixtures (`hardware/mk1/test-jig/` — TBD).

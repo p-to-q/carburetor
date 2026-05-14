@@ -1,0 +1,268 @@
+/* edizione I — print stylesheet
+ *
+ * all rules below are translated from press/edizione/typography.md.
+ * paged.js consumes these as @page rules to produce paginated PDF.
+ */
+
+/* ============ page geometry ============ */
+
+@page {
+  size: 148mm 210mm; /* A5 portrait */
+  margin-top: 18mm;
+  margin-bottom: 18mm;
+
+  @bottom-outside {
+    content: "[carburetor] · " counter(page);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 7pt;
+    color: #b5944a;
+    letter-spacing: 0.4px;
+  }
+}
+
+@page :left {
+  margin-left: 14mm;
+  margin-right: 16mm;
+}
+
+@page :right {
+  margin-left: 16mm;
+  margin-right: 14mm;
+}
+
+@page :first {
+  /* the frontispiece: full-bleed image, no chrome */
+  @bottom-outside { content: none; }
+  margin: 14mm;
+}
+
+/* ============ body type ============ */
+
+html, body {
+  background: #f2edde;
+  color: #1a1a1a;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "IBM Plex Serif", "EB Garamond", Georgia, serif;
+  font-size: 10pt;
+  line-height: 14pt;
+  text-rendering: optimizeLegibility;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+}
+
+p {
+  orphans: 2;
+  widows: 2;
+  margin: 0 0 10pt 0;
+  text-align: justify;
+}
+
+/* ============ headings ============ */
+
+h1 {
+  font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif;
+  font-weight: 700;
+  font-size: 28pt;
+  line-height: 32pt;
+  color: #b5944a;
+  text-transform: lowercase;
+  letter-spacing: 1.5px;
+  margin: 0 0 18pt 0;
+  break-before: page;
+  break-after: avoid-page;
+}
+
+h2 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 500;
+  font-size: 18pt;
+  line-height: 22pt;
+  color: #b5944a;
+  text-transform: lowercase;
+  letter-spacing: 0.4px;
+  margin: 18pt 0 8pt 0;
+  break-after: avoid-page;
+}
+
+h3 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 400;
+  font-size: 12pt;
+  line-height: 16pt;
+  color: #1a1a1a;
+  text-transform: lowercase;
+  margin: 12pt 0 6pt 0;
+  break-after: avoid-page;
+}
+
+h4, h5, h6 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 500;
+  font-size: 10pt;
+  line-height: 14pt;
+  color: #1a1a1a;
+  margin: 10pt 0 4pt 0;
+}
+
+/* ============ code, tables, blockquotes ============ */
+
+code, pre {
+  font-family: "IBM Plex Mono", "SF Mono", Menlo, monospace;
+  font-size: 9pt;
+  line-height: 12pt;
+  background: rgba(181, 148, 74, 0.06);
+  border-radius: 1pt;
+}
+
+code {
+  padding: 0 2pt;
+}
+
+pre {
+  padding: 8pt 10pt;
+  margin: 10pt 0;
+  break-inside: avoid;
+  white-space: pre-wrap;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 14pt 0;
+  break-inside: avoid;
+}
+
+th, td {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8pt;
+  line-height: 12pt;
+  padding: 4pt 6pt;
+  text-align: left;
+  border-bottom: 0.4pt solid #b5944a;
+  vertical-align: top;
+}
+
+th {
+  color: #b5944a;
+  font-weight: 500;
+  font-family: "IBM Plex Sans", sans-serif;
+  text-transform: lowercase;
+}
+
+blockquote {
+  font-family: "IBM Plex Serif", serif;
+  font-style: italic;
+  font-size: 10pt;
+  line-height: 14pt;
+  color: #555;
+  border-left: 1pt solid #b5944a;
+  padding-left: 12pt;
+  margin: 14pt 0;
+}
+
+/* ============ figures + images ============ */
+
+img, svg {
+  max-width: 100%;
+  height: auto;
+  break-inside: avoid;
+  display: block;
+  margin: 14pt auto;
+}
+
+figure {
+  margin: 14pt 0;
+  break-inside: avoid;
+}
+
+figcaption {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 7pt;
+  color: #555;
+  text-align: center;
+  margin-top: 4pt;
+  letter-spacing: 0.4px;
+}
+
+/* ============ utility classes (used by template + manual overrides) ============ */
+
+.qed {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 200;
+  font-size: 150pt;
+  color: #b5944a;
+  text-align: center;
+  letter-spacing: 60px;
+  line-height: 1;
+  margin: 30pt 0;
+}
+
+.epigraph {
+  font-family: "IBM Plex Serif", serif;
+  font-style: italic;
+  font-size: 9pt;
+  line-height: 13pt;
+  color: #555;
+  margin: 0 0 24pt 0;
+  text-align: left;
+}
+
+.full-bleed {
+  margin: 0;
+  width: 100%;
+  break-after: page;
+}
+
+.brass {
+  color: #b5944a;
+}
+
+/* ============ hyperlinks ============ */
+
+a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 0.3pt solid #b5944a;
+}
+
+/* ============ list discipline ============ */
+
+ul, ol {
+  margin: 8pt 0 14pt 18pt;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 4pt;
+}
+
+ul {
+  list-style: none;
+}
+
+ul > li::before {
+  content: "· ";
+  color: #b5944a;
+  margin-left: -10pt;
+}
+
+/* ============ horizontal rules ============ */
+
+hr {
+  border: none;
+  border-top: 0.5pt solid #b5944a;
+  margin: 18pt 0;
+}
+
+/* ============ scaffold-marker callouts (only for proof builds) ============ */
+
+blockquote.scaffold,
+blockquote:has(strong:first-child) {
+  background: rgba(181, 148, 74, 0.04);
+  font-style: normal;
+  color: #1a1a1a;
+}

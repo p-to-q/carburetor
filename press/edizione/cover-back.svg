@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 595" font-family="ui-monospace, 'IBM Plex Mono', monospace">
+  <!-- A5 portrait, 148 × 210 mm at ~72 dpi = 420 × 595 pt -->
+  <defs>
+    <style>
+      .brand { font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; fill: #B5944A; letter-spacing: 0.6px; }
+      .blurb { font-family: 'IBM Plex Serif', serif; font-size: 9.5px; fill: #1a1a1a; line-height: 13px; }
+      .blurb-cn { font-family: 'IBM Plex Serif', serif; font-size: 9.5px; fill: #555; font-style: italic; }
+      .micro { font-family: 'IBM Plex Mono', monospace; font-size: 6.5px; fill: #1a1a1a; letter-spacing: 0.7px; }
+      .micro-brass { font-family: 'IBM Plex Mono', monospace; font-size: 6.5px; fill: #B5944A; letter-spacing: 0.7px; }
+      .qed { font-family: 'IBM Plex Sans', sans-serif; font-weight: 200; font-size: 20px; fill: #B5944A; letter-spacing: 6px; }
+    </style>
+  </defs>
+
+  <!-- paper -->
+  <rect width="420" height="595" fill="#F2EDDE"/>
+
+  <!-- top rule -->
+  <line x1="40" y1="50" x2="380" y2="50" stroke="#1a1a1a" stroke-width="0.5"/>
+  <text x="40" y="42" class="micro">WOODEN COMPUTER CO., LTD. · P-TO-Q</text>
+  <text x="380" y="42" class="micro" text-anchor="end">EDIZIONE I · 2026</text>
+
+  <!-- small brand mark -->
+  <text x="40" y="100" class="brand">[carburetor]</text>
+
+  <!-- the blurb -->
+  <text x="40" y="155" class="blurb">a phone you refuel.</text>
+  <text x="40" y="172" class="blurb-cn">汽油手机.</text>
+
+  <text x="40" y="210" class="blurb">carburetor mk i runs on a cox tee dee .049 model engine.</text>
+  <text x="40" y="226" class="blurb">carburetor mk ii runs on a butane catalytic combustor.</text>
+  <text x="40" y="242" class="blurb">neither runs on lithium.</text>
+
+  <text x="40" y="280" class="blurb">we built three editions of mk i against the same five-layer</text>
+  <text x="40" y="296" class="blurb">architecture, the same telemetry codec, and the same set of</text>
+  <text x="40" y="312" class="blurb">hard constraints. the cheapest costs zero dollars; the</text>
+  <text x="40" y="328" class="blurb">definitive costs seven hundred and sixty. they are all the</text>
+  <text x="40" y="344" class="blurb">same project.</text>
+
+  <text x="40" y="382" class="blurb">power has a smell. we forget this only because we have</text>
+  <text x="40" y="398" class="blurb">hidden it. we built carburetor to stop hiding it.</text>
+
+  <!-- qed center -->
+  <text x="210" y="460" class="qed" text-anchor="middle">Q.E.D.</text>
+
+  <!-- bottom block -->
+  <line x1="40" y1="500" x2="380" y2="500" stroke="#B5944A" stroke-width="0.4"/>
+  <text x="40" y="518" class="micro">carburetor.wtf</text>
+  <text x="40" y="530" class="micro">github.com/p-to-q/carburetor</text>
+  <text x="40" y="542" class="micro">hi@ptoq.io</text>
+
+  <!-- serial / edition strip bottom-right -->
+  <text x="380" y="518" class="micro" text-anchor="end">EDIZIONE I · 100 UNITS</text>
+  <text x="380" y="530" class="micro" text-anchor="end">CC BY-SA 4.0 · APACHE-2.0</text>
+  <text x="380" y="542" class="micro-brass" text-anchor="end">Q.E.D.</text>
+
+  <!-- mini [c] mark bottom-left -->
+  <text x="40" y="572" class="micro-brass">[c]</text>
+  <text x="380" y="572" class="micro" text-anchor="end">© 2026 WOODEN COMPUTER CO., LTD.</text>
+
+</svg>

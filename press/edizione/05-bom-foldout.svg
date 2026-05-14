@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 595" font-family="ui-monospace, 'IBM Plex Mono', monospace">
+  <!-- spread: 2 × A5 portrait = 296 × 210 mm, rendered at 840 × 595 pt for layout proof -->
+  <defs>
+    <style>
+      .h { font-family: 'IBM Plex Sans', sans-serif; font-weight: 700; font-size: 11px; fill: #B5944A; letter-spacing: 0.4px; }
+      .layer { font-family: 'IBM Plex Sans', sans-serif; font-weight: 600; font-size: 8.5px; fill: #B5944A; letter-spacing: 0.5px; }
+      .body { font-family: 'IBM Plex Mono', monospace; font-size: 7px; fill: #1a1a1a; }
+      .total { font-family: 'IBM Plex Sans', sans-serif; font-weight: 700; font-size: 10px; fill: #B5944A; }
+      .micro { font-family: 'IBM Plex Mono', monospace; font-size: 6px; fill: #555; letter-spacing: 0.4px; }
+      .italic { font-family: 'IBM Plex Serif', serif; font-style: italic; font-size: 7px; fill: #555; }
+      .brass-rule { stroke: #B5944A; stroke-width: 0.5; }
+      .brass-thick { stroke: #B5944A; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <!-- paper -->
+  <rect width="840" height="595" fill="#F2EDDE"/>
+
+  <!-- top header band -->
+  <line x1="30" y1="40" x2="810" y2="40" class="brass-rule"/>
+  <text x="30" y="32" class="micro">[carburetor] · BILL OF MATERIALS · mk i · v0.1</text>
+  <text x="810" y="32" class="micro" text-anchor="end">2026 · CC BY-SA 4.0 + APACHE-2.0 + CERN-OHL-S-2.0</text>
+
+  <!-- center vertical rule -->
+  <line x1="420" y1="40" x2="420" y2="555" class="brass-thick"/>
+
+  <!-- bottom rule -->
+  <line x1="30" y1="555" x2="810" y2="555" class="brass-rule"/>
+
+  <!-- ============ LEFT COLUMN: CLASSICA ============ -->
+  <text x="40" y="65" class="h">CLASSICA · ~$760</text>
+
+  <!-- fuel -->
+  <text x="40" y="92" class="layer">FUEL</text>
+  <g transform="translate(50, 105)">
+    <text class="body">pyrex 15 mL · brass chained cap</text>
+    <text y="11" class="body">silicone fuel line · primer bulb</text>
+  </g>
+
+  <!-- combustor -->
+  <text x="40" y="142" class="layer">COMBUSTOR</text>
+  <g transform="translate(50, 155)">
+    <text class="body">cox tee dee .049 · 0.81 cc</text>
+    <text y="10" class="body">glow plug short ×2 · cox muffler</text>
+    <text y="20" class="body">t-motor 1806 PMG · shaft coupling</text>
+    <text y="30" class="body">k-type thermocouple ×2</text>
+    <text y="40" class="body">glow plug driver · prop hub</text>
+  </g>
+
+  <!-- bus -->
+  <text x="40" y="217" class="layer">BUS</text>
+  <g transform="translate(50, 230)">
+    <text class="body">1N5817 schottky bridge ×4</text>
+    <text y="10" class="body">LTC3119 MPPT buck eval</text>
+    <text y="20" class="body">Maxwell BCAP0300 ×2 (series)</text>
+    <text y="30" class="body">KeepPower 18350 600 mAh</text>
+    <text y="40" class="body">18350 holder · sk26 ×2</text>
+    <text y="50" class="body">SRR1280 inductor · X7R caps ×4</text>
+  </g>
+
+  <!-- compute -->
+  <text x="40" y="302" class="layer">COMPUTE</text>
+  <g transform="translate(50, 315)">
+    <text class="body">nRF52840 dongle</text>
+    <text y="10" class="body">Quectel BG95-M3 + EVB</text>
+    <text y="20" class="body">Sharp Memory LCD 2.7" 400×240</text>
+    <text y="30" class="body">Sharp LCD breakout</text>
+    <text y="40" class="body">BlackBerry Q10 + Solder Party</text>
+    <text y="50" class="body">nano-SIM socket</text>
+    <text y="60" class="body">u.fl→sma pigtail · cell antenna</text>
+  </g>
+
+  <!-- ritual -->
+  <text x="40" y="397" class="layer">RITUAL</text>
+  <g transform="translate(50, 410)">
+    <text class="body">analog voltmeter 0–6 V brass bezel</text>
+    <text y="10" class="body">brass mil-toggle DPDT · flip-guard</text>
+    <text y="20" class="body">brass hand-crank (custom machined)</text>
+    <text y="30" class="body">T1-3/4 incandescent · piezo 30 mm</text>
+    <text y="40" class="body">canvas case (custom-sewn brunswick)</text>
+    <text y="50" class="body">brass terminals ×2 · leather strap</text>
+  </g>
+
+  <!-- shared -->
+  <text x="40" y="482" class="layer">HARDWARE-SHARED</text>
+  <g transform="translate(50, 495)">
+    <text class="body">M2.5 brass screws · heat-set ×50</text>
+    <text y="10" class="body">silicone gasket · aerogel blanket</text>
+    <text y="20" class="body">workshop consumables · PCB fab ×5</text>
+  </g>
+
+  <!-- left total -->
+  <line x1="40" y1="535" x2="400" y2="535" class="brass-rule"/>
+  <text x="40" y="548" class="total">TOTAL</text>
+  <text x="400" y="548" class="total" text-anchor="end">~$763.50</text>
+
+  <!-- ============ RIGHT COLUMN: PROCESSTA ============ -->
+  <text x="440" y="65" class="h">PROCESSTA · ~$120</text>
+
+  <!-- fuel -->
+  <text x="440" y="92" class="layer">FUEL</text>
+  <g transform="translate(450, 105)">
+    <text class="body">PET 30 mL · rubber stopper + brass collar</text>
+    <text y="11" class="body">silicone fuel line · primer bulb</text>
+  </g>
+
+  <!-- combustor -->
+  <text x="440" y="142" class="layer">COMBUSTOR</text>
+  <g transform="translate(450, 155)">
+    <text class="body">SH .15 nitro 2-stroke (or comparable)</text>
+    <text y="10" class="body">glow plug universal ×2 · generic muffler</text>
+    <text y="20" class="body">EMAX 1806 PMG · shaft coupling</text>
+    <text y="30" class="body">DS18B20 temp sensor ×2</text>
+    <text y="40" class="body">glow plug igniter clip (rechargeable)</text>
+  </g>
+
+  <!-- bus -->
+  <text x="440" y="217" class="layer">BUS</text>
+  <g transform="translate(450, 230)">
+    <text class="body">1N5819 schottky bridge ×4</text>
+    <text y="10" class="body">TP4056 charging module</text>
+    <text y="20" class="body">MT3608 boost converter</text>
+    <text y="30" class="body">18650 3000 mAh · single holder</text>
+    <text y="40" class="body">100 F supercap · SMD 47 µH inductor</text>
+  </g>
+
+  <!-- compute -->
+  <text x="440" y="290" class="layer">COMPUTE</text>
+  <g transform="translate(450, 303)">
+    <text class="body">LilyGo T-Display-S3 (ESP32-S3 + 1.9" TFT)</text>
+    <text y="10" class="body">M5Stack CardKB Mini i²c QWERTY</text>
+    <text y="20" class="body">USB-C cable + header pins</text>
+  </g>
+  <text x="450" y="340" class="micro">no modem — BLE serial to paired smartphone</text>
+
+  <!-- ritual -->
+  <text x="440" y="397" class="layer">RITUAL</text>
+  <g transform="translate(450, 410)">
+    <text class="body">analog voltmeter 0–10 V (chinese-export)</text>
+    <text y="10" class="body">toggle SPDT · LED amber 3 mm</text>
+    <text y="20" class="body">pull-cord (salvage or fab)</text>
+    <text y="30" class="body">piezo buzzer 3–5 V</text>
+    <text y="40" class="body">army-surplus canvas tool pouch</text>
+    <text y="50" class="body">banana terminals ×2 · nylon strap</text>
+  </g>
+
+  <!-- shared -->
+  <text x="440" y="482" class="layer">HARDWARE-SHARED</text>
+  <g transform="translate(450, 495)">
+    <text class="body">M2.5 screws · heat-set inserts ×25</text>
+    <text y="10" class="body">perfboard · dupont jumpers · solder</text>
+    <text y="20" class="body">3D-printed enclosure (PLA, ~80 g)</text>
+  </g>
+
+  <!-- right total -->
+  <line x1="440" y1="535" x2="800" y2="535" class="brass-rule"/>
+  <text x="440" y="548" class="total">TOTAL</text>
+  <text x="800" y="548" class="total" text-anchor="end">~$193.85 · stretch ~$120</text>
+
+  <!-- bottom small print across both columns -->
+  <text x="420" y="578" class="italic" text-anchor="middle">classica and processta are the same project. the architecture does not move.</text>
+  <text x="420" y="588" class="micro" text-anchor="middle">canonical lists: hardware/mk1/bom-classica.csv · hardware/mk1/bom-processta.csv</text>
+
+</svg>

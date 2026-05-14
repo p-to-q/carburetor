@@ -1,0 +1,49 @@
+# node
+node_modules/
+.pnpm-store/
+dist/
+build/
+*.tsbuildinfo
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+.pytest_cache/
+*.egg-info/
+.mypy_cache/
+.ruff_cache/
+
+# os
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# editors
+.vscode/
+.idea/
+*.swp
+*~
+.aider*
+
+# carburetor — generated artifacts
+artifacts/runs/*/
+artifacts/runs-invalid/
+!artifacts/runs/.gitkeep
+artifacts/recordings/*/
+!artifacts/recordings/.gitkeep
+
+# edizione print builds
+press/edizione/build/
+press/edizione/*.pdf
+
+# secrets
+.env
+.env.local
+.env.*.local
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*

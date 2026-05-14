@@ -1,0 +1,31 @@
+                           CERN-OHL-S v2
+                CERN Open Hardware Licence Version 2 - Strongly Reciprocal
+
+This LICENSE-HARDWARE file applies to the hardware design files in this
+repository, including but not limited to:
+
+  - hardware/mk1/schematic/      (KiCad schematic files, when present)
+  - hardware/mk1/pcb/            (KiCad PCB layout files, when present)
+  - hardware/mk1/enclosure/      (CAD source files, when present)
+  - hardware/mk1/bom-*.csv       (bill of materials)
+  - hardware/mk2/                (all files, when present)
+  - design/*.svg                 (mechanical drawings and exploded views)
+
+The full text of the CERN-OHL-S v2 license is available at:
+
+    https://ohwr.org/cern_ohl_s_v2.txt
+
+A brief summary (NOT the license itself):
+
+  - You may use, study, modify, and share these designs.
+  - If you make and distribute a product based on these designs, you
+    must release any modifications under the same license.
+  - If you produce hardware based on these designs, you must provide
+    the design files (the "Source") to the recipients.
+  - Strongly reciprocal: derived works of any nature must remain
+    CERN-OHL-S licensed.
+
+Copyright 2026 Wooden Computer Co., Ltd.
+
+For software (code, firmware, simulator), see LICENSE (Apache-2.0).
+For documentation, manifesto, prose, see LICENSE-DOCS (CC-BY-SA-4.0).

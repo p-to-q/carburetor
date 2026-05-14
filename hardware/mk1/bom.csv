@@ -1,0 +1,7 @@
+# this file is an index. see the edition-specific BOMs:
+#
+#   - bom-classica.csv   — the definitive build, ~$760 USD, multi-weekend
+#   - bom-processta.csv  — the maker edition, ~$120 USD, one weekend
+#
+# for the vapore edition (the simulator, $0), no BOM is required.
+# see ../../docs/editions.md for the full comparison.

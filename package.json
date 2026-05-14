@@ -1,0 +1,41 @@
+{
+  "name": "carburetor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "a phone you refuel.",
+  "license": "Apache-2.0",
+  "homepage": "https://carburetor.wtf",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/p-to-q/carburetor.git"
+  },
+  "bugs": "https://github.com/p-to-q/carburetor/issues",
+  "author": {
+    "name": "wooden computer co., ltd.",
+    "url": "https://www.ptoq.io"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "sim": "pnpm --filter @carburetor/sim dev",
+    "sim:test": "pnpm --filter @carburetor/sim test",
+    "sim:headless": "pnpm --filter @carburetor/sim headless",
+    "build": "pnpm --filter @carburetor/sim build",
+    "bench:fuel-to-wh": "echo 'bench scripts TBD — see ROADMAP.md v0.2'",
+    "bench:warmup": "echo 'bench scripts TBD — see ROADMAP.md v0.2'",
+    "bench:power-modes": "echo 'bench scripts TBD — see ROADMAP.md v0.2'",
+    "bom:resolve": "echo 'bom resolver TBD — see ROADMAP.md v0.2'",
+    "decode": "echo 'telemetry decoder TBD — see ROADMAP.md v0.2'",
+    "edizione:build": "node press/edizione/build-scripts/build.mjs",
+    "format": "prettier --write ."
+  },
+  "engines": {
+    "node": ">=20.11",
+    "pnpm": ">=8"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.2"
+  }
+}

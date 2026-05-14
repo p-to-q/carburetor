@@ -1,0 +1,22 @@
+{
+  "name": "@carburetor/sim",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "carburetor — the simulator. five layers, two surfaces.",
+  "license": "Apache-2.0",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./types": "./src/types.ts"
+  },
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "echo 'browser playable TBD — see ../../ROADMAP.md v0.2' && exit 0",
+    "test": "echo 'simulator tests TBD — see ../../ROADMAP.md v0.2' && exit 0",
+    "headless": "echo 'headless runner TBD — see ../../ROADMAP.md v0.2' && exit 0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}

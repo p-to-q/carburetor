@@ -1,0 +1,85 @@
+# carburetor mk i · PROCESSTA edition · bill of materials · v0.1
+#
+# the maker edition. ~$120 USD. one weekend.
+# parts from aliexpress / adafruit / digikey — all globally available.
+# anyone with a soldering iron and a roll of solder can build this.
+#
+# the firmware (firmware/mk1-processta/) implements the same architecture
+# contracts as classica, but with cheaper parts and one major simplification:
+# NO MODEM. processta uses BLE serial to a paired smartphone for sms/matrix
+# relay. you can still text on it — your phone does the cellular legwork.
+#
+# see ../../docs/editions.md for tradeoffs vs classica.
+# see ../../docs/architecture.md for what each layer does.
+#
+# columns: layer,part_id,description,vendor,sku,qty,unit_usd,subtotal_usd,notes
+#
+layer,part_id,description,vendor,sku,qty,unit_usd,subtotal_usd,notes
+fuel,FU-01,small clear PET fuel bottle 30 mL,aliexpress,GENERIC-PET30,1,2.00,2.00,or any chem-safe small bottle
+fuel,FU-02,rubber stopper with brass collar,aliexpress,GENERIC-STOP,1,1.50,1.50,for the filler interface
+fuel,FU-03,silicone fuel line 1/16in,du-bro,799,1,3.50,3.50,
+fuel,FU-04,fuel primer bulb 3cc,du-bro,997,1,4.50,4.50,
+combustor,CO-01,SH .15 nitro 2-stroke 2.49 cc,aliexpress,SH-15A,1,38.00,38.00,or comparable generic .12-.15 cc nitro engine
+combustor,CO-02,glow plug standard (universal),aliexpress,GENERIC-GP,2,2.00,4.00,one spare
+combustor,CO-03,generic nitro engine muffler .15 cc,aliexpress,GENERIC-MUF-15,1,6.00,6.00,
+combustor,CO-04,emax MT1806 outrunner motor,aliexpress,EMAX-1806,1,9.50,9.50,used as PMG; drone hobby part
+combustor,CO-05,shaft coupling 5mm to 3mm,aliexpress,GENERIC-CPL,1,2.00,2.00,
+combustor,CO-06,DS18B20 temperature sensor (waterproof),aliexpress,GENERIC-DS18B20,2,2.00,4.00,head + case; less accurate than k-type but cheap
+combustor,CO-07,glow plug igniter (rechargeable battery clip),aliexpress,GENERIC-GLOWCLIP,1,5.00,5.00,1.5 V Ni-Cd
+bus,BU-01,schottky bridge rectifier diodes 1N5819 (10-pack),aliexpress,1N5819,4,0.10,0.40,
+bus,BU-02,TP4056 charging module with protection,aliexpress,TP4056-DW,1,1.50,1.50,does CC/CV automatically
+bus,BU-03,MT3608 boost converter module,aliexpress,MT3608-MOD,1,1.20,1.20,3.7V → 5V for the bus
+bus,BU-04,18650 li-ion cell 3000 mAh,aliexpress,GENERIC-18650,1,4.50,4.50,reused from anywhere; salvaged is fine
+bus,BU-05,18650 holder single-cell,aliexpress,GENERIC-18650-HLD,1,1.00,1.00,
+bus,BU-06,2.7 V 100 F supercap,aliexpress,GENERIC-CAP-100F,1,3.50,3.50,for tx transients
+bus,BU-07,inductor 47uH 2.5A,aliexpress,GENERIC-SMD-47U,1,0.60,0.60,
+compute,CP-01,LilyGo T-Display-S3 (esp32-s3 + 1.9in tft built in),lilygo,T-DISPLAY-S3,1,19.95,19.95,combo board · saves separate display
+compute,CP-02,M5Stack CardKB Mini Keyboard (i2c QWERTY),m5stack,U035,1,14.00,14.00,or use 4x4 matrix keypad for $3
+compute,CP-03,USB-C cable + breakout for programming,aliexpress,GENERIC-USBC,1,2.50,2.50,
+compute,CP-04,header pins 2.54mm (40-pin),aliexpress,GENERIC-HDR,1,0.50,0.50,
+# NOTE: no modem. processta uses BLE serial to a paired smartphone for sms/matrix.
+# the phone does the cellular work; the device does the device work.
+ritual,RT-01,analog DC voltmeter 0-10V (chinese-export),aliexpress,GENERIC-VM-10V,1,6.00,6.00,~1in face; not as pretty but it works
+ritual,RT-02,toggle switch SPDT,aliexpress,GENERIC-MTS101,1,1.00,1.00,
+ritual,RT-03,LED 3mm amber + resistor (engine-run indicator),aliexpress,LED-AMBER,1,0.30,0.30,replaces incandescent
+ritual,RT-04,pull-cord starter (salvage from weed-eater or rc),aliexpress,GENERIC-RECOIL,1,8.00,8.00,or hand-fabricate from a brass disc
+ritual,RT-05,piezo buzzer 3-5V,aliexpress,GENERIC-PIEZO,1,0.80,0.80,
+ritual,RT-06,army-surplus canvas tool pouch,amazon,GENERIC-TOOL-POUCH,1,12.00,12.00,olive drab if you can find one
+ritual,RT-07,banana terminal posts (red+black),aliexpress,GENERIC-BANANA,2,0.80,1.60,
+ritual,RT-08,nylon strap with d-rings,amazon,GENERIC-STRAP,1,5.00,5.00,2cm width
+hardware-shared,SH-01,M2.5 screws assortment,aliexpress,GENERIC-M25-ASRT,1,4.00,4.00,
+hardware-shared,SH-02,heat-set inserts brass M2.5 (25),aliexpress,GENERIC-HSI-M25,25,0.10,2.50,
+hardware-shared,SH-03,perfboard 70x90mm (2-pack),aliexpress,GENERIC-PROTO70,1,2.50,2.50,or wire-wrap if you prefer
+hardware-shared,SH-04,jumper wire dupont (M-F + M-M + F-F bundle),aliexpress,GENERIC-DUPONT,1,3.50,3.50,
+hardware-shared,SH-05,solder + flux + heatshrink + wire,various,VAR,1,12.00,12.00,you might have these already
+hardware-shared,SH-06,3D-printed enclosure (PLA, ~80g, shop or home),various,STL-MK1-PROCESSTA,1,5.00,5.00,STL in design/enclosure-mk1-processta.stl (TBD)
+#
+# layer subtotals
+# fuel:           ~ 11.50
+# combustor:      ~ 68.50
+# bus:            ~ 12.70
+# compute:        ~ 36.95
+# ritual:         ~ 34.70
+# hardware-shared:~ 29.50
+#
+# total materials: ~193.85 USD
+# stretch (skipping nice-to-haves): ~$120
+#
+# tooling required: soldering iron, multimeter, fine pliers, hex driver.
+# tooling nice-to-have: cheap 100MHz oscilloscope (RIGOL DS1054Z ~$350), bench psu.
+# labor: 8-14 hours over a weekend.
+#
+# what this edition trades away for the price:
+#   - cox tee dee → generic .15 nitro: 50% more power but louder, dirtier exhaust,
+#     less polished idle, harder to source spare parts after 2030
+#   - sharp memory lcd → spi tft: not daylight-readable, ~10 mA backlight instead
+#     of 50 µW static
+#   - bg95 cellular → BLE to paired phone: no SIM, no standalone cellular, but
+#     more honest with the "you cannot call on it" rule
+#   - q10 keyboard → cardkb: still QWERTY, smaller, less tactile
+#   - canvas custom case → tool pouch + 3d-print: 90% of the aesthetic at 10%
+#     of the cost
+#
+# what does NOT change: the architecture, the telemetry codec, the simulator
+# parity. processta firmware emits the same 64-byte frames as classica; both
+# pass the same `pnpm sim:test` golden fixtures.

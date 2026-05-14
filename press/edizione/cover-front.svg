@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 595" font-family="ui-monospace, 'IBM Plex Mono', 'SF Mono', Menlo, Consolas, monospace">
+  <!-- A5 in pt: 420 × 595 (148mm × 210mm at ~72 dpi) -->
+  <!-- spot colour: brass = #B5944A. ink: K = #1a1a1a. paper: cream = #F2EDDE. -->
+
+  <defs>
+    <style>
+      .brass { fill: #B5944A; }
+      .ink { fill: #1a1a1a; }
+      .micro { font-size: 6.5px; letter-spacing: 0.8px; fill: #1a1a1a; }
+      .micro-brass { font-size: 6.5px; letter-spacing: 0.8px; fill: #B5944A; }
+      .wordmark { font-size: 42px; letter-spacing: 1.5px; fill: #B5944A; }
+      .sub { font-size: 11px; letter-spacing: 0.4px; fill: #1a1a1a; }
+      .ed { font-size: 9px; letter-spacing: 0.5px; fill: #1a1a1a; }
+      .num { font-size: 70px; fill: #B5944A; letter-spacing: 4px; opacity: 0.92; }
+    </style>
+  </defs>
+
+  <!-- paper -->
+  <rect width="420" height="595" fill="#F2EDDE"/>
+
+  <!-- top rule -->
+  <line x1="40" y1="50" x2="380" y2="50" stroke="#1a1a1a" stroke-width="0.6"/>
+  <text x="40" y="42" class="micro">WOODEN COMPUTER CO., LTD. · P-TO-Q</text>
+  <text x="380" y="42" class="micro" text-anchor="end">EDIZIONE I · 2026</text>
+
+  <!-- wordmark, dominant in brass -->
+  <text x="40" y="170" class="wordmark">[carburetor]</text>
+
+  <!-- subtitle -->
+  <text x="40" y="200" class="sub">a phone you refuel.</text>
+  <text x="40" y="216" class="sub" font-style="italic">汽油手机。</text>
+
+  <!-- thin rule -->
+  <line x1="40" y1="240" x2="380" y2="240" stroke="#B5944A" stroke-width="0.8"/>
+
+  <!-- silhouette: a stripped-down engine + chain ASCII-ish -->
+  <!-- pretend cox engine silhouette in brass, abstract -->
+  <g transform="translate(210, 360)">
+    <!-- crankcase block -->
+    <rect x="-40" y="-15" width="56" height="30" class="brass" fill-opacity="0.18" stroke="#B5944A" stroke-width="1.2"/>
+    <!-- cylinder + fins -->
+    <rect x="-40" y="-32" width="20" height="17" class="brass" fill-opacity="0.18" stroke="#B5944A" stroke-width="1.2"/>
+    <g stroke="#B5944A" stroke-width="0.6" opacity="0.85">
+      <line x1="-40" y1="-28" x2="-20" y2="-28"/>
+      <line x1="-40" y1="-25" x2="-20" y2="-25"/>
+      <line x1="-40" y1="-22" x2="-20" y2="-22"/>
+      <line x1="-40" y1="-19" x2="-20" y2="-19"/>
+    </g>
+    <!-- glow plug -->
+    <rect x="-36" y="-38" width="10" height="6" class="brass"/>
+    <!-- coupling -->
+    <rect x="16" y="-4" width="14" height="8" class="ink" opacity="0.6"/>
+    <!-- generator -->
+    <circle cx="44" cy="0" r="17" class="brass" fill-opacity="0.18" stroke="#B5944A" stroke-width="1.2"/>
+    <circle cx="44" cy="0" r="11" class="ink" opacity="0.85"/>
+    <circle cx="44" cy="0" r="3" class="brass"/>
+    <!-- callout: "01" -->
+    <line x1="-25" y1="-32" x2="-25" y2="-60" stroke="#B5944A" stroke-width="0.5"/>
+    <text x="-25" y="-66" class="micro-brass" text-anchor="middle">01</text>
+    <!-- callout: "02" -->
+    <line x1="44" y1="-17" x2="44" y2="-50" stroke="#B5944A" stroke-width="0.5"/>
+    <text x="44" y="-56" class="micro-brass" text-anchor="middle">02</text>
+    <!-- callout: "03" -->
+    <line x1="-12" y1="15" x2="-12" y2="40" stroke="#B5944A" stroke-width="0.5"/>
+    <text x="-12" y="50" class="micro-brass" text-anchor="middle">03</text>
+  </g>
+
+  <!-- chain glyphs below silhouette -->
+  <g transform="translate(210, 440)">
+    <text class="micro" text-anchor="middle">FUEL  →  COMBUSTOR  →  BUS  →  COMPUTE  →  RITUAL</text>
+  </g>
+
+  <!-- thin rule near bottom -->
+  <line x1="40" y1="490" x2="380" y2="490" stroke="#B5944A" stroke-width="0.4"/>
+
+  <!-- big edition number -->
+  <text x="40" y="555" class="num">I</text>
+
+  <!-- bottom-right brand -->
+  <text x="380" y="550" class="ed" text-anchor="end">CARBURETOR.WTF</text>
+  <text x="380" y="565" class="ed" text-anchor="end">GITHUB.COM/P-TO-Q/CARBURETOR</text>
+  <text x="380" y="580" class="micro-brass" text-anchor="end">Q.E.D.</text>
+
+  <!-- serial-stamp area placeholder, small box bottom-left -->
+  <rect x="40" y="568" width="40" height="14" fill="none" stroke="#1a1a1a" stroke-width="0.3" stroke-dasharray="2 1.5"/>
+  <text x="60" y="578" class="micro" text-anchor="middle">___ / 100</text>
+
+</svg>

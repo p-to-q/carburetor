@@ -1,0 +1,294 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1100" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace">
+  <defs>
+    <style>
+      .label { font-size: 9.5px; fill: #1a1a1a; letter-spacing: 0.3px; }
+      .num { font-size: 10.5px; fill: #1a1a1a; font-weight: 600; }
+      .micro { font-size: 7px; fill: #555; letter-spacing: 0.5px; }
+      .brand { font-size: 14px; fill: #1a1a1a; letter-spacing: 0.6px; }
+      .accent { fill: #B5944A; }
+      .axis { stroke: #B5944A; stroke-width: 0.5; stroke-dasharray: 3 3; opacity: 0.7; }
+      .leader { stroke: #1a1a1a; stroke-width: 0.5; fill: none; }
+      .green-dashed { fill: none; stroke: #2A4A3A; stroke-width: 1; stroke-dasharray: 4 3; }
+      .brass { fill: #B5944A; stroke: #1a1a1a; stroke-width: 1; }
+      .red-needle { stroke: #C13B2A; stroke-width: 1.4; stroke-linecap: round; }
+    </style>
+  </defs>
+
+  <!-- paper -->
+  <rect width="800" height="1100" fill="#F2EDDE"/>
+
+  <!-- header -->
+  <text x="40" y="50" class="brand">[carburetor]</text>
+  <text x="760" y="50" class="micro" text-anchor="end">MK I · FIELD · EXPLODED VIEW · 2026.05 · NTS</text>
+  <line x1="40" y1="65" x2="760" y2="65" stroke="#1a1a1a" stroke-width="0.6"/>
+
+  <!-- assembly axis (dashed brass) -->
+  <line x1="320" y1="100" x2="320" y2="1010" class="axis"/>
+
+  <!-- ============ 01 · kill switch ============ -->
+  <g transform="translate(320, 115)">
+    <rect x="-9" y="-19" width="18" height="3" fill="#888" stroke="#1a1a1a" stroke-width="0.6"/>
+    <rect x="-3" y="-16" width="6" height="11" class="brass"/>
+    <circle r="15" class="brass"/>
+    <circle r="11" fill="#FBF8EA" stroke="#1a1a1a" stroke-width="0.5"/>
+    <text y="3" class="micro" text-anchor="middle">RUN</text>
+  </g>
+  <line x1="335" y1="115" x2="490" y2="115" class="leader"/>
+  <text x="496" y="113" class="num">01</text>
+  <text x="516" y="113" class="label">kill switch · brass · MIL-toggle</text>
+  <text x="516" y="124" class="micro">TWO-POSITION · GUARDED</text>
+
+  <!-- ============ 02 · voltmeter ============ -->
+  <g transform="translate(320, 180)">
+    <circle r="28" fill="#F2EDDE" stroke="#B5944A" stroke-width="2.5"/>
+    <circle r="24" fill="#FBF8EA" stroke="#1a1a1a" stroke-width="0.4"/>
+    <g stroke="#1a1a1a" stroke-width="0.6">
+      <line x1="0" y1="-18" x2="0" y2="-14"/>
+      <line x1="13" y1="-13" x2="10" y2="-10"/>
+      <line x1="18" y1="0" x2="14" y2="0"/>
+      <line x1="13" y1="13" x2="10" y2="10"/>
+      <line x1="0" y1="18" x2="0" y2="14"/>
+      <line x1="-13" y1="13" x2="-10" y2="10"/>
+      <line x1="-18" y1="0" x2="-14" y2="0"/>
+      <line x1="-13" y1="-13" x2="-10" y2="-10"/>
+    </g>
+    <text x="-14" y="-12" class="micro" text-anchor="middle">0</text>
+    <text x="14" y="-12" class="micro" text-anchor="middle">6</text>
+    <text y="14" class="micro" text-anchor="middle">V</text>
+    <line x1="0" y1="0" x2="-9" y2="-11" class="red-needle"/>
+    <circle r="1.6" fill="#1a1a1a"/>
+  </g>
+  <line x1="348" y1="180" x2="490" y2="180" class="leader"/>
+  <text x="496" y="178" class="num">02</text>
+  <text x="516" y="178" class="label">analog voltmeter · 0–6 V</text>
+  <text x="516" y="189" class="micro">BRASS BEZEL · SUPERCAP BUS</text>
+
+  <!-- ============ 03 · fuel sight glass ============ -->
+  <g transform="translate(320, 250)">
+    <ellipse rx="32" ry="9" fill="#FBF8EA" stroke="#1a1a1a" stroke-width="1.1"/>
+    <ellipse rx="30" ry="7" fill="#C13B2A" fill-opacity="0.30" stroke="none"/>
+    <line x1="-25" y1="3" x2="25" y2="3" stroke="#C13B2A" stroke-width="1.3"/>
+    <path d="M -25 3 Q -21 0 -17 3" fill="none" stroke="#C13B2A" stroke-width="0.8"/>
+  </g>
+  <line x1="352" y1="250" x2="490" y2="250" class="leader"/>
+  <text x="496" y="248" class="num">03</text>
+  <text x="516" y="248" class="label">fuel sight glass · 15 mL tank</text>
+  <text x="516" y="259" class="micro">GLOW FUEL · METHANOL+NITRO+CASTOR</text>
+
+  <!-- ============ 04 · sharp memory lcd ============ -->
+  <g transform="translate(320, 315)">
+    <rect x="-95" y="-30" width="190" height="60" fill="#D8D3BD" stroke="#1a1a1a" stroke-width="1.1"/>
+    <text x="0" y="-3" font-size="14" text-anchor="middle" fill="#1a1a1a" letter-spacing="0.4">[carburetor]</text>
+    <text x="0" y="14" class="micro" text-anchor="middle">15 mL · 8h · CAT-M1 · 4 bars</text>
+    <line x1="-92" y1="22" x2="92" y2="22" stroke="#1a1a1a" stroke-width="0.3"/>
+    <text x="-88" y="29" class="micro" fill="#666">12:04</text>
+    <text x="88" y="29" class="micro" fill="#666" text-anchor="end">RUN</text>
+  </g>
+  <line x1="415" y1="315" x2="490" y2="315" class="leader"/>
+  <text x="496" y="313" class="num">04</text>
+  <text x="516" y="313" class="label">sharp memory lcd · 2.7" · 400×240</text>
+  <text x="516" y="324" class="micro">50 µW STATIC · DAYLIGHT READABLE</text>
+
+  <!-- ============ 05 · q10 keyboard ============ -->
+  <g transform="translate(320, 405)">
+    <rect x="-100" y="-40" width="200" height="80" fill="#1f1f1f" stroke="#1a1a1a" stroke-width="1.2" rx="3"/>
+    <g fill="#2c2c2c" stroke="#0a0a0a" stroke-width="0.3">
+      <!-- row 1: 10 keys -->
+      <g transform="translate(-94, -34)">
+        <rect width="16" height="13" rx="1.5"/><rect x="18" width="16" height="13" rx="1.5"/>
+        <rect x="36" width="16" height="13" rx="1.5"/><rect x="54" width="16" height="13" rx="1.5"/>
+        <rect x="72" width="16" height="13" rx="1.5"/><rect x="90" width="16" height="13" rx="1.5"/>
+        <rect x="108" width="16" height="13" rx="1.5"/><rect x="126" width="16" height="13" rx="1.5"/>
+        <rect x="144" width="16" height="13" rx="1.5"/><rect x="162" width="22" height="13" rx="1.5"/>
+      </g>
+      <g transform="translate(-90, -16)">
+        <rect width="16" height="13" rx="1.5"/><rect x="18" width="16" height="13" rx="1.5"/>
+        <rect x="36" width="16" height="13" rx="1.5"/><rect x="54" width="16" height="13" rx="1.5"/>
+        <rect x="72" width="16" height="13" rx="1.5"/><rect x="90" width="16" height="13" rx="1.5"/>
+        <rect x="108" width="16" height="13" rx="1.5"/><rect x="126" width="16" height="13" rx="1.5"/>
+        <rect x="144" width="18" height="13" rx="1.5"/>
+      </g>
+      <g transform="translate(-86, 2)">
+        <rect width="16" height="13" rx="1.5"/><rect x="18" width="16" height="13" rx="1.5"/>
+        <rect x="36" width="16" height="13" rx="1.5"/><rect x="54" width="16" height="13" rx="1.5"/>
+        <rect x="72" width="16" height="13" rx="1.5"/><rect x="90" width="16" height="13" rx="1.5"/>
+        <rect x="108" width="16" height="13" rx="1.5"/><rect x="126" width="20" height="13" rx="1.5"/>
+      </g>
+      <g transform="translate(-94, 20)">
+        <rect width="22" height="12" rx="1.5"/><rect x="26" width="22" height="12" rx="1.5"/>
+        <rect x="52" width="80" height="12" rx="1.5"/>
+        <rect x="136" width="22" height="12" rx="1.5"/><rect x="162" width="22" height="12" rx="1.5"/>
+      </g>
+    </g>
+    <!-- fret bars -->
+    <line x1="-100" y1="-19" x2="100" y2="-19" stroke="#3a3a3a" stroke-width="0.5"/>
+    <line x1="-100" y1="-1" x2="100" y2="-1" stroke="#3a3a3a" stroke-width="0.5"/>
+    <line x1="-100" y1="17" x2="100" y2="17" stroke="#3a3a3a" stroke-width="0.5"/>
+  </g>
+  <line x1="420" y1="405" x2="490" y2="405" class="leader"/>
+  <text x="496" y="403" class="num">05</text>
+  <text x="516" y="403" class="label">blackberry q10 keyboard · 35 keys</text>
+  <text x="516" y="414" class="micro">VIA SOLDER PARTY I²C CARRIER</text>
+
+  <!-- ============ 06 · brass hand-crank (off-axis right) ============ -->
+  <g transform="translate(560, 525)">
+    <circle r="16" class="brass"/>
+    <circle r="7" fill="#1a1a1a"/>
+    <circle r="2" fill="#B5944A"/>
+    <rect x="-4" y="-72" width="8" height="58" class="brass"/>
+    <ellipse cx="0" cy="-82" rx="9" ry="12" class="brass"/>
+    <g stroke="#1a1a1a" stroke-width="0.5">
+      <line x1="-7" y1="-88" x2="7" y2="-88"/>
+      <line x1="-8" y1="-84" x2="8" y2="-84"/>
+      <line x1="-8" y1="-80" x2="8" y2="-80"/>
+      <line x1="-7" y1="-76" x2="7" y2="-76"/>
+    </g>
+  </g>
+  <!-- leader from crank up to its own callout -->
+  <path d="M 576 525 L 660 525 L 660 460 L 720 460" class="leader"/>
+  <text x="600" y="490" class="num">06</text>
+  <text x="600" y="503" class="label">brass</text>
+  <text x="600" y="513" class="label">hand-crank</text>
+  <text x="600" y="525" class="micro">RECOIL PULL-START</text>
+  <text x="600" y="534" class="micro">+ MAGNETO BOOTSTRAP</text>
+
+  <!-- ============ 07 · enclosure ============ -->
+  <g transform="translate(320, 605)">
+    <rect x="-130" y="-30" width="260" height="200" class="green-dashed" rx="8"/>
+    <g stroke="#2A4A3A" stroke-width="0.3" stroke-opacity="0.32">
+      <line x1="-130" y1="10" x2="130" y2="10"/>
+      <line x1="-130" y1="50" x2="130" y2="50"/>
+      <line x1="-130" y1="90" x2="130" y2="90"/>
+      <line x1="-130" y1="130" x2="130" y2="130"/>
+    </g>
+    <!-- canvas zipper across top -->
+    <line x1="-110" y1="-30" x2="110" y2="-30" stroke="#B5944A" stroke-width="2"/>
+    <g stroke="#1a1a1a" stroke-width="0.4">
+      <line x1="-100" y1="-31" x2="-100" y2="-29"/>
+      <line x1="-80" y1="-31" x2="-80" y2="-29"/>
+      <line x1="-60" y1="-31" x2="-60" y2="-29"/>
+      <line x1="-40" y1="-31" x2="-40" y2="-29"/>
+      <line x1="-20" y1="-31" x2="-20" y2="-29"/>
+      <line x1="0" y1="-31" x2="0" y2="-29"/>
+      <line x1="20" y1="-31" x2="20" y2="-29"/>
+      <line x1="40" y1="-31" x2="40" y2="-29"/>
+      <line x1="60" y1="-31" x2="60" y2="-29"/>
+      <line x1="80" y1="-31" x2="80" y2="-29"/>
+      <line x1="100" y1="-31" x2="100" y2="-29"/>
+    </g>
+    <!-- brass terminal posts -->
+    <circle cx="-110" cy="155" r="5" class="brass"/>
+    <circle cx="110" cy="155" r="5" class="brass"/>
+  </g>
+  <line x1="450" y1="605" x2="490" y2="605" class="leader"/>
+  <text x="496" y="603" class="num">07</text>
+  <text x="516" y="603" class="label">olive-canvas body · brunswick green</text>
+  <text x="516" y="614" class="micro">BRASS ZIPPER · SCREW-DOWN TERMINALS</text>
+
+  <!-- ============ 08 · pcb stack ============ -->
+  <g transform="translate(320, 735)">
+    <rect x="-110" y="-22" width="220" height="44" fill="#1B4D34" stroke="#1a1a1a" stroke-width="1"/>
+    <rect x="-102" y="-16" width="44" height="28" fill="#0E2A1D" stroke="#B5944A" stroke-width="0.5"/>
+    <text x="-80" y="-3" class="micro" text-anchor="middle" fill="#F2EDDE">nrf52840</text>
+    <text x="-80" y="7" class="micro" text-anchor="middle" fill="#F2EDDE">MCU</text>
+    <rect x="-52" y="-16" width="44" height="28" fill="#0E2A1D" stroke="#B5944A" stroke-width="0.5"/>
+    <text x="-30" y="-3" class="micro" text-anchor="middle" fill="#F2EDDE">bg95</text>
+    <text x="-30" y="7" class="micro" text-anchor="middle" fill="#F2EDDE">CAT-M1</text>
+    <rect x="-2" y="-16" width="44" height="28" fill="#0E2A1D" stroke="#B5944A" stroke-width="0.5"/>
+    <text x="20" y="-3" class="micro" text-anchor="middle" fill="#F2EDDE">ltc3119</text>
+    <text x="20" y="7" class="micro" text-anchor="middle" fill="#F2EDDE">MPPT</text>
+    <rect x="48" y="-16" width="56" height="28" fill="#0E2A1D" stroke="#B5944A" stroke-width="0.5"/>
+    <text x="76" y="-3" class="micro" text-anchor="middle" fill="#F2EDDE">300 F × 2</text>
+    <text x="76" y="7" class="micro" text-anchor="middle" fill="#F2EDDE">SUPERCAP</text>
+  </g>
+  <line x1="430" y1="735" x2="490" y2="735" class="leader"/>
+  <text x="496" y="733" class="num">08</text>
+  <text x="516" y="733" class="label">pcb stack · mcu + modem + power</text>
+  <text x="516" y="744" class="micro">+ 18350 LI-ION BUFFER · 600 mAh</text>
+
+  <!-- ============ 09 · engine + 10 · generator ============ -->
+  <g transform="translate(320, 835)">
+    <!-- engine crankcase -->
+    <rect x="-58" y="-22" width="68" height="42" fill="#9a9a9a" stroke="#1a1a1a" stroke-width="1"/>
+    <rect x="-58" y="-42" width="22" height="22" fill="#b0b0b0" stroke="#1a1a1a" stroke-width="1"/>
+    <g stroke="#1a1a1a" stroke-width="0.55">
+      <line x1="-58" y1="-38" x2="-36" y2="-38"/>
+      <line x1="-58" y1="-35" x2="-36" y2="-35"/>
+      <line x1="-58" y1="-32" x2="-36" y2="-32"/>
+      <line x1="-58" y1="-29" x2="-36" y2="-29"/>
+      <line x1="-58" y1="-26" x2="-36" y2="-26"/>
+      <line x1="-58" y1="-23" x2="-36" y2="-23"/>
+    </g>
+    <!-- glow plug -->
+    <rect x="-53" y="-48" width="12" height="7" class="brass"/>
+    <line x1="-47" y1="-50" x2="-47" y2="-56" stroke="#1a1a1a" stroke-width="0.6"/>
+    <!-- carb/muffler nub -->
+    <rect x="-72" y="-12" width="14" height="22" fill="#7a7a7a" stroke="#1a1a1a" stroke-width="0.8"/>
+    <!-- coupling shaft -->
+    <rect x="10" y="-4" width="16" height="8" fill="#444" stroke="#1a1a1a" stroke-width="0.6"/>
+    <!-- generator (outrunner) -->
+    <circle cx="52" cy="0" r="22" fill="#3a3a3a" stroke="#1a1a1a" stroke-width="1"/>
+    <circle cx="52" cy="0" r="14" fill="#1a1a1a"/>
+    <circle cx="52" cy="0" r="3" fill="#B5944A"/>
+    <g stroke="#B5944A" stroke-width="0.5" fill="none">
+      <circle cx="52" cy="0" r="11"/>
+      <circle cx="52" cy="0" r="9"/>
+    </g>
+    <!-- mounting tabs -->
+    <rect x="38" y="-26" width="6" height="6" fill="#4a4a4a"/>
+    <rect x="60" y="-26" width="6" height="6" fill="#4a4a4a"/>
+  </g>
+  <line x1="380" y1="820" x2="490" y2="820" class="leader"/>
+  <text x="496" y="818" class="num">09</text>
+  <text x="516" y="818" class="label">cox tee dee .049 · 0.81 cc · 2-stroke glow</text>
+  <text x="516" y="829" class="micro">78–108 W @ 22,000 rpm · 14 g</text>
+  <line x1="395" y1="845" x2="490" y2="855" class="leader"/>
+  <text x="496" y="853" class="num">10</text>
+  <text x="516" y="853" class="label">t-motor 1806 outrunner · used as PMG</text>
+  <text x="516" y="864" class="micro">→ BRIDGE RECTIFIER → MPPT BUCK</text>
+
+  <!-- ============ 11 · fuel tank ============ -->
+  <g transform="translate(320, 925)">
+    <rect x="-75" y="-22" width="150" height="44" fill="#FBF8EA" stroke="#1a1a1a" stroke-width="1.2" rx="5"/>
+    <ellipse cx="0" cy="0" rx="60" ry="6" fill="none" stroke="#C13B2A" stroke-width="0.6" stroke-opacity="0.4"/>
+    <line x1="-60" y1="3" x2="60" y2="3" stroke="#C13B2A" stroke-width="1.3"/>
+    <rect x="-9" y="-32" width="18" height="11" class="brass"/>
+    <line x1="-12" y1="-26" x2="12" y2="-26" stroke="#1a1a1a" stroke-width="0.4"/>
+    <path d="M 9 -22 Q 22 -30 32 -22" fill="none" stroke="#B5944A" stroke-width="0.9"/>
+    <text x="0" y="14" class="micro" text-anchor="middle">15 mL</text>
+  </g>
+  <line x1="395" y1="925" x2="490" y2="925" class="leader"/>
+  <text x="496" y="923" class="num">11</text>
+  <text x="516" y="923" class="label">fuel tank · 15 mL · pyrex</text>
+  <text x="516" y="934" class="micro">BRASS CHAINED FILLER CAP</text>
+
+  <!-- ============ 12 · base + strap ============ -->
+  <g transform="translate(320, 990)">
+    <rect x="-110" y="-8" width="220" height="16" fill="#2A4A3A" fill-opacity="0.45" stroke="#1a1a1a" stroke-width="1" rx="3"/>
+    <rect x="-13" y="-13" width="26" height="22" class="brass"/>
+    <circle cx="-6" r="2" fill="#1a1a1a"/>
+    <circle cx="6" r="2" fill="#1a1a1a"/>
+    <path d="M -10 -13 Q -10 -22 -2 -22 L 2 -22 Q 10 -22 10 -13" fill="none" stroke="#B5944A" stroke-width="1.4"/>
+  </g>
+  <line x1="395" y1="990" x2="490" y2="990" class="leader"/>
+  <text x="496" y="988" class="num">12</text>
+  <text x="516" y="988" class="label">canvas base + brass strap clip</text>
+  <text x="516" y="999" class="micro">D-RING · SHOULDER STRAP · OUTGOING</text>
+
+  <!-- ============ section bracket: "FACE" / "INTERNAL" / "POWERTRAIN" ============ -->
+  <g stroke="#B5944A" stroke-width="0.7" fill="none">
+    <path d="M 220 95 L 210 95 L 210 425 L 220 425"/>
+    <path d="M 220 575 L 210 575 L 210 750 L 220 750"/>
+    <path d="M 220 800 L 210 800 L 210 1000 L 220 1000"/>
+  </g>
+  <text x="200" y="260" class="micro" text-anchor="middle" fill="#B5944A" transform="rotate(-90, 200, 260)">FACE</text>
+  <text x="200" y="662" class="micro" text-anchor="middle" fill="#B5944A" transform="rotate(-90, 200, 662)">INTERNAL</text>
+  <text x="200" y="900" class="micro" text-anchor="middle" fill="#B5944A" transform="rotate(-90, 200, 900)">POWERTRAIN</text>
+
+  <!-- ============ footer ============ -->
+  <line x1="40" y1="1035" x2="760" y2="1035" stroke="#1a1a1a" stroke-width="0.6"/>
+  <text x="40" y="1058" class="micro">WOODEN COMPUTER CO., LTD. · DRAWING 01 · MK I · FIELD</text>
+  <text x="760" y="1058" class="micro" text-anchor="end">P-TO-Q.IO · APACHE-2.0 + CERN-OHL-S-2.0</text>
+  <text x="40" y="1078" class="accent" style="font-size:9px; letter-spacing:0.4px;">[carburetor] · a phone you refuel.</text>
+  <text x="760" y="1078" class="accent" text-anchor="end" style="font-size:9px; letter-spacing:0.6px;">Q.E.D.</text>
+</svg>
