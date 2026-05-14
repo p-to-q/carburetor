@@ -1,6 +1,6 @@
 # [carburetor]
 
-**a phone you refuel.** *汽油手机.*
+**a phone you refuel.**
 
 ![mk i · exploded view](./design/exploded-view-mk1.svg)
 
