@@ -30,12 +30,12 @@ see [`docs/editions.md`](docs/editions.md) for the comparison. the three edition
 
 ## receipts (not claims)
 
-| what | number | verify |
-|---|---|---|
-| fuel-to-usb efficiency (mk i) | ⚠️ 5.4 ± 0.3 % | `pnpm bench:fuel-to-wh` against `fixtures/golden/cox-049/manifest.json` |
-| warm-up time (mk ii) | ⚠️ 45 ± 5 s | `pnpm bench:warmup` against `fixtures/golden/catalytic-teg/manifest.json` |
-| sim state-machine totality | ✅ pending v0.2 | `pnpm sim:test` |
-| bom resolvability | ⚠️ pending | `pnpm bom:resolve` |
+| what                          | number          | verify                                                                    |
+| ----------------------------- | --------------- | ------------------------------------------------------------------------- |
+| fuel-to-usb efficiency (mk i) | ⚠️ 5.4 ± 0.3 %  | `pnpm bench:fuel-to-wh` against `fixtures/golden/cox-049/manifest.json`   |
+| warm-up time (mk ii)          | ⚠️ 45 ± 5 s     | `pnpm bench:warmup` against `fixtures/golden/catalytic-teg/manifest.json` |
+| sim state-machine totality    | ✅ pending v0.2 | `pnpm sim:test`                                                           |
+| bom resolvability             | ⚠️ pending      | `pnpm bom:resolve`                                                        |
 
 ⚠️ = measured at bench-prototype scale; pinned numbers ship at v0.2.
 
@@ -81,11 +81,14 @@ pnpm sim:headless # ci mode, writes artifacts/runs/<id>/manifest.json
 - `docs/codec-protocol.md` — the telemetry frame format.
 - `docs/hard-constraints.md` — what will not change.
 - `docs/implementation-status.md` — ships / partial / stub matrix.
+- `docs/contributor-map.md` — where to enter as researcher / engineer / hacker.
+- `docs/tracks.md` — researcher / engineer / hacker review contract.
+- `docs/engineering-discipline.md` — change discipline and validation standard.
+- `docs/workflow.md` — lightweight p-to-q PR, CI, and dependency policy.
 - `docs/notes/` — design notes, postmortems, sketches.
 - `hardware/mk1/` — kicad, freecad, bom.
 - `hardware/mk2/` — kicad, freecad, bom.
 - `sim/` — `@carburetor/sim` · the playable one.
-
 
 ## how to help
 

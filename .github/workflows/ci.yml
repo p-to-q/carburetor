@@ -45,6 +45,9 @@ jobs:
       - name: Simulator test placeholder
         run: pnpm sim:test
 
+      - name: Golden fixture manifest check
+        run: pnpm golden:check
+
       - name: Edizione build
         run: pnpm edizione:build
 

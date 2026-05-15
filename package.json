@@ -22,6 +22,7 @@
     "sim:test": "pnpm --filter @carburetor/sim test",
     "sim:headless": "pnpm --filter @carburetor/sim headless",
     "build": "pnpm --filter @carburetor/sim build",
+    "golden:check": "node scripts/tools/verify-golden.mjs",
     "bench:fuel-to-wh": "echo 'bench scripts TBD — see ROADMAP.md v0.2'",
     "bench:warmup": "echo 'bench scripts TBD — see ROADMAP.md v0.2'",
     "bench:power-modes": "echo 'bench scripts TBD — see ROADMAP.md v0.2'",
@@ -29,7 +30,7 @@
     "decode": "echo 'telemetry decoder TBD — see ROADMAP.md v0.2'",
     "edizione:build": "node press/edizione/build-scripts/build.mjs",
     "format": "prettier --write .",
-    "format:check": "prettier --check package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json .github/**/*.md .github/**/*.yml docs/engineering-discipline.md docs/workflow.md docs/tasks/day-1-cold-start.md packages/sim/package.json packages/sim/tsconfig.json packages/sim/src/**/*.ts"
+    "format:check": "prettier --check package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json README.md CONTRIBUTING.md AGENTS.md PROMPT.md .github/**/*.md .github/**/*.yml docs/contributor-map.md docs/engineering-discipline.md docs/implementation-status.md docs/tracks.md docs/workflow.md docs/tasks/day-1-cold-start.md packages/sim/package.json packages/sim/tsconfig.json packages/sim/src/**/*.ts scripts/tools/**/*.mjs"
   },
   "engines": {
     "node": ">=20.11",

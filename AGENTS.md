@@ -50,6 +50,8 @@ carburetor/
 │   ├── safety.md              CO / thermal / fuel handling
 │   ├── implementation-status.md   ships / partial / stub matrix
 │   ├── reproducibility.md     manifest spine, golden fixtures
+│   ├── contributor-map.md     researcher / engineer / hacker entry map
+│   ├── tracks.md              researcher / engineer / hacker contract
 │   ├── why.md                 thesis (scaffold — user-authored prose)
 │   ├── rfcs/                  numbered RFCs (TBD)
 │   ├── adrs/                  numbered ADRs (TBD)
@@ -271,6 +273,8 @@ if two runs share `(git_sha, lockfile_hash, seed, inputs)`, they MUST produce id
 - **editions.md** is the comparison. update it when an edition gains or loses a feature.
 - **glossary.md** is the vocabulary. update it before introducing a new term in any other doc.
 - **implementation-status.md** is the live cross-section. update it whenever a status changes (this is the most-updated doc).
+- **contributor-map.md** is the cold-entry map. update it when onboarding paths or issue templates change.
+- **tracks.md** is the three-hat contract. use it for researcher / engineer / hacker review posture on meaningful PRs.
 - **safety.md** is the operational manual. update it when you learn something about CO / thermal / fuel that wasn't there before.
 - **why.md** is the thesis. **do not generate prose. leave scaffold beats for the user.**
 

@@ -33,6 +33,7 @@ the infrastructure for this phase should do only five things:
 - prove the current TypeScript package builds.
 - prove the Python type surface imports.
 - prove the edizione build script still runs.
+- prove golden fixture manifests are structurally sound once fixtures exist.
 - nudge doctrine and interface changes into review.
 - watch npm and GitHub Actions dependency drift without opening Python churn
   before Python has runtime dependencies.
@@ -100,6 +101,7 @@ defer it if it mainly manages scale we do not have yet.
 - `pnpm format:check`
 - `pnpm --filter @carburetor/sim build`
 - `pnpm sim:test`
+- `pnpm golden:check`
 - `pnpm edizione:build`
 - Python import smoke for `python/sim_mini`
 

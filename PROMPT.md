@@ -24,7 +24,7 @@ a feature phone whose energy source is fuel, not battery. it is a working artifa
 
 ## the parent context
 
-`p-to-q` is a small independent research practice; tagline *"experimental craft and research over scale."* the org's first project is **wittgenstein** — a modality harness for text-first LLMs, *"typed codecs render real PNG / WAV / CSV."* the parent legal entity is **Wooden Computer Co., Ltd.**
+`p-to-q` is a small independent research practice; tagline _"experimental craft and research over scale."_ the org's first project is **wittgenstein** — a modality harness for text-first LLMs, _"typed codecs render real PNG / WAV / CSV."_ the parent legal entity is **Wooden Computer Co., Ltd.**
 
 `carburetor` inherits two specific things from `wittgenstein`:
 
@@ -43,7 +43,7 @@ a feature phone whose energy source is fuel, not battery. it is a working artifa
 `carburetor`'s house style sits at the intersection of three lineages:
 
 - **Teenage Engineering.** lowercase poetic spec copy ("did we mention fm broadcasting?"). exploded views as primary marketing material. color-coded encoder caps. hand-drawn schematics in product manuals. a sense of play.
-- **Survival Research Labs / Mark Pauline.** industrial precision in service of absurd ends. weld marks visible. machines that make a point by *doing* something physically present. no apology for the strangeness.
+- **Survival Research Labs / Mark Pauline.** industrial precision in service of absurd ends. weld marks visible. machines that make a point by _doing_ something physically present. no apology for the strangeness.
 - **Bret Victor.** hardware as a thinking medium. every claim accompanied by something you can grip. the explanation IS the working model. interactive over declarative.
 
 translate that intersection into actual operating rules:
@@ -106,6 +106,10 @@ every doc you produce must work for three people:
 
 these are not different documents. they are the same document read from three angles.
 
+for PR review, use the three hats in `docs/tracks.md`: researcher for claims,
+engineer for contracts and safety, hacker for the smallest real path a cold
+contributor can try.
+
 ---
 
 ## current state (as of this handoff)
@@ -113,6 +117,7 @@ these are not different documents. they are the same document read from three an
 read `docs/implementation-status.md` for the live matrix. summary:
 
 **ships (✅):**
+
 - five-layer architecture (`docs/architecture.md`)
 - codec protocol (`docs/codec-protocol.md`)
 - hard constraints (`docs/hard-constraints.md`)
@@ -126,11 +131,13 @@ read `docs/implementation-status.md` for the live matrix. summary:
 - three license files
 
 **prerelease / partial (🧪 / ⚠️):**
+
 - Edizione print artifacts (spec + spine + cover locked; interior content TBD)
 - `docs/why.md` (thesis scaffold — user-authored prose pending)
 - receipts numbers (projected, not bench-measured)
 
 **stub (🔴):**
+
 - combustor state machine (`packages/sim/src/combustor/`) — types exist, logic TBD
 - bus simulator, compute power model, ritual stage driver — same
 - browser playable (`sim/index.html`) — TBD
@@ -177,7 +184,7 @@ read `docs/implementation-status.md` for the live matrix. summary:
 ## things to refuse
 
 - a feature that breaks a hard constraint. push back; do not implement.
-- bloating the manifest. if asked to add a feature that would not pass *"would i be willing to spec this as a layer boundary?"*, ask why.
+- bloating the manifest. if asked to add a feature that would not pass _"would i be willing to spec this as a layer boundary?"_, ask why.
 - AI-toned prose in the final manifesto or marketing copy. the user has explicit register preferences. provide **scaffolds** with structural beats; do NOT produce final prose. when in doubt, leave a `> SCAFFOLD ONLY` marker.
 - adding a sixth layer. proposals must justify a new physical-type transition not already represented.
 - adding voice, camera, microphone, OTA, or wireless charging. these are not v2 features; they violate identity.
@@ -215,11 +222,12 @@ bad example (avoid):
 
 1. read this file (you just did).
 2. read `AGENTS.md` for the file map and workflows.
-3. read `docs/architecture.md`, `docs/hard-constraints.md`, `docs/editions.md` — in that order. takes ~10 minutes.
-4. read `packages/sim/src/types.ts` and `python/sim_mini/types.py` — these are the canonical contracts.
-5. read `docs/implementation-status.md` to see what state things are in right now.
-6. look at `ROADMAP.md` and `press/edizione/spine.md` to see what's planned.
-7. ask the user which priority they want pushed first, OR proceed on the top priority in section *"what to push next"* (Edizione interior pages) if they've granted autonomy.
+3. read `docs/contributor-map.md` and `docs/tracks.md` to know which path and hat you are using.
+4. read `docs/architecture.md`, `docs/hard-constraints.md`, `docs/editions.md` — in that order. takes ~10 minutes.
+5. read `packages/sim/src/types.ts` and `python/sim_mini/types.py` — these are the canonical contracts.
+6. read `docs/implementation-status.md` to see what state things are in right now.
+7. look at `ROADMAP.md` and `press/edizione/spine.md` to see what's planned.
+8. ask the user which priority they want pushed first, OR proceed on the top priority in section _"what to push next"_ (Edizione interior pages) if they've granted autonomy.
 
 ---
 
