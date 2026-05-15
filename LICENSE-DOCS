@@ -23,12 +23,12 @@ A brief summary (NOT the license itself):
 
   - You may share and adapt the documentation for any purpose, including
     commercially.
-  - You must give appropriate credit to "Wooden Computer Co., Ltd." and
+  - You must give appropriate credit to "p-to-q" and
     indicate if changes were made.
   - If you remix, transform, or build upon the documentation, you must
     distribute your contributions under the same license.
 
-Copyright 2026 Wooden Computer Co., Ltd.
+Copyright 2026 p-to-q
 
 For software (code, firmware, simulator), see LICENSE (Apache-2.0).
 For hardware (schematics, CAD, BOM), see LICENSE-HARDWARE (CERN-OHL-S-2.0).
