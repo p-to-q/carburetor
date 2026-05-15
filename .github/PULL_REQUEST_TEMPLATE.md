@@ -26,12 +26,19 @@ House style: docs/engineering-discipline.md and TASTE.md.
 - [ ] firmware
 - [ ] edizione / print
 
+## hat
+
+- [ ] researcher — claims, citations, bench evidence, safety findings
+- [ ] engineer — contracts, CI, reproducibility, fixtures, boundaries
+- [ ] hacker — small demos, first-run experience, local scripts, buildable artifacts
+
 ## validation
 
 <!-- delete rows that do not apply. -->
 
 - [ ] `pnpm --filter @carburetor/sim build`
 - [ ] `pnpm sim:test`
+- [ ] `pnpm golden:check`
 - [ ] `pytest python/`
 - [ ] `pnpm edizione:build`
 - [ ] golden fixture diffs are intentional and documented

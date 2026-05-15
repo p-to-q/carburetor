@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: start with the contributor guide
+    url: https://github.com/p-to-q/carburetor/blob/main/CONTRIBUTING.md
+    about: first PR paths, hats, workflow, and contribution boundaries.

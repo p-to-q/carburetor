@@ -12,28 +12,34 @@ every simulator run or bench run produces `artifacts/runs/<id>/manifest.json`:
   "lockfile_hash": "sha256:0123...",
   "seed": 42,
   "start_us": 1747000000000000,
-  "end_us":   1747000060000000,
+  "end_us": 1747000060000000,
   "inputs": {
     "scenario": "refuel-and-text-for-an-hour",
     "fuel_volume_mL": 15.0,
     "ambient_C": 22.0
   },
   "outputs": {
-    "engine.wav":  "sha256:0123...",
-    "scope.svg":   "sha256:4567...",
-    "fuel.csv":    "sha256:89ab...",
+    "engine.wav": "sha256:0123...",
+    "scope.svg": "sha256:4567...",
+    "fuel.csv": "sha256:89ab...",
     "combustor.csv": "sha256:cdef..."
   },
   "host": {
-    "os":      "darwin-23.4.0",
-    "arch":    "arm64",
-    "node":    "20.11.1",
-    "python":  "3.11.7"
+    "os": "darwin-23.4.0",
+    "arch": "arm64",
+    "node": "20.11.1",
+    "python": "3.11.7"
   }
 }
 ```
 
 if two runs share `(git_sha, lockfile_hash, seed, inputs)`, the simulator MUST produce identical `outputs`. this is enforced by `pnpm sim:test` and `pytest python/`.
+
+the repository also runs `pnpm golden:check`, a dependency-free manifest audit
+that verifies every `fixtures/golden/<scenario>/manifest.json` has a seed,
+inputs, outputs, existing files, and matching `sha256:` hashes. before v0.2,
+that check passes with no scenario manifests present; after the first fixture
+lands, it becomes a real lock.
 
 ## golden fixtures
 
@@ -68,6 +74,7 @@ invalid runs are kept under `artifacts/runs-invalid/` for forensics, not aggrega
 ## what counts as reproducible
 
 reproducible:
+
 - binary telemetry frames
 - decoded CSVs
 - generated SVG (oscilloscope traces, exploded views)
@@ -76,6 +83,7 @@ reproducible:
 - print PDFs (Edizione) — generated from markdown + svg + CSS, paged.js with deterministic mode
 
 NOT reproducible (intentionally, these are layer-5 phenomena):
+
 - the engine note recorded from a real Cox 049 (each unit sounds slightly different)
 - the exact castor-oil residue pattern after a bench session
 - the smell

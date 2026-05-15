@@ -74,6 +74,30 @@ the common failure mode is treating an execution hypothesis like locked
 doctrine. challenge it when code, tests, measurements, or prior art prove it
 weak.
 
+## three-hat discipline
+
+every meaningful change should be readable through
+[`docs/tracks.md`](tracks.md):
+
+- researcher hat: what claim is being made, and what would falsify it?
+- engineer hat: what contract, safety boundary, fixture, or check keeps this
+  safe to merge?
+- hacker hat: what is the smallest real thing a cold contributor can run,
+  inspect, or build?
+
+small typo PRs do not need ceremony. doctrine, interface, safety, receipt,
+workflow, hardware, firmware, and public-facing changes do.
+
+when the hats disagree, use this order:
+
+1. truth before narrative.
+2. safety before speed.
+3. a small real demo before a broad fake surface.
+
+this is the carburetor adaptation of `wittgenstein`'s researcher / hacker
+track contract. we add the engineer hat because this repo crosses physical
+risk, bench evidence, software contracts, and printed artifacts.
+
 ### how to widen scope
 
 if you expand beyond the original task, name the expansion:

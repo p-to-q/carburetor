@@ -54,6 +54,20 @@ changes land through PRs. read `docs/engineering-discipline.md` and
 `docs/workflow.md` before touching architecture, interfaces, hardware, firmware,
 safety, or repo-process files.
 
+## the three hats
+
+meaningful PRs should say which hat is primary. `docs/tracks.md` defines the
+full contract.
+
+- researcher: claims, citations, bench evidence, safety findings,
+  postmortems.
+- engineer: contracts, CI, reproducibility, fixtures, hardware and firmware
+  boundaries.
+- hacker: small demos, first-run experience, local scripts, buildable artifacts.
+
+one PR can wear more than one hat. if it wears all three, keep the change small
+enough that each hat can still review it.
+
 ## the license
 
 by contributing, you agree your code is Apache-2.0, your hardware is CERN-OHL-S-2.0, and your docs are CC-BY-SA-4.0. see `LICENSE`, `LICENSE-HARDWARE`, `LICENSE-DOCS`.
