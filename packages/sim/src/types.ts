@@ -32,13 +32,13 @@ export type CombustorPhase =
 export interface CombustorState {
   kind: CombustorKind;
   running: boolean;
-  rpm: number | null;            // mk i only
+  rpm: number | null; // mk i only
   hot_C: number;
-  cold_C: number | null;         // mk ii only
+  cold_C: number | null; // mk ii only
   exhaust_dB_1m: number;
-  shaft_W: number | null;        // mk i only
+  shaft_W: number | null; // mk i only
   thermal_W: number;
-  electric_W_raw: number;        // pre-rectifier; feeds bus
+  electric_W_raw: number; // pre-rectifier; feeds bus
   runtime_s: number;
   fuel_consumed_mL: number;
   phase: CombustorPhase;
@@ -51,23 +51,23 @@ export interface BusState {
   i_bus_A: number;
   v_li_V: number;
   i_li_A: number;
-  soc_li_pct: number;            // li-ion state of charge
-  soc_cap_pct: number;            // supercap state of charge
+  soc_li_pct: number; // li-ion state of charge
+  soc_cap_pct: number; // supercap state of charge
   t_case_C: number;
   mppt_locked: boolean;
-  e_in_J: number;                 // cumulative energy in from combustor
-  e_out_J: number;                // cumulative energy out to compute
+  e_in_J: number; // cumulative energy in from combustor
+  e_out_J: number; // cumulative energy out to compute
 }
 
 // ============ layer 4: compute ============
 
 export type ComputeMode =
-  | 'sleep'           // deep sleep, modem psm, lcd holding image
-  | 'idle'            // mcu awake, screen on, no traffic
-  | 'rx'              // modem registered, listening
-  | 'tx'              // modem transmitting
-  | 'compose'         // user typing
-  | 'engine_attn';    // engine ui (during warmup or refuel)
+  | 'sleep' // deep sleep, modem psm, lcd holding image
+  | 'idle' // mcu awake, screen on, no traffic
+  | 'rx' // modem registered, listening
+  | 'tx' // modem transmitting
+  | 'compose' // user typing
+  | 'engine_attn'; // engine ui (during warmup or refuel)
 
 export interface ComputeState {
   mode: ComputeMode;
@@ -100,7 +100,7 @@ export interface RitualState {
   scent: Scent;
   minutes_runtime_remaining: number;
   minutes_until_refuel: number;
-  next_user_action: string | null;   // e.g., 'pour 5 mL', 'pull crank', 'wait 38 s'
+  next_user_action: string | null; // e.g., 'pour 5 mL', 'pull crank', 'wait 38 s'
 }
 
 // ============ system snapshot ============
@@ -109,7 +109,7 @@ export interface RitualState {
 // see docs/codec-protocol.md.
 
 export interface DeviceState {
-  t_us: number;                  // monotonic timestamp µs (number is safe through ~285 years)
+  t_us: number; // monotonic timestamp µs (number is safe through ~285 years)
   fuel: FuelState;
   combustor: CombustorState;
   bus: BusState;
@@ -158,13 +158,13 @@ export const INVARIANTS = {
 // see docs/codec-protocol.md for the wire format.
 
 export interface TelemetryFrame {
-  sync: 0xCB;
+  sync: 0xcb;
   version: 1;
   seq: number;
   t_us: number;
   layer: 1 | 2 | 3 | 4 | 5;
   kind: number;
   flags: number;
-  payload: Uint8Array;            // 32 bytes
-  sha256_prefix: Uint8Array;      // 8 bytes
+  payload: Uint8Array; // 32 bytes
+  sha256_prefix: Uint8Array; // 8 bytes
 }

@@ -24,6 +24,7 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 | reproducibility | ✅ | `docs/reproducibility.md` |
 | copy (external marketing) | ✅ | `docs/copy.md` |
 | engineering discipline | ✅ | `docs/engineering-discipline.md` |
+| workflow | ✅ | `docs/workflow.md` |
 | why (thesis scaffold) | ⚠️ | `docs/why.md` — user authors final prose |
 | RFCs | 🔴 | `docs/rfcs/` — directory not present at v0.1 |
 | ADRs | 🔴 | `docs/adrs/` — directory not present at v0.1 |
@@ -149,6 +150,11 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 | `INFLUENCES.md` | ✅ |
 | `CODE_OF_CONDUCT.md` | ✅ |
 | `SECURITY.md` | ✅ |
+| `.github/CODEOWNERS` | ✅ |
+| `.github/PULL_REQUEST_TEMPLATE.md` | ✅ |
+| `.github/workflows/ci.yml` | ✅ |
+| `.github/workflows/doctrine-guardrail.yml` | ✅ |
+| `.github/dependabot.yml` | ✅ |
 
 ## prerelease readiness
 

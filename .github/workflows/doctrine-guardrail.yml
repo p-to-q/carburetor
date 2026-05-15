@@ -1,0 +1,83 @@
+name: Doctrine guardrail
+
+# Gentle nudge, not a merge gate. It mirrors p-to-q/wittgenstein's pattern but
+# keeps carburetor lighter: comment when doctrine-bearing surfaces change
+# without an ADR/RFC reference or an explicit drift-correction note.
+#
+# This workflow uses pull_request_target only to read PR metadata and post a
+# comment. Do not add checkout or run PR code here.
+
+on:
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  guardrail:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Detect doctrine touches
+        id: detect
+        uses: actions/github-script@v9.0.0
+        with:
+          script: |
+            const doctrinePatterns = [
+              /^AGENTS\.md$/,
+              /^PROMPT\.md$/,
+              /^CONTRIBUTING\.md$/,
+              /^TASTE\.md$/,
+              /^\.github\/CODEOWNERS$/,
+              /^\.github\/PULL_REQUEST_TEMPLATE\.md$/,
+              /^docs\/architecture\.md$/,
+              /^docs\/codec-protocol\.md$/,
+              /^docs\/engineering-discipline\.md$/,
+              /^docs\/hard-constraints\.md$/,
+              /^docs\/reproducibility\.md$/,
+              /^docs\/safety\.md$/,
+              /^docs\/glossary\.md$/,
+              /^packages\/sim\/src\/types\.ts$/,
+              /^python\/sim_mini\/types\.py$/,
+            ];
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              per_page: 100,
+            });
+            const touched = files
+              .map((f) => f.filename)
+              .filter((p) => doctrinePatterns.some((re) => re.test(p)));
+            const body = `${context.payload.pull_request.title || ""}\n${context.payload.pull_request.body || ""}`;
+            const hasReference = /\b(ADR|RFC)[-\s]?\d{3,4}\b/i.test(body);
+            const isDriftCorrection = /\bdrift correction\b/i.test(body);
+            core.setOutput("touched", touched.length > 0 ? "yes" : "no");
+            core.setOutput("has_context", hasReference || isDriftCorrection ? "yes" : "no");
+            core.setOutput("files", touched.slice(0, 5).join(", "));
+
+      - name: Post nudge comment
+        if: steps.detect.outputs.touched == 'yes' && steps.detect.outputs.has_context == 'no'
+        uses: actions/github-script@v9.0.0
+        with:
+          script: |
+            const marker = "<!-- doctrine-guardrail -->";
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            if (comments.some((c) => c.body && c.body.includes(marker))) return;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body:
+                `${marker}\n` +
+                `### Doctrine guardrail\n\n` +
+                `This PR touches doctrine-bearing carburetor surfaces: \`${{ steps.detect.outputs.files }}\`.\n\n` +
+                `If this changes doctrine, reference the ADR/RFC. If this is only drift correction, say that in the PR body.\n\n` +
+                `_This is a nudge, not a blocking check._`,
+            });

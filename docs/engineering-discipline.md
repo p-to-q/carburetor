@@ -102,6 +102,82 @@ the first simulator implementation should expose the algorithmic spine. every
 optimization, UI wrapper, and hardware-specific refinement comes after that
 spine is legible.
 
+## low-code repository discipline
+
+carburetor is low-code by design at this stage. most of the value is in the
+contracts, BOMs, drawings, safety notes, manifests, and bench receipts. do not
+measure progress by lines of code.
+
+- code exists to make the energy chain testable, reproducible, and inspectable.
+- documents are not decoration; they are part of the build surface.
+- a small reference implementation is better than a broad framework with no
+  fixture.
+- prefer a single dependency-free path until the shape is proven.
+- do not add apps, agents, dashboards, or orchestration because wittgenstein has
+  them.
+- when in doubt, add a manifest, a test, a checklist, or a clearer status row
+  before adding a subsystem.
+
+### code belongs where it proves something
+
+add code when it does at least one of these:
+
+- runs a reference scenario.
+- checks an invariant.
+- writes or validates a manifest.
+- decodes or encodes telemetry.
+- resolves a BOM or bench measurement.
+- makes a printed or visual artifact reproducible.
+
+do not add code just to make the repo feel like software. p-to-q projects are
+allowed to be source-shaped in different ways.
+
+## hardware, design, and firmware discipline
+
+carburetor is lighter than wittgenstein as a software repository, but its
+non-code surfaces carry physical risk. treat them with the same review
+seriousness, not the same process weight.
+
+### hardware and BOM
+
+- every part change names the reason: availability, safety, cost, measured
+  performance, or edition fit.
+- BOM rows should keep vendor, part number, quantity, and edition intent clear.
+- do not replace a safety-relevant part with a cheaper substitute without a note
+  in `docs/safety.md` or the relevant BOM comment.
+- schematics and PCB work should land with source files, rendered exports when
+  useful, and a short bring-up note.
+
+### design files
+
+- visual drawings are not decoration; they are inspection surfaces.
+- every physical part shown in a drawing should have a corresponding name in
+  docs, BOM, or glossary.
+- if a drawing is aspirational, label it as such. do not let a concept render
+  masquerade as a bench-built part.
+- design changes should preserve the five-layer legibility: a reader should be
+  able to point to fuel, combustor, bus, compute, and ritual in the artifact.
+- edizione files are production artifacts. treat typography, covers, foldouts,
+  and print specs as source, not collateral.
+
+### firmware
+
+- firmware changes must preserve physical-update-only assumptions.
+- no OTA path, microphone path, camera path, or charge path can appear as an
+  incidental convenience.
+- safety state should be explicit: undervoltage, thermal high, flameout, and
+  fuel low should be states a reviewer can find.
+
+### circuits and boards
+
+- schematic changes must name the rail, signal, or safety boundary they affect.
+- PCB changes should include the source file and, when useful, a rendered export
+  or screenshot for review.
+- power-path changes touch safety. route them through `docs/safety.md` and, if
+  they affect interfaces, `docs/architecture.md`.
+- connector pinouts are contracts. changing one should update docs and any
+  firmware assumptions together.
+
 ## robustness
 
 never hide errors. never silently swallow exceptions unless a comment explains
@@ -139,9 +215,9 @@ state exactly what you verified. if a check was not run, say so.
 - [ ] `pytest python/` passes when Python simulator code changes.
 - [ ] golden fixture diffs are intentional and documented.
 - [ ] manifest output includes git sha, lockfile hash, seed, inputs, outputs,
-  and host.
+      and host.
 - [ ] interface changes update TypeScript, Python, and architecture docs
-  together.
+      together.
 - [ ] protocol changes update `docs/codec-protocol.md`.
 - [ ] safety changes update `docs/safety.md`.
 

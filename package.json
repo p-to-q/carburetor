@@ -28,7 +28,8 @@
     "bom:resolve": "echo 'bom resolver TBD — see ROADMAP.md v0.2'",
     "decode": "echo 'telemetry decoder TBD — see ROADMAP.md v0.2'",
     "edizione:build": "node press/edizione/build-scripts/build.mjs",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "format:check": "prettier --check package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json .github/**/*.md .github/**/*.yml docs/engineering-discipline.md docs/workflow.md docs/tasks/day-1-cold-start.md packages/sim/package.json packages/sim/tsconfig.json packages/sim/src/**/*.ts"
   },
   "engines": {
     "node": ">=20.11",

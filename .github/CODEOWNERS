@@ -1,0 +1,36 @@
+# CODEOWNERS — automatic review-request routing.
+#
+# carburetor is lighter than wittgenstein, but doctrine-bearing surfaces still
+# need an independent maintainer pass before merge.
+
+# Default fallback.
+* @Jah-yee @Moapacha
+
+# Doctrine and repo-process surfaces.
+/AGENTS.md @Jah-yee @Moapacha
+/PROMPT.md @Jah-yee @Moapacha
+/CONTRIBUTING.md @Jah-yee @Moapacha
+/README.md @Jah-yee @Moapacha
+/TASTE.md @Jah-yee @Moapacha
+/.github/ @Jah-yee @Moapacha
+
+/docs/architecture.md @Jah-yee @Moapacha
+/docs/codec-protocol.md @Jah-yee @Moapacha
+/docs/engineering-discipline.md @Jah-yee @Moapacha
+/docs/hard-constraints.md @Jah-yee @Moapacha
+/docs/reproducibility.md @Jah-yee @Moapacha
+/docs/safety.md @Jah-yee @Moapacha
+/docs/glossary.md @Jah-yee @Moapacha
+/docs/tasks/ @Jah-yee @Moapacha
+
+# Interface contracts.
+/packages/sim/src/types.ts @Jah-yee @Moapacha
+/python/sim_mini/types.py @Jah-yee @Moapacha
+
+# Hardware and firmware safety surfaces.
+/hardware/ @Jah-yee @Moapacha
+/firmware/ @Jah-yee @Moapacha
+/design/ @Jah-yee @Moapacha
+
+# Print surface.
+/press/edizione/ @Jah-yee @Moapacha
