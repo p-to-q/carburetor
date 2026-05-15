@@ -48,6 +48,12 @@ a change that touches `types.ts` + `types.py` + `docs/architecture.md` and possi
 
 commits, comments, PR descriptions: lowercase-leaning, terse, declarative, no exclamation marks. examples in `AGENTS.md`.
 
+## the workflow
+
+changes land through PRs. read `docs/engineering-discipline.md` and
+`docs/workflow.md` before touching architecture, interfaces, hardware, firmware,
+safety, or repo-process files.
+
 ## the license
 
 by contributing, you agree your code is Apache-2.0, your hardware is CERN-OHL-S-2.0, and your docs are CC-BY-SA-4.0. see `LICENSE`, `LICENSE-HARDWARE`, `LICENSE-DOCS`.
