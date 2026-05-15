@@ -23,6 +23,7 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 | safety | ✅ | `docs/safety.md` |
 | reproducibility | ✅ | `docs/reproducibility.md` |
 | copy (external marketing) | ✅ | `docs/copy.md` |
+| engineering discipline | ✅ | `docs/engineering-discipline.md` |
 | why (thesis scaffold) | ⚠️ | `docs/why.md` — user authors final prose |
 | RFCs | 🔴 | `docs/rfcs/` — directory not present at v0.1 |
 | ADRs | 🔴 | `docs/adrs/` — directory not present at v0.1 |
@@ -146,8 +147,8 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 | `CONTRIBUTING.md` | ✅ |
 | `TASTE.md` | ✅ |
 | `INFLUENCES.md` | ✅ |
-| `CODE_OF_CONDUCT.md` | 🔴 (TBD v0.2) |
-| `SECURITY.md` | 🔴 (TBD v0.2) |
+| `CODE_OF_CONDUCT.md` | ✅ |
+| `SECURITY.md` | ✅ |
 
 ## prerelease readiness
 

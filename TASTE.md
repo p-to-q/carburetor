@@ -15,6 +15,15 @@ a project-specific taste section. read it before opening a PR; if your change di
 - a receipt is worth a thousand claims. measure first.
 - five layers, not three or seven. naming is doing.
 
+## about elegance
+
+- the first implementation should expose the algorithmic spine. everything else is efficiency.
+- prefer one readable reference path before splitting into clever modules.
+- no dependency is neutral. add one only after the dependency-free version has taught us what it hides.
+- deterministic beats impressive. a boring run with a manifest is better than a dramatic demo.
+- the simulator should be legible enough to print, annotate, and reimplement in another language.
+- if a reader cannot trace fuel to ritual in one sitting, the implementation is not yet elegant.
+
 ## about physical making
 
 - weld marks visible. brass patinates. fuel stains.
