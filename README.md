@@ -8,7 +8,7 @@
 
 carburetor is a feature phone whose energy source is fuel, not battery. it is a working artifact, not a metaphor. two units. one chassis convention. one telemetry codec.
 
-> prerelease · v0.1 · mk i hardware in bench · mk ii in cad · sim in browser.
+> prerelease · v0.1 · mk i hardware in bench · mk ii in cad · sim headless only (browser at v0.2).
 
 ## two units
 
@@ -22,7 +22,7 @@ mk i is loud. mk ii is silent. both wait. both ask you to wait with them.
 
 the project ships at three levels of commitment — all implementing the same five-layer architecture, all emitting byte-identical telemetry:
 
-- **vapore** — the simulator. $0. five minutes. browser only.
+- **vapore** — the simulator. $0. five minutes. browser only. (v0.2 — headless-only at v0.1.)
 - **processta** — the maker edition. ~$120. one weekend. esp32-s3 + cheap nitro + tool-pouch case.
 - **classica** — the definitive build. ~$760. multi-weekend. cox tee dee + bg95 + sharp memory lcd + q10 + brass + custom canvas.
 
@@ -62,16 +62,19 @@ each layer is a typed codec. each codec emits real artifacts: telemetry frames a
 ## two surfaces, one architecture
 
 - **typescript (strict)** — the simulator, the site, the telemetry codec, the cli. `packages/`.
-- **python** — the engine-thermodynamics prototype, the bom resolver, the adr analyses. `python/sim-mini/`.
+- **python** — the engine-thermodynamics prototype, the bom resolver, the adr analyses. `python/sim_mini/`.
 
 both surfaces consume the same telemetry frame format. see `docs/codec-protocol.md`.
 
-## quickstart (30 seconds)
+## quickstart
 
 ```sh
 pnpm install
-pnpm sim          # browser at localhost:5173 · pour, crank, watch
-pnpm sim:headless # ci mode, writes artifacts/runs/<id>/manifest.json
+pnpm build              # build the TypeScript simulator
+pnpm sim:test           # run simulator tests
+pnpm sim:headless       # headless run, outputs final state as json
+pnpm sim:compare        # compare TS vs Python outputs
+# pnpm sim              # v0.2 — browser playable simulator (not yet available)
 ```
 
 ## docs map
@@ -86,9 +89,9 @@ pnpm sim:headless # ci mode, writes artifacts/runs/<id>/manifest.json
 - `docs/engineering-discipline.md` — change discipline and validation standard.
 - `docs/workflow.md` — lightweight p-to-q PR, CI, and dependency policy.
 - `docs/notes/` — design notes, postmortems, sketches.
-- `hardware/mk1/` — kicad, freecad, bom.
-- `hardware/mk2/` — kicad, freecad, bom.
-- `sim/` — `@carburetor/sim` · the playable one.
+- `hardware/mk1/` — bom. (kicad, freecad at v0.3.)
+- `hardware/mk2/` — (TBD.)
+- `packages/sim/` — `@carburetor/sim` · headless at v0.1, browser playable at v0.2.
 
 ## how to help
 

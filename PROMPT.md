@@ -136,33 +136,36 @@ read `docs/implementation-status.md` for the live matrix. summary:
 - `docs/why.md` (thesis scaffold — user-authored prose pending)
 - receipts numbers (projected, not bench-measured)
 
+**ships but needs correction (🧪):**
+
+- five-layer simulator (`packages/sim/`, `python/sim_mini/`) — runs end-to-end, TS/Python parity verified. thermal model needs ~4x correction. Python telemetry codec missing.
+
 **stub (🔴):**
 
-- combustor state machine (`packages/sim/src/combustor/`) — types exist, logic TBD
-- bus simulator, compute power model, ritual stage driver — same
-- browser playable (`sim/index.html`) — TBD
+- browser playable simulator — TBD v0.2
 - firmware skeletons (`firmware/mk1-classica/`, `firmware/mk1-processta/`) — TBD
 - mk2 hardware specs — TBD
-- mk1 KiCad schematic + PCB + FreeCAD enclosure — TBD
-- golden fixtures (`fixtures/golden/<scenario>/`) — TBD
+- mk1 KiCad schematic + PCB + FreeCAD enclosure — TBD v0.3
+- golden fixtures (`fixtures/golden/<scenario>/`) — infrastructure ready, no scenarios yet
+- RFCs, ADRs, postmortems directories — TBD v0.2
 
 ---
 
 ## what to push next (priority order)
 
-1. **Edizione I print artifacts.** the user has put this in scope for near-term. read `press/edizione/`. spec and spine are locked; you need to fill the interior pages (most are Markdown + SVG, compiled via paged.js into a print PDF). manifesto pages (4-7) are scaffold-only; do NOT auto-generate the prose — leave the scaffold for the user.
+1. **fix simulator physics.** thermal model waste heat ratio is ~4x too low. clarify the 0.14 coupling factor semantics. implement Python telemetry codec to match TS. add edge-case tests (flameout, fuel exhaustion, kill during warmup).
 
-2. **combustor state machine.** TS + Python parallel implementations. 11 states (off / prime / ignite / warmup / run / cooldown / flameout / fuel_low / thermal_high / ...). use the `CombustorState` and `CombustorPhase` types. write the TS first, port to Python. accompany with `fixtures/golden/combustor-basic/` containing sha-pinned reference output.
+2. **first golden fixture.** cold-start-warmup scenario with sha-pinned reference output. makes `pnpm golden:check` real.
 
-3. **browser playable simulator** (`sim/index.html`). single-file HTML. Web Audio engine note. drag to pour fuel; click to crank; watch the chain run; receive a simulated SMS; run out of fuel. this is the **Vapore edition**. it is the project's most viral artifact — anyone can experience the project in 30 seconds at zero cost.
+3. **browser playable simulator** (vapore edition). single-file HTML. Web Audio engine note. drag to pour fuel; click to crank; watch the chain run. the project's most accessible artifact.
 
-4. **Cox 049 Otto-cycle thermo prototype** (`python/sim_mini/thermo.py`). real numbers: 0.81 cc displacement, 22,000 rpm peak, fuel burn 2.5 mL/min, 5-8 W usable at the bus. accompany with `fixtures/golden/cox-049/`.
+4. **Edizione I print artifacts.** spec and spine are locked; interior pages are scaffold. manifesto pages are user-authored — do NOT auto-generate. production/pricing/distribution files are deferred until bench data exists.
 
-5. **firmware skeletons.** `firmware/mk1-classica/` (Zephyr/Rust on nRF52840) and `firmware/mk1-processta/` (ESP-IDF/Rust on ESP32-S3). both compile; both emit valid telemetry frames over USB-serial; both run a minimal "main loop" that exercises the five-layer state machines.
+5. **bench scripts** (`scripts/bench/`). populate the receipts table with measured numbers.
 
-6. **bench scripts** (`scripts/bench/`). `fuel-to-wh.py`, `warmup.py`, `power-modes.py`, `bom-resolve.ts`. these populate the `Receipts not claims` table in README.
+6. **firmware skeletons.** `firmware/mk1-classica/` and `firmware/mk1-processta/`. both compile; both emit valid telemetry frames.
 
-7. **mk2 hardware spec.** catalytic combustor + TEG stack. bom-classica-mk2.csv. exploded-view-mk2.svg.
+7. **mk2 hardware spec.** catalytic combustor + TEG stack. needs bench validation first — claimed 1.5-2W may be 0.5-1W at pocket scale.
 
 ---
 
@@ -198,8 +201,8 @@ read `docs/implementation-status.md` for the live matrix. summary:
 - generate golden fixtures for new state-machine implementations.
 - expand `docs/notes/` with design rationale.
 - improve `docs/safety.md` as you learn more about CO / thermal / fuel handling.
-- propose new RFCs in `docs/rfcs/` when a design decision deserves explicit treatment.
-- file postmortems in `docs/postmortems/` when something doesn't work.
+- propose new RFCs when a design decision deserves explicit treatment. (`docs/rfcs/` directory lands at v0.2; for now, use a PR description or issue.)
+- file postmortems when something doesn't work. (`docs/postmortems/` directory lands at v0.2; for now, open an issue.)
 - update `docs/implementation-status.md` as items change state.
 
 ---

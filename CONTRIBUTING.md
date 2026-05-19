@@ -4,7 +4,7 @@ thank you for reading this. you can help in five ways.
 
 ## 1 — build a unit
 
-build a processta or classica, take photos, file a postmortem. `docs/postmortems/YYYY-MM-DD-<your-handle>.md`. tell us what broke, what was hard, what the BOM got wrong. this is the most valuable contribution you can make.
+build a processta or classica, take photos, file a postmortem. tell us what broke, what was hard, what the BOM got wrong. this is the most valuable contribution you can make. (postmortem format and directory land at v0.2; for now, open an issue.)
 
 ## 2 — file a measurement
 
@@ -33,7 +33,7 @@ a change that touches `types.ts` + `types.py` + `docs/architecture.md` and possi
 - update `docs/architecture.md` and bump the relevant section.
 - if the wire format changes, bump `protocol version` in `docs/codec-protocol.md` and document the migration.
 - update all golden fixtures.
-- write a brief RFC in `docs/rfcs/NNNN-<title>.md` (`Status: Draft`).
+- write a brief RFC in `docs/rfcs/NNNN-<title>.md` (`Status: Draft`). (RFC directory lands at v0.2; for now, describe the proposal in the PR body.)
 - open a PR. expect review.
 
 ## what is NOT a valid contribution

@@ -8,18 +8,18 @@ target in-hand date: **2026-09-15** (Tuesday). all dates and tasks downstream of
 
 ## status at a glance
 
-| phase | status | gate |
-|---|---|---|
-| 1 · spec & spine locked | ✅ | spec.md + spine.md committed |
-| 2 · interior content drafted | 🧪 | manifesto stays user-authored; rest agent-drafted |
-| 3 · typography & build pipeline | 🧪 | paged.js scripts working; CSS locked at v0.1 |
-| 4 · vendor RFQ sent | 🔴 | needs production lead's signature |
-| 5 · cover + interior PDF ready | 🔴 | requires user's final manifesto + vendor file specs |
-| 6 · print order placed | 🔴 | requires PDF + payment + ship-to |
-| 7 · pre-order page live | 🔴 | requires squarespace/notion/shop setup |
-| 8 · in-hand | 🔴 | depends on vendor lead time |
-| 9 · numbered + stamped | 🔴 | requires brass-ink stamp + serial book |
-| 10 · shipped to contributors | 🔴 | requires distribution list (see distribution.md) |
+| phase                           | status | gate                                                |
+| ------------------------------- | ------ | --------------------------------------------------- |
+| 1 · spec & spine locked         | ✅     | spec.md + spine.md committed                        |
+| 2 · interior content drafted    | 🧪     | manifesto stays user-authored; rest agent-drafted   |
+| 3 · typography & build pipeline | 🧪     | paged.js scripts working; CSS locked at v0.1        |
+| 4 · vendor RFQ sent             | 🔴     | needs production lead's signature                   |
+| 5 · cover + interior PDF ready  | 🔴     | requires user's final manifesto + vendor file specs |
+| 6 · print order placed          | 🔴     | requires PDF + payment + ship-to                    |
+| 7 · pre-order page live         | 🔴     | requires squarespace/notion/shop setup              |
+| 8 · in-hand                     | 🔴     | depends on vendor lead time                         |
+| 9 · numbered + stamped          | 🔴     | requires brass-ink stamp + serial book              |
+| 10 · shipped to contributors    | 🔴     | requires distribution list (see distribution.md)    |
 
 ---
 
@@ -56,7 +56,7 @@ W+3     2026-10-06 archive 15 sealed            user        wooden computer co.
 
 three gates that, if missed, slip the whole schedule:
 
-1. **manifesto final prose locked by W-16 (2026-05-27).** the user is the only person who can produce this. agent-drafts exist in `01-manifesto-draft.md`. lock by reply-in-thread: *"manifesto is final, ship it."*
+1. **manifesto final prose locked by W-16 (2026-05-27).** the user is the only person who can produce this. agent-drafts exist in `01-manifesto-draft.md`. lock by reply-in-thread: _"manifesto is final, ship it."_
 
 2. **vendor selected by W-12 (2026-06-24).** the user signs the invoice; the agent prepares the RFQ. four candidates (`vendor-rfq.md`). target turnaround for quotes: 2 weeks from RFQ send.
 
@@ -66,19 +66,19 @@ three gates that, if missed, slip the whole schedule:
 
 ## owner matrix
 
-| item | agent | user | note |
-|---|---|---|---|
-| spec, spine, typography rules | ✅ | ✅ (review) | locked v0.1 |
-| interior content (non-manifesto) | ✅ | ✅ (review) | agent drafts all |
-| manifesto final prose | ❌ | ✅ | agent provides scaffolds + draft only |
-| cover-front + cover-back design | ✅ | ✅ (review) | agent ships SVG |
-| BOM foldout SVG | ✅ | ✅ (review) | agent renders |
-| build pipeline (paged.js) | ✅ | ✅ (run it) | agent ships scripts |
-| vendor RFQ | ✅ (template) | ✅ (send) | user signs and emails |
-| invoice, payment | ❌ | ✅ | wooden computer co. credit card |
-| pre-order page | ✅ (copy) | ✅ (deploy) | shopify/notion/custom |
-| numbering, stamping | ❌ | ✅ | hand-stamped by user |
-| shipping | ❌ | ✅ | post-office trip |
+| item                             | agent         | user        | note                                  |
+| -------------------------------- | ------------- | ----------- | ------------------------------------- |
+| spec, spine, typography rules    | ✅            | ✅ (review) | locked v0.1                           |
+| interior content (non-manifesto) | ✅            | ✅ (review) | agent drafts all                      |
+| manifesto final prose            | ❌            | ✅          | agent provides scaffolds + draft only |
+| cover-front + cover-back design  | ✅            | ✅ (review) | agent ships SVG                       |
+| BOM foldout SVG                  | ✅            | ✅ (review) | agent renders                         |
+| build pipeline (paged.js)        | ✅            | ✅ (run it) | agent ships scripts                   |
+| vendor RFQ                       | ✅ (template) | ✅ (send)   | user signs and emails                 |
+| invoice, payment                 | ❌            | ✅          | wooden computer co. credit card       |
+| pre-order page                   | ✅ (copy)     | ✅ (deploy) | shopify/notion/custom                 |
+| numbering, stamping              | ❌            | ✅          | hand-stamped by user                  |
+| shipping                         | ❌            | ✅          | post-office trip                      |
 
 ---
 
@@ -120,14 +120,14 @@ see `pricing.md` for the full cost model with sensitivity analysis.
 
 ranked by impact × likelihood.
 
-| risk | probability | impact | mitigation |
-|---|---|---|---|
-| manifesto prose slips past W-16 | medium | critical | publish draft with disclaimer; user can edit between proofs |
-| brass spot color unavailable at chosen vendor | medium | medium | foil-stamp fallback locked in spec.md soft-list |
-| vendor minimum exceeds 100 units | low | medium | switch to Lulu POD or absorb the 200-unit run |
-| IBM Plex license confusion | very low | low | OFL is bundled; vendor only needs PDF/X-1a |
-| shipping cost overruns | medium | low | hold prices at $25 + actual shipping; absorb up to $2 |
-| serial-stamp ink quality varies | medium | low | use a single stamp pad sourced from one vendor |
+| risk                                          | probability | impact   | mitigation                                                  |
+| --------------------------------------------- | ----------- | -------- | ----------------------------------------------------------- |
+| manifesto prose slips past W-16               | medium      | critical | publish draft with disclaimer; user can edit between proofs |
+| brass spot color unavailable at chosen vendor | medium      | medium   | foil-stamp fallback locked in spec.md soft-list             |
+| vendor minimum exceeds 100 units              | low         | medium   | switch to Lulu POD or absorb the 200-unit run               |
+| IBM Plex license confusion                    | very low    | low      | OFL is bundled; vendor only needs PDF/X-1a                  |
+| shipping cost overruns                        | medium      | low      | hold prices at $25 + actual shipping; absorb up to $2       |
+| serial-stamp ink quality varies               | medium      | low      | use a single stamp pad sourced from one vendor              |
 
 ---
 
