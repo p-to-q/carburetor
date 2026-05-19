@@ -73,5 +73,5 @@ jobs:
         run: ruff check .
 
       - name: Python type check (mypy)
-        working-directory: python/sim_mini
-        run: mypy .
+        working-directory: python
+        run: mypy sim_mini/ --config-file sim_mini/pyproject.toml
