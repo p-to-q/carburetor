@@ -43,9 +43,8 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          cd python/sim_mini
           python -m pip install --upgrade pip
-          pip install -e ".[dev]"
+          pip install -e "./python/sim_mini[dev]"
 
       - name: Format check (TS/JSON/MD)
         run: pnpm format:check
@@ -66,16 +65,13 @@ jobs:
         run: pnpm edizione:build
 
       - name: Python tests (pytest)
-        run: |
-          cd python/sim_mini
-          pytest -v
+        working-directory: python/sim_mini
+        run: pytest -v
 
       - name: Python lint (ruff)
-        run: |
-          cd python/sim_mini
-          ruff check .
+        working-directory: python/sim_mini
+        run: ruff check .
 
       - name: Python type check (mypy)
-        run: |
-          cd python/sim_mini
-          mypy .
+        working-directory: python/sim_mini
+        run: mypy .
