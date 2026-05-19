@@ -36,7 +36,7 @@
     "decode": "echo 'telemetry decoder TBD — see ROADMAP.md v0.2'",
     "edizione:build": "node press/edizione/build-scripts/build.mjs",
     "format": "prettier --write .",
-    "format:check": "prettier --check package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json README.md CONTRIBUTING.md AGENTS.md PROMPT.md .github/**/*.md .github/**/*.yml docs/contributor-map.md docs/engineering-discipline.md docs/implementation-status.md docs/tracks.md docs/workflow.md docs/vapore-spec.md docs/tasks/day-1-cold-start.md packages/sim/package.json packages/sim/tsconfig.json 'packages/sim/src/**/*.ts' 'packages/sim/tests/**/*.mjs' packages/vapore/package.json scripts/tools/**/*.mjs"
+    "format:check": "prettier --check package.json pnpm-workspace.yaml tsconfig.base.json README.md CONTRIBUTING.md AGENTS.md PROMPT.md .github/**/*.md .github/**/*.yml docs/contributor-map.md docs/engineering-discipline.md docs/implementation-status.md docs/tracks.md docs/workflow.md docs/vapore-spec.md docs/tasks/day-1-cold-start.md packages/sim/package.json packages/sim/tsconfig.json 'packages/sim/src/**/*.ts' 'packages/sim/tests/**/*.mjs' packages/vapore/package.json scripts/tools/**/*.mjs"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
