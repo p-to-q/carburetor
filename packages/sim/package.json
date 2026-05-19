@@ -8,6 +8,7 @@
   "main": "./src/index.ts",
   "exports": {
     ".": "./dist/index.js",
+    "./browser": "./dist/sim.browser.js",
     "./types": "./dist/types.js"
   },
   "scripts": {

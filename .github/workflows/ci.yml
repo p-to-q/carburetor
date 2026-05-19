@@ -33,17 +33,31 @@ jobs:
           node-version: 20.11.1
           cache: pnpm
 
-      - name: Install
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Node dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Format
+      - name: Install Python dependencies
+        run: |
+          cd python/sim_mini
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Format check (TS/JSON/MD)
         run: pnpm format:check
 
       - name: Build simulator package
         run: pnpm --filter @carburetor/sim build
 
-      - name: Simulator test placeholder
+      - name: TypeScript simulator tests
         run: pnpm sim:test
+
+      - name: Browser bundle
+        run: pnpm bundle:browser
 
       - name: Golden fixture manifest check
         run: pnpm golden:check
@@ -51,5 +65,17 @@ jobs:
       - name: Edizione build
         run: pnpm edizione:build
 
-      - name: Python import smoke
-        run: python -c "import sys; sys.path.insert(0, 'python'); import sim_mini; print(sim_mini.__version__)"
+      - name: Python tests (pytest)
+        run: |
+          cd python/sim_mini
+          pytest -v
+
+      - name: Python lint (ruff)
+        run: |
+          cd python/sim_mini
+          ruff check .
+
+      - name: Python type check (mypy)
+        run: |
+          cd python/sim_mini
+          mypy .

@@ -194,6 +194,7 @@ reflective). no backlight glow.
   wait.
   ```
 - **idle** — after warmup:
+
   ```
   carburetor    ▂▄▆
   ──────────
@@ -202,7 +203,9 @@ reflective). no backlight glow.
 
   > compose
   ```
+
 - **compose** — user typing:
+
   ```
   to: +1 555 0100
   ──────────
@@ -213,6 +216,7 @@ reflective). no backlight glow.
 
   [send]
   ```
+
 - **tx** — sending:
   ```
   sending...
@@ -247,14 +251,17 @@ clock = ~60 seconds of simulation time. this means:
 - 15 mL of fuel lasts ~3 minutes of wall clock (6 min sim × 60× ÷ 60)
 
 wait, let me recalculate:
+
 - fuel burn: 2.5 mL/min sim time
 - 15 mL / 2.5 = 6 min sim time
 - at 60× acceleration: 6 min / 60 = 6 seconds wall clock
 
 that is too fast. adjust to **10× acceleration**:
+
 - 6 min / 10 = 36 seconds wall clock for full burn
 
 or **6× acceleration**:
+
 - 6 min / 6 = 60 seconds wall clock = 1 minute
 
 **decision: 6× acceleration.** one minute of wall clock per full tank.

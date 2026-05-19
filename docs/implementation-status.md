@@ -45,18 +45,18 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 | item                                | status | location                                                     |
 | ----------------------------------- | ------ | ------------------------------------------------------------ |
 | `@carburetor/sim` package           | 🧪     | `packages/sim/` — TS core builds and tests                   |
-| fuel layer simulator                | 🧪     | TS + Python prerelease                                       |
-| combustor state machine             | 🧪     | `packages/sim/src/combustor/` — TS prerelease                |
+| fuel layer simulator                | 🧪     | TS + Python prerelease; temperature responds to case heat    |
+| combustor state machine             | 🧪     | TS + Python prerelease; fuel burn coupled to shaft power     |
 | bus simulator                       | 🧪     | `packages/sim/src/bus/` — TS prerelease                      |
-| compute power model                 | 🧪     | `packages/sim/src/compute/` — TS prerelease                  |
-| ritual stage driver                 | 🧪     | `packages/sim/src/ritual/` — TS prerelease                   |
+| compute power model                 | 🧪     | TS + Python prerelease; mode-derived signal / RSSI           |
+| ritual stage driver                 | 🧪     | TS + Python prerelease; runtime guarded when engine is off   |
 | browser playable (`sim/index.html`) | 🔴     | TBD v0.2                                                     |
 | headless simulator                  | 🧪     | `packages/sim/src/headless.ts` — TS prerelease               |
 | python thermo (Cox 049)             | 🔴     | TBD v0.2                                                     |
 | python state machine                | 🧪     | `python/sim_mini/` — prerelease                              |
 | telemetry codec TS                  | 🧪     | `packages/sim/src/telemetry.ts` — encode/decode with SHA-256 |
-| telemetry codec Python              | 🔴     | TBD — needed for byte-identical claim                        |
-| golden fixtures                     | 🔴     | `fixtures/golden/` placeholder exists                        |
+| telemetry codec Python              | 🧪     | `python/sim_mini/telemetry.py` — encode/decode with SHA-256  |
+| golden fixtures                     | 🧪     | `fixtures/golden/cold-start-warmup/`                         |
 | golden manifest checker             | ✅     | `scripts/tools/verify-golden.mjs`                            |
 
 ## firmware

@@ -34,6 +34,10 @@ artifacts/runs-invalid/
 artifacts/recordings/*/
 !artifacts/recordings/.gitkeep
 
+# vapore — copied browser bundle (built by pnpm vapore:build)
+packages/vapore/sim.browser.js
+packages/vapore/sim.browser.js.map
+
 # edizione print builds
 press/edizione/build/
 press/edizione/*.pdf

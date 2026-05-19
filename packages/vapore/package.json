@@ -1,0 +1,12 @@
+{
+  "name": "@carburetor/vapore",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "vapore — the $0 browser simulator. pour fuel, pull the crank, feel the burn.",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "python3 -m http.server 8049 -d .",
+    "build": "cd ../.. && pnpm bundle:browser && cp packages/sim/dist/sim.browser.js packages/vapore/sim.browser.js && cp packages/sim/dist/sim.browser.js.map packages/vapore/sim.browser.js.map"
+  }
+}

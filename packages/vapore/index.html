@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>carburetor — vapore</title>
+  <meta name="description" content="a phone you refuel. pour fuel, pull the crank, feel the burn." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* -- reset -- */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #1A1A1A;
+      --green:    #2D4A3E;
+      --brass:    #B5A36A;
+      --text:     #E8E4DC;
+      --lcd-bg:   #1A1A1A;
+      --lcd-fg:   #C8C8C8;
+      --warning:  #CC6633;
+      --mono:     'IBM Plex Mono', monospace;
+      --sans:     'IBM Plex Sans', sans-serif;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+
+    /* -- layout -- */
+    .vapore {
+      display: grid;
+      grid-template-areas:
+        "fuel     device   bus"
+        "combustor device   compute"
+        "ritual   ritual   ritual";
+      grid-template-columns: 1fr 2fr 1fr;
+      grid-template-rows: auto 1fr auto;
+      gap: 16px;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 16px;
+      min-height: 100vh;
+    }
+
+    /* -- panels -- */
+    .panel {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(181, 163, 106, 0.15);
+      border-radius: 4px;
+      padding: 12px 16px;
+      font-size: 12px;
+    }
+
+    .panel h3 {
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--brass);
+      margin-bottom: 8px;
+    }
+
+    .panel .row {
+      display: flex;
+      justify-content: space-between;
+      padding: 2px 0;
+    }
+
+    .panel .label { color: rgba(232, 228, 220, 0.5); }
+    .panel .value { color: var(--text); font-weight: 500; }
+    .panel.active { border-color: var(--brass); }
+
+    .fuel      { grid-area: fuel; }
+    .combustor { grid-area: combustor; }
+    .bus       { grid-area: bus; }
+    .compute   { grid-area: compute; }
+    .ritual    { grid-area: ritual; }
+
+    /* -- device -- */
+    .device-area {
+      grid-area: device;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .device {
+      width: 220px;
+      background: var(--green);
+      border-radius: 8px;
+      border: 2px solid var(--brass);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+    }
+
+    .device-label {
+      font-family: var(--sans);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--brass);
+    }
+
+    /* fuel sight tube */
+    .fuel-tube {
+      position: absolute;
+      right: -12px;
+      top: 20%;
+      width: 8px;
+      height: 60%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--brass);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .fuel-level {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 0%;
+      background: var(--warning);
+      opacity: 0.7;
+      transition: height 0.3s ease;
+    }
+
+    /* screen (sharp memory LCD) */
+    .screen {
+      width: 160px;
+      height: 160px;
+      background: var(--lcd-bg);
+      border: 1px solid rgba(181, 163, 106, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: var(--lcd-fg);
+      text-align: center;
+      padding: 8px;
+      line-height: 1.4;
+      image-rendering: pixelated;
+    }
+
+    .screen canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* keyboard */
+    .keyboard {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 2px;
+      width: 100%;
+    }
+
+    .key {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(181, 163, 106, 0.2);
+      border-radius: 2px;
+      color: var(--lcd-fg);
+      font-size: 9px;
+      font-family: var(--mono);
+      padding: 4px 0;
+      text-align: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .key:hover { background: rgba(181, 163, 106, 0.15); }
+    .key:active { background: rgba(181, 163, 106, 0.25); }
+    .key.wide { grid-column: span 2; }
+
+    /* crank */
+    .crank {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--brass);
+      background: rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--brass);
+      transition: transform 0.2s;
+    }
+
+    .crank:hover { transform: rotate(30deg); }
+    .crank:active { transform: rotate(180deg); }
+
+    /* -- interactive controls -- */
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      justify-content: center;
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 6px 16px;
+      border: 1px solid var(--brass);
+      border-radius: 3px;
+      background: transparent;
+      color: var(--brass);
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .btn:hover { background: rgba(181, 163, 106, 0.1); }
+    .btn:active { background: rgba(181, 163, 106, 0.2); }
+    .btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+    /* -- prompt -- */
+    .prompt {
+      text-align: center;
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--brass);
+      font-style: italic;
+      min-height: 20px;
+    }
+
+    /* -- sim speed label -- */
+    .sim-speed {
+      position: fixed;
+      bottom: 8px;
+      right: 12px;
+      font-size: 10px;
+      color: rgba(232, 228, 220, 0.25);
+    }
+
+    /* -- mute -- */
+    .mute-btn {
+      position: fixed;
+      top: 8px;
+      right: 12px;
+      font-size: 10px;
+      background: none;
+      border: 1px solid rgba(181, 163, 106, 0.2);
+      color: rgba(232, 228, 220, 0.4);
+      padding: 4px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-family: var(--mono);
+    }
+
+    /* -- responsive -- */
+    @media (max-width: 768px) {
+      .vapore {
+        grid-template-areas:
+          "device   device"
+          "fuel     bus"
+          "combustor compute"
+          "ritual   ritual";
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto auto;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .vapore {
+        grid-template-areas:
+          "device"
+          "fuel"
+          "combustor"
+          "bus"
+          "compute"
+          "ritual";
+        grid-template-columns: 1fr;
+      }
+      .device { width: 180px; }
+      .screen { width: 128px; height: 128px; }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="mute-btn" id="mute">sound: off</button>
+
+  <div class="vapore">
+    <!-- fuel layer panel -->
+    <div class="panel fuel active" id="panel-fuel">
+      <h3>fuel</h3>
+      <div class="row"><span class="label">level</span><span class="value" id="v-fuel-ml">0.0 mL</span></div>
+      <div class="row"><span class="label">kind</span><span class="value" id="v-fuel-kind">glow</span></div>
+      <div class="row"><span class="label">temp</span><span class="value" id="v-fuel-temp">25 °C</span></div>
+      <div class="row"><span class="label">vapor</span><span class="value" id="v-fuel-vapor">13 kPa</span></div>
+    </div>
+
+    <!-- combustor layer panel -->
+    <div class="panel combustor" id="panel-combustor">
+      <h3>combustor</h3>
+      <div class="row"><span class="label">phase</span><span class="value" id="v-comb-phase">off</span></div>
+      <div class="row"><span class="label">rpm</span><span class="value" id="v-comb-rpm">0</span></div>
+      <div class="row"><span class="label">hot</span><span class="value" id="v-comb-hot">25 °C</span></div>
+      <div class="row"><span class="label">shaft</span><span class="value" id="v-comb-shaft">0.0 W</span></div>
+      <div class="row"><span class="label">elec</span><span class="value" id="v-comb-elec">0.0 W</span></div>
+    </div>
+
+    <!-- device -->
+    <div class="device-area">
+      <div class="device">
+        <span class="device-label">carburetor mk i</span>
+        <div class="fuel-tube"><div class="fuel-level" id="fuel-level"></div></div>
+        <div class="screen" id="screen">
+          <span>off</span>
+        </div>
+        <div class="keyboard" id="keyboard">
+          <!-- row 1 -->
+          <div class="key">q</div><div class="key">w</div><div class="key">e</div>
+          <div class="key">r</div><div class="key">t</div><div class="key">y</div>
+          <div class="key">u</div><div class="key">i</div><div class="key">o</div>
+          <div class="key">p</div>
+          <!-- row 2 -->
+          <div class="key">a</div><div class="key">s</div><div class="key">d</div>
+          <div class="key">f</div><div class="key">g</div><div class="key">h</div>
+          <div class="key">j</div><div class="key">k</div><div class="key">l</div>
+          <div class="key">.</div>
+          <!-- row 3 -->
+          <div class="key wide">shift</div><div class="key">z</div><div class="key">x</div>
+          <div class="key">c</div><div class="key">v</div><div class="key">b</div>
+          <div class="key">n</div><div class="key">m</div>
+          <!-- row 4 -->
+          <div class="key wide" style="grid-column: span 6;">space</div>
+          <div class="key wide">del</div>
+          <div class="key wide">send</div>
+        </div>
+        <div class="crank" id="crank" title="pull crank">&#9673;</div>
+      </div>
+
+      <div class="prompt" id="prompt">pour fuel to begin</div>
+
+      <div class="controls">
+        <button class="btn" id="btn-pour">pour fuel</button>
+        <button class="btn" id="btn-prime" disabled>prime</button>
+        <button class="btn" id="btn-kill" disabled>kill</button>
+      </div>
+    </div>
+
+    <!-- bus layer panel -->
+    <div class="panel bus" id="panel-bus">
+      <h3>bus</h3>
+      <div class="row"><span class="label">v_bus</span><span class="value" id="v-bus-v">0.00 V</span></div>
+      <div class="row"><span class="label">soc cap</span><span class="value" id="v-bus-cap">0 %</span></div>
+      <div class="row"><span class="label">soc li</span><span class="value" id="v-bus-li">0 %</span></div>
+      <div class="row"><span class="label">e_in</span><span class="value" id="v-bus-ein">0 J</span></div>
+    </div>
+
+    <!-- compute layer panel -->
+    <div class="panel compute" id="panel-compute">
+      <h3>compute</h3>
+      <div class="row"><span class="label">mode</span><span class="value" id="v-comp-mode">sleep</span></div>
+      <div class="row"><span class="label">mcu</span><span class="value" id="v-comp-mcu">0 mA</span></div>
+      <div class="row"><span class="label">modem</span><span class="value" id="v-comp-modem">0 mA</span></div>
+      <div class="row"><span class="label">signal</span><span class="value" id="v-comp-signal">— dBm</span></div>
+    </div>
+
+    <!-- ritual layer panel -->
+    <div class="panel ritual" id="panel-ritual">
+      <h3>ritual</h3>
+      <div class="row">
+        <span class="label">stage</span><span class="value" id="v-rit-stage">cold</span>
+        <span class="label">runtime</span><span class="value" id="v-rit-runtime">—</span>
+        <span class="label">noise</span><span class="value" id="v-rit-noise">— dB</span>
+      </div>
+    </div>
+  </div>
+
+  <span class="sim-speed">6× sim</span>
+
+  <!-- sim engine — loaded from browser bundle built by `pnpm bundle:browser` -->
+  <script type="module">
+    // Phase 2 will wire this up. For now, static shell only.
+    // import * as sim from './sim.browser.js';
+    //
+    // The simulation loop, user event binding, and panel rendering
+    // will be implemented in issues #25–#29.
+
+    console.log('vapore shell loaded. simulation engine not yet wired.');
+  </script>
+
+</body>
+</html>
