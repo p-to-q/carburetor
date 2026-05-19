@@ -1,0 +1,196 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+import {
+  INVARIANTS,
+  TRANSITIONS,
+  coldStartEvents,
+  computeDraw,
+  createBusState,
+  createComputeState,
+  createInitialDeviceState,
+  rssiBarsFromSignal,
+  runHeadless,
+  stepDevice,
+} from '../dist/index.js';
+
+test('combustor state machine has at least one exit per phase', () => {
+  for (const [phase, exits] of Object.entries(TRANSITIONS)) {
+    assert.ok(exits.length > 0, `${phase} has no exit`);
+  }
+});
+
+test('cold start reaches warmup but does not skip straight to live', () => {
+  const frames = runHeadless(coldStartEvents(5), 8);
+  const phases = frames.map((frame) => frame.combustor.phase);
+
+  assert.ok(phases.includes('prime'));
+  assert.ok(phases.includes('ignite'));
+  assert.ok(phases.includes('warmup'));
+  assert.equal(phases.includes('run'), false);
+});
+
+test('long cold start eventually gates live on bus voltage', () => {
+  const frames = runHeadless(coldStartEvents(5), 80);
+  const firstRun = frames.find((frame) => frame.combustor.phase === 'run');
+
+  assert.ok(firstRun);
+  assert.ok(firstRun.bus.v_bus_V >= INVARIANTS.warmup_v_bus_threshold_V);
+});
+
+test('bus output remains inside energy-conservation tolerance', () => {
+  const frames = runHeadless(coldStartEvents(5), 80);
+  const final = frames.at(-1);
+
+  assert.ok(final);
+  assert.ok(final.bus.e_out_J <= final.bus.e_in_J * 1.02);
+  assert.ok(final.bus.v_bus_V <= INVARIANTS.v_bus_max_V);
+  assert.ok(final.bus.v_li_V <= INVARIANTS.v_li_max_V);
+  assert.ok(final.bus.v_li_V >= INVARIANTS.v_li_min_V);
+});
+
+test('compute modes have increasing draw for active states', () => {
+  const bus = createBusState();
+  const sleep = computeDraw(createComputeState('sleep'), bus).power_W;
+  const idle = computeDraw(createComputeState('idle'), bus).power_W;
+  const tx = computeDraw(createComputeState('tx'), bus).power_W;
+
+  assert.ok(sleep < idle);
+  assert.ok(idle < tx);
+});
+
+test('compute signal strength derives rssi bars from mode', () => {
+  const idle = createComputeState('idle');
+  const tx = createComputeState('tx');
+  const sleep = createComputeState('sleep');
+
+  assert.equal(idle.signal_dbm, -89);
+  assert.equal(idle.rssi_bars, rssiBarsFromSignal(idle.signal_dbm));
+  assert.ok(tx.signal_dbm > idle.signal_dbm);
+  assert.equal(sleep.rssi_bars, 0);
+});
+
+test('fuel temperature responds slowly to case heat', () => {
+  const final = runHeadless(coldStartEvents(5), 80).at(-1);
+
+  assert.ok(final);
+  assert.ok(final.fuel.temperature_C > 25);
+  assert.ok(final.fuel.temperature_C < final.bus.t_case_C);
+});
+
+test('ritual runtime is zero when engine is off', () => {
+  const state = createInitialDeviceState();
+  const refueled = stepDevice(state, 0, { kind: 'refuel', volume_mL: 5, t_us: 0 });
+
+  assert.equal(refueled.combustor.running, false);
+  assert.equal(refueled.ritual.minutes_runtime_remaining, 0);
+  assert.equal(refueled.ritual.minutes_until_refuel, 0);
+});
+
+test('run shaft power is derived from coupled fuel burn model', () => {
+  const runFrame = runHeadless(coldStartEvents(5), 80).find(
+    (frame) => frame.combustor.phase === 'run',
+  );
+
+  assert.ok(runFrame);
+  assert.ok(runFrame.combustor.shaft_W);
+  assert.ok(runFrame.combustor.shaft_W > 20);
+  assert.ok(runFrame.combustor.thermal_W > runFrame.combustor.shaft_W * 6.9);
+  assert.ok(runFrame.combustor.electric_W_raw <= 7.2);
+});
+
+test('fuel exhaustion during run enters fuel_low and decays bus', () => {
+  const frames = runHeadless(coldStartEvents(5), 80);
+  const firstRun = frames.find((frame) => frame.combustor.phase === 'run');
+  const runningFrame = firstRun && {
+    ...firstRun,
+    fuel: { ...firstRun.fuel, volume_mL: 0.05 },
+  };
+
+  assert.ok(runningFrame);
+  assert.ok(runningFrame.fuel.volume_mL > 0);
+  assert.equal(runningFrame.bus.mppt_locked, true);
+  const exhausted = stepDevice(runningFrame, runningFrame.t_us + 5_000_000);
+  const bufferOnly = stepDevice(exhausted, exhausted.t_us + 5_000_000);
+
+  assert.equal(exhausted.combustor.phase, 'fuel_low');
+  assert.equal(exhausted.combustor.running, false);
+  assert.equal(exhausted.bus.mppt_locked, false);
+  assert.equal(exhausted.fuel.volume_mL, 0);
+  assert.ok(bufferOnly.bus.v_bus_V < exhausted.bus.v_bus_V);
+  assert.ok(bufferOnly.bus.soc_li_pct < exhausted.bus.soc_li_pct);
+});
+
+test('kill during warmup enters cooldown and never run', () => {
+  const warmupFrames = runHeadless(coldStartEvents(5), 8);
+  const warmup = warmupFrames.at(-1);
+  assert.ok(warmup);
+  assert.equal(warmup.combustor.phase, 'warmup');
+  assert.equal(
+    warmupFrames.some((frame) => frame.combustor.phase === 'run'),
+    false,
+  );
+
+  const killed = stepDevice(warmup, warmup.t_us + 1_000_000, {
+    kind: 'kill',
+    t_us: warmup.t_us + 1_000_000,
+  });
+  const afterKill = [killed];
+  afterKill.push(stepDevice(afterKill.at(-1), afterKill.at(-1).t_us + 10_000_000));
+  afterKill.push(stepDevice(afterKill.at(-1), afterKill.at(-1).t_us + 10_000_000));
+
+  assert.equal(killed.combustor.phase, 'cooldown');
+  assert.equal(killed.combustor.running, false);
+  assert.equal(
+    afterKill.some((frame) => frame.combustor.phase === 'run'),
+    false,
+  );
+});
+
+test('refuel during cooldown increases fuel but does not restart combustor', () => {
+  const warmup = runHeadless(coldStartEvents(1), 8).at(-1);
+  assert.ok(warmup);
+  const cooldown = stepDevice(warmup, warmup.t_us + 1_000_000, {
+    kind: 'kill',
+    t_us: warmup.t_us + 1_000_000,
+  });
+  const refueled = stepDevice(cooldown, cooldown.t_us + 1_000_000, {
+    kind: 'refuel',
+    volume_mL: 5,
+    t_us: cooldown.t_us + 1_000_000,
+  });
+
+  assert.ok(refueled.fuel.volume_mL > cooldown.fuel.volume_mL);
+  assert.equal(refueled.combustor.phase, 'cooldown');
+  assert.equal(refueled.combustor.running, false);
+  assert.equal(refueled.bus.mppt_locked, false);
+});
+
+test('flameout triggers from failed ignition and falls back to buffer', () => {
+  const state = createInitialDeviceState();
+  const igniting = {
+    ...state,
+    fuel: { ...state.fuel, volume_mL: 5 },
+    combustor: {
+      ...state.combustor,
+      phase: 'ignite',
+      hot_C: 120,
+      fuel_consumed_mL: 0.5,
+    },
+  };
+  const flameout = stepDevice(igniting, 3_000_000);
+  const noPrime = stepDevice(flameout, 4_000_000, { kind: 'crank', t_us: 4_000_000 });
+  const primed = stepDevice(flameout, 4_000_000, {
+    kind: 'prime',
+    pumps: 3,
+    t_us: 4_000_000,
+  });
+  const cranked = stepDevice(primed, 5_000_000, { kind: 'crank', t_us: 5_000_000 });
+
+  assert.equal(flameout.combustor.phase, 'flameout');
+  assert.equal(flameout.combustor.running, false);
+  assert.equal(flameout.bus.mppt_locked, false);
+  assert.ok(flameout.bus.soc_li_pct < igniting.bus.soc_li_pct);
+  assert.equal(noPrime.combustor.phase, 'flameout');
+  assert.equal(primed.combustor.phase, 'prime');
+  assert.equal(cranked.combustor.phase, 'ignite');
+});

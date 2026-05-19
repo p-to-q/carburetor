@@ -25,12 +25,16 @@ dev = [
 homepage = "https://carburetor.wtf"
 repository = "https://github.com/p-to-q/carburetor"
 
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP", "B", "SIM"]
+ignore = ["N"]
 
 [tool.mypy]
 strict = true
@@ -38,3 +42,4 @@ python_version = "3.11"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = [".."]

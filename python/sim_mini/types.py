@@ -6,12 +6,11 @@ packages/sim/src/types.ts.
 """
 
 from dataclasses import dataclass
-from typing import Literal, Optional, Union
-
+from typing import Literal
 
 # ============ layer 1: fuel ============
 
-FuelKind = Literal['glow', 'butane', 'gasoline']
+FuelKind = Literal["glow", "butane", "gasoline"]
 
 
 @dataclass
@@ -20,15 +19,22 @@ class FuelState:
     volume_mL: float
     temperature_C: float
     vapor_pressure_kPa: float
-    contaminant_water_pct: Optional[float] = None   # glow fuel only
+    contaminant_water_pct: float | None = None  # glow fuel only
 
 
 # ============ layer 2: combustor ============
 
-CombustorKind = Literal['cox-049', 'catalytic-teg', 'stirling']
+CombustorKind = Literal["cox-049", "catalytic-teg", "stirling"]
 CombustorPhase = Literal[
-    'off', 'prime', 'ignite', 'warmup', 'run', 'cooldown',
-    'flameout', 'fuel_low', 'thermal_high',
+    "off",
+    "prime",
+    "ignite",
+    "warmup",
+    "run",
+    "cooldown",
+    "flameout",
+    "fuel_low",
+    "thermal_high",
 ]
 
 
@@ -36,13 +42,13 @@ CombustorPhase = Literal[
 class CombustorState:
     kind: CombustorKind
     running: bool
-    rpm: Optional[int]              # mk i only
+    rpm: int | None  # mk i only
     hot_C: float
-    cold_C: Optional[float]         # mk ii only
+    cold_C: float | None  # mk ii only
     exhaust_dB_1m: float
-    shaft_W: Optional[float]        # mk i only
+    shaft_W: float | None  # mk i only
     thermal_W: float
-    electric_W_raw: float           # pre-rectifier
+    electric_W_raw: float  # pre-rectifier
     runtime_s: int
     fuel_consumed_mL: float
     phase: CombustorPhase
@@ -50,25 +56,24 @@ class CombustorState:
 
 # ============ layer 3: bus ============
 
+
 @dataclass
 class BusState:
     v_bus_V: float
     i_bus_A: float
     v_li_V: float
     i_li_A: float
-    soc_li_pct: float               # 0–100
-    soc_cap_pct: float              # 0–100
+    soc_li_pct: float  # 0–100
+    soc_cap_pct: float  # 0–100
     t_case_C: float
     mppt_locked: bool
-    e_in_J: float                   # cumulative
-    e_out_J: float                  # cumulative
+    e_in_J: float  # cumulative
+    e_out_J: float  # cumulative
 
 
 # ============ layer 4: compute ============
 
-ComputeMode = Literal[
-    'sleep', 'idle', 'rx', 'tx', 'compose', 'engine_attn'
-]
+ComputeMode = Literal["sleep", "idle", "rx", "tx", "compose", "engine_attn"]
 
 
 @dataclass
@@ -78,7 +83,7 @@ class ComputeState:
     modem_mA: float
     lcd_uA: float
     signal_dbm: float
-    rssi_bars: int                  # 0..4
+    rssi_bars: int  # 0..4
     queued_messages: int
     uptime_s: int
 
@@ -86,10 +91,15 @@ class ComputeState:
 # ============ layer 5: ritual ============
 
 RitualStage = Literal[
-    'cold', 'priming', 'cranking', 'warmup', 'live',
-    'cooldown', 'refuel_needed',
+    "cold",
+    "priming",
+    "cranking",
+    "warmup",
+    "live",
+    "cooldown",
+    "refuel_needed",
 ]
-Scent = Literal['none', 'castor', 'butane']
+Scent = Literal["none", "castor", "butane"]
 
 
 @dataclass
@@ -100,10 +110,11 @@ class RitualState:
     scent: Scent
     minutes_runtime_remaining: float
     minutes_until_refuel: float
-    next_user_action: Optional[str]
+    next_user_action: str | None
 
 
 # ============ device snapshot ============
+
 
 @dataclass
 class DeviceState:
@@ -117,52 +128,51 @@ class DeviceState:
 
 # ============ user events ============
 
+
 @dataclass
 class RefuelEvent:
     volume_mL: float
     t_us: int
-    kind: Literal['refuel'] = 'refuel'
+    kind: Literal["refuel"] = "refuel"
 
 
 @dataclass
 class PrimeEvent:
     pumps: int
     t_us: int
-    kind: Literal['prime'] = 'prime'
+    kind: Literal["prime"] = "prime"
 
 
 @dataclass
 class CrankEvent:
     t_us: int
-    kind: Literal['crank'] = 'crank'
+    kind: Literal["crank"] = "crank"
 
 
 @dataclass
 class KillEvent:
     t_us: int
-    kind: Literal['kill'] = 'kill'
+    kind: Literal["kill"] = "kill"
 
 
 @dataclass
 class KeypressEvent:
     key: str
     t_us: int
-    kind: Literal['keypress'] = 'keypress'
+    kind: Literal["keypress"] = "keypress"
 
 
 @dataclass
 class ComposeSendEvent:
     t_us: int
-    kind: Literal['compose_send'] = 'compose_send'
+    kind: Literal["compose_send"] = "compose_send"
 
 
-UserEvent = Union[
-    RefuelEvent, PrimeEvent, CrankEvent, KillEvent,
-    KeypressEvent, ComposeSendEvent,
-]
+UserEvent = RefuelEvent | PrimeEvent | CrankEvent | KillEvent | KeypressEvent | ComposeSendEvent
 
 
 # ============ invariants ============
+
 
 class INVARIANTS:
     """asserted by `pytest python/sim_mini/`. mirror of the TypeScript invariants.
