@@ -11,6 +11,7 @@ ranked by aesthetic fit (top is best fit for the project's spirit).
 risograph reproduces brass beautifully via a soy-based gold ink. perfect aesthetic match: slightly imperfect registration, organic texture, the print equivalent of a hand-cranked engine.
 
 candidates to RFQ:
+
 - **Risolab Tokyo** (if shipping internationally is acceptable)
 - **Outpost Editions** (Brooklyn, NY)
 - **Hato Press** (London)
@@ -107,12 +108,12 @@ carburetor.wtf
 
 once quotes come back, fill this table.
 
-| vendor | qty | unit cost | total | brass treatment | lead time | proof? | comments |
-|---|---|---|---|---|---|---|---|
-| (local riso, TBD) | 100 | | | | | | |
-| Mixam | 100 | | | | | | |
-| Lulu (POD) | 100 | | | | | | |
-| (wildcard) | 100 | | | | | | |
+| vendor            | qty | unit cost | total | brass treatment | lead time | proof? | comments |
+| ----------------- | --- | --------- | ----- | --------------- | --------- | ------ | -------- |
+| (local riso, TBD) | 100 |           |       |                 |           |        |          |
+| Mixam             | 100 |           |       |                 |           |        |          |
+| Lulu (POD)        | 100 |           |       |                 |           |        |          |
+| (wildcard)        | 100 |           |       |                 |           |        |          |
 
 selection criterion: **best aesthetic match within $700 total budget**.
 

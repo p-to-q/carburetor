@@ -53,10 +53,10 @@ carburetor/
 │   ├── contributor-map.md     researcher / engineer / hacker entry map
 │   ├── tracks.md              researcher / engineer / hacker contract
 │   ├── why.md                 thesis (scaffold — user-authored prose)
-│   ├── rfcs/                  numbered RFCs (TBD)
-│   ├── adrs/                  numbered ADRs (TBD)
+│   ├── rfcs/                  numbered RFCs (v0.2 — directory not yet created)
+│   ├── adrs/                  numbered ADRs (v0.2 — directory not yet created)
 │   ├── notes/                 design notes, sketches
-│   └── postmortems/           what didn't work and why
+│   └── postmortems/           what didn't work and why (v0.2 — directory not yet created)
 │
 ├── design/
 │   └── exploded-view-mk1.svg
@@ -66,13 +66,14 @@ carburetor/
 │   │   ├── package.json
 │   │   ├── src/
 │   │   │   ├── types.ts       canonical type contracts
-│   │   │   ├── fuel/          (TBD)
-│   │   │   ├── combustor/     (TBD)
-│   │   │   ├── bus/           (TBD)
-│   │   │   ├── compute/       (TBD)
-│   │   │   ├── ritual/        (TBD)
-│   │   │   └── headless.ts    (TBD)
-│   │   └── tests/             (TBD)
+│   │   │   ├── fuel/          ✅ implemented
+│   │   │   ├── combustor/     ✅ implemented (thermal model needs correction)
+│   │   │   ├── bus/           ✅ implemented
+│   │   │   ├── compute/       ✅ implemented (signal_dbm static)
+│   │   │   ├── ritual/        ✅ implemented
+│   │   │   ├── telemetry.ts   ✅ 64-byte frame codec
+│   │   │   └── headless.ts    ✅ headless runner
+│   │   └── tests/             ✅ 5 tests (edge cases needed)
 │   ├── telemetry/             @carburetor/telemetry — codec decoder (TBD)
 │   └── cli/                   @carburetor/cli — pour, ignite, monitor (TBD)
 │
@@ -81,9 +82,13 @@ carburetor/
 │       ├── __init__.py
 │       ├── pyproject.toml
 │       ├── types.py           canonical type contracts (Python mirror)
-│       ├── thermo.py          Cox 049 Otto-cycle (TBD)
-│       ├── combustor.py       (TBD)
-│       └── tests/             (TBD)
+│       ├── fuel.py            ✅ implemented
+│       ├── combustor.py       ✅ implemented
+│       ├── bus.py             ✅ implemented
+│       ├── compute.py         ✅ implemented
+│       ├── ritual.py          ✅ implemented
+│       ├── headless.py        ✅ headless runner
+│       └── tests/             ✅ 5 tests (telemetry codec missing)
 │
 ├── hardware/
 │   ├── mk1/
@@ -153,9 +158,9 @@ pip install -e ".[dev]"
 cd ../..
 
 # verify
-pnpm lint
-pnpm sim:test      # will fail until sim is implemented; that's expected
-pytest python/     # will fail until Python sim is implemented; that's expected
+pnpm build
+pnpm sim:test      # runs 5 simulator tests
+pytest python/     # runs 5 Python simulator tests
 ```
 
 ---
@@ -296,9 +301,9 @@ when the user says "继续" or "ship it," ship the next item in `ROADMAP.md`. wh
 
 ## things you should write proactively
 
-- **postmortems** for any feature that failed at the bench. `docs/postmortems/YYYY-MM-DD-<title>.md`.
-- **RFCs** for any decision with a >2-week window. `docs/rfcs/NNNN-<title>.md` with `Status: Draft`.
-- **ADRs** for any decision that is reversible only at high cost. `docs/adrs/NNNN-<title>.md`.
+- **postmortems** for any feature that failed at the bench. (directory `docs/postmortems/` lands at v0.2; for now, open an issue.)
+- **RFCs** for any decision with a >2-week window. (directory `docs/rfcs/` lands at v0.2; for now, describe in a PR or issue.)
+- **ADRs** for any decision that is reversible only at high cost. (directory `docs/adrs/` lands at v0.2; for now, describe in a PR or issue.)
 - **tests** for any function that does not have them.
 - **golden fixtures** for any state machine or scenario you add.
 - **safety notes** in `docs/safety.md` as you learn the failure modes.

@@ -19,9 +19,9 @@ modern device by making the energy chain visible, measurable, and falsifiable.
 - `INFLUENCES.md` — historical and aesthetic lineage.
 - `docs/safety.md` — physical risk, fuel, carbon monoxide, thermal handling.
 - `docs/reproducibility.md` — what makes a run or bench measurement comparable.
-- `docs/rfcs/` — proposals that need more than one release window.
-- `docs/adrs/` — decisions that are expensive to reverse.
-- `docs/postmortems/` — failed bench work, wrong assumptions, lessons kept.
+- RFCs — proposals that need more than one release window. (`docs/rfcs/` lands at v0.2; for now, use issues or PR descriptions.)
+- ADRs — decisions that are expensive to reverse. (`docs/adrs/` lands at v0.2.)
+- postmortems — failed bench work, wrong assumptions, lessons kept. (`docs/postmortems/` lands at v0.2.)
 
 **contract:**
 

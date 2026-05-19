@@ -42,22 +42,22 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 
 ## simulator
 
-| item                                | status | location                                     |
-| ----------------------------------- | ------ | -------------------------------------------- |
-| `@carburetor/sim` package           | 🧪     | `packages/sim/` — types only; package builds |
-| fuel layer simulator                | 🔴     | TBD v0.2                                     |
-| combustor state machine             | 🔴     | TBD v0.2                                     |
-| bus simulator                       | 🔴     | TBD v0.2                                     |
-| compute power model                 | 🔴     | TBD v0.2                                     |
-| ritual stage driver                 | 🔴     | TBD v0.2                                     |
-| browser playable (`sim/index.html`) | 🔴     | TBD v0.2                                     |
-| headless simulator                  | 🔴     | TBD v0.2                                     |
-| python thermo (Cox 049)             | 🔴     | TBD v0.2                                     |
-| python state machine                | 🔴     | TBD v0.2                                     |
-| telemetry decoder TS                | 🔴     | TBD v0.2                                     |
-| telemetry decoder Python            | 🔴     | TBD v0.2                                     |
-| golden fixtures                     | 🔴     | `fixtures/golden/` placeholder exists        |
-| golden manifest checker             | ✅     | `scripts/tools/verify-golden.mjs`            |
+| item                                | status | location                                                     |
+| ----------------------------------- | ------ | ------------------------------------------------------------ |
+| `@carburetor/sim` package           | 🧪     | `packages/sim/` — TS core builds and tests                   |
+| fuel layer simulator                | 🧪     | TS + Python prerelease                                       |
+| combustor state machine             | 🧪     | `packages/sim/src/combustor/` — TS prerelease                |
+| bus simulator                       | 🧪     | `packages/sim/src/bus/` — TS prerelease                      |
+| compute power model                 | 🧪     | `packages/sim/src/compute/` — TS prerelease                  |
+| ritual stage driver                 | 🧪     | `packages/sim/src/ritual/` — TS prerelease                   |
+| browser playable (`sim/index.html`) | 🔴     | TBD v0.2                                                     |
+| headless simulator                  | 🧪     | `packages/sim/src/headless.ts` — TS prerelease               |
+| python thermo (Cox 049)             | 🔴     | TBD v0.2                                                     |
+| python state machine                | 🧪     | `python/sim_mini/` — prerelease                              |
+| telemetry codec TS                  | 🧪     | `packages/sim/src/telemetry.ts` — encode/decode with SHA-256 |
+| telemetry codec Python              | 🔴     | TBD — needed for byte-identical claim                        |
+| golden fixtures                     | 🔴     | `fixtures/golden/` placeholder exists                        |
+| golden manifest checker             | ✅     | `scripts/tools/verify-golden.mjs`                            |
 
 ## firmware
 
@@ -85,16 +85,16 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 | item                        | status | location                                                                    |
 | --------------------------- | ------ | --------------------------------------------------------------------------- |
 | README                      | ✅     | `press/edizione/README.md`                                                  |
-| PRODUCTION master           | ✅     | `press/edizione/PRODUCTION.md`                                              |
+| PRODUCTION master           | ⚠️     | `press/edizione/deferred-v0.2/PRODUCTION.md` — deferred until bench data    |
 | spec                        | ✅     | `press/edizione/spec.md`                                                    |
 | spine (32-page sequence)    | ✅     | `press/edizione/spine.md`                                                   |
 | typography rules            | ✅     | `press/edizione/typography.md`                                              |
 | colophon                    | ✅     | `press/edizione/colophon.md`                                                |
-| vendor RFQ template         | ✅     | `press/edizione/vendor-rfq.md`                                              |
-| pricing model               | ✅     | `press/edizione/pricing.md`                                                 |
-| distribution plan           | ✅     | `press/edizione/distribution.md`                                            |
-| promo & pre-order copy      | ✅     | `press/edizione/promo-and-preorder.md`                                      |
-| print checklist             | ✅     | `press/edizione/print-checklist.md`                                         |
+| vendor RFQ template         | ⚠️     | `press/edizione/deferred-v0.2/vendor-rfq.md` — deferred                     |
+| pricing model               | ⚠️     | `press/edizione/deferred-v0.2/pricing.md` — deferred                        |
+| distribution plan           | ⚠️     | `press/edizione/deferred-v0.2/distribution.md` — deferred                   |
+| promo & pre-order copy      | ⚠️     | `press/edizione/deferred-v0.2/promo-and-preorder.md` — deferred             |
+| print checklist             | ⚠️     | `press/edizione/deferred-v0.2/print-checklist.md` — deferred                |
 | cover front                 | 🧪     | `press/edizione/cover-front.svg`                                            |
 | cover back                  | 🧪     | `press/edizione/cover-back.svg`                                             |
 | page 1 frontispiece notes   | ✅     | `press/edizione/00-frontispiece.md`                                         |
@@ -173,7 +173,7 @@ at v0.1, the following must be true (all currently ✅):
 - ✅ `python/sim_mini` imports cleanly (no missing names)
 - ✅ all Edizione spine files exist
 - ✅ all license files present
-- ✅ no dangling references in PRODUCTION.md
+- ✅ no dangling references in edizione production files (moved to deferred-v0.2/)
 - ✅ README, PROMPT, AGENTS are the only files a new agent needs to read first
 
 `Q.E.D.`

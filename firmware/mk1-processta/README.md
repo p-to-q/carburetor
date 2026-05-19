@@ -42,7 +42,7 @@ processta has NO cellular modem. cellular work happens on a paired smartphone, w
 
 this means: **the carburetor processta literally cannot communicate without a paired phone.** the phone is acting as a cellular peripheral, the carburetor as the user-facing terminal. this is the project's "you cannot call on it" rule taken even further.
 
-a future variant could swap BLE for a real cat-M1 modem (SIM7080G is cheap and globally available); see `docs/rfcs/` for proposals.
+a future variant could swap BLE for a real cat-M1 modem (SIM7080G is cheap and globally available); proposals via issue or PR.
 
 ## reference hardware
 

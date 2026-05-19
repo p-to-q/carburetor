@@ -2,7 +2,7 @@
 
 inherited from p-to-q's `wittgenstein/TASTE` and adjusted for this project.
 
-a project-specific taste section. read it before opening a PR; if your change disagrees, push back with a `docs/rfcs/`.
+a project-specific taste section. read it before opening a PR; if your change disagrees, push back with an RFC or issue.
 
 ## about engineering
 

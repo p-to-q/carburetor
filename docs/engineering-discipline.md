@@ -184,7 +184,7 @@ seriousness, not the same process weight.
 - edizione files are production artifacts. treat typography, covers, foldouts,
   and print specs as source, not collateral.
 
-### firmware
+### firmware (v0.2 — no firmware exists yet)
 
 - firmware changes must preserve physical-update-only assumptions.
 - no OTA path, microphone path, camera path, or charge path can appear as an
@@ -192,7 +192,7 @@ seriousness, not the same process weight.
 - safety state should be explicit: undervoltage, thermal high, flameout, and
   fuel low should be states a reviewer can find.
 
-### circuits and boards
+### circuits and boards (v0.3 — no schematics or PCBs exist yet)
 
 - schematic changes must name the rail, signal, or safety boundary they affect.
 - PCB changes should include the source file and, when useful, a rendered export
