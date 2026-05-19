@@ -1,6 +1,6 @@
 # ROADMAP
 
-## v0.1 — the trunk (current)
+## v0.1 — the trunk (current, 2026-05-13)
 
 - ✅ five-layer architecture, codec protocol, hard constraints
 - ✅ types in TypeScript and Python (canonical contracts)
@@ -9,26 +9,41 @@
 - ✅ mk1 exploded view
 - ✅ README, PROMPT, AGENTS, license tier, workspace hygiene
 - ✅ Edizione I spec, spine, cover-front, colophon
+- ✅ five-layer simulator (TS + Python, headless runner, 7 tests)
+- ✅ telemetry codec (TS, 64-byte frame with SHA-256)
+- ✅ CI pipeline (format, build, test, golden check, doctrine guardrail)
+- ✅ surface audit — docs aligned with implementation reality (2026-05-20)
 
-## v0.2 — the trunk grows code (near-term)
+## v0.2 — the simulator becomes real (near-term)
 
 target: 2026 Q3.
 
-- 🔴 combustor state machine (TS + Python, parallel impls)
-- 🔴 bus simulator (energy-conservation invariant satisfied)
-- 🔴 compute power model (per-mode current draws)
-- 🔴 ritual stage driver
-- 🔴 browser playable simulator `sim/index.html` — the Vapore release
+### phase 2a — fix and validate (Codex)
+
+- 🔴 #13: fix thermal model waste heat ratio (~4x too low)
+- 🔴 #15: implement Python telemetry codec (byte-identical to TS)
+- 🔴 #17: add edge-case tests (flameout, fuel exhaustion, kill during warmup, refuel during cooldown)
+- 🔴 #16: first golden fixture — cold-start-warmup scenario (blocked on #13)
+
+### phase 2b — browser simulator (Claude Code + Codex)
+
+- 🔴 browser playable simulator — the Vapore release (architecture + UI: Claude Code; implementation: Codex)
 - 🔴 Cox 049 Otto-cycle thermodynamics in Python
+
+### phase 2c — firmware and fixtures (Codex)
+
 - 🔴 firmware skeleton: `firmware/mk1-classica/` (Zephyr/Rust)
 - 🔴 firmware skeleton: `firmware/mk1-processta/` (ESP-IDF/Rust)
-- 🔴 golden fixtures for the four core scenarios:
-  - `refuel-and-text-for-an-hour`
+- 🔴 golden fixtures for three more scenarios:
   - `flameout-recovery`
   - `low-fuel-warning`
-  - `cold-start-warmup`
+  - `refuel-and-text-for-an-hour`
 - 🔴 bench scripts populated (`scripts/bench/`)
-- 🔴 Edizione I — full interior content, print PDF, first 100-copy run
+
+### phase 2d — Edizione (Claude Code: design; Codex: build pipeline)
+
+- 🔴 Edizione I — interior content filled (pending bench data for receipts spread)
+- 🔴 Edizione build pipeline (paged.js + puppeteer → PDF)
 
 ## v0.3 — bench numbers replace projections (mid-term)
 
