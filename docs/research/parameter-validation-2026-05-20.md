@@ -101,16 +101,71 @@ Butane (28.4 kJ/mL) → Catalytic combustion (85–95%)
 
 ### Comparable Products
 
-| Product | Power | Method | Status |
-|---|---|---|---|
-| BioLite CampStove 2+ | 3W peak | Wood-fire TEG | Active, $150 |
-| FlameStower | 2–3W | Flame TEG blade | Discontinued |
-| PowerPot V/X | 5–10W | Stove-top TEG | Active, pot-sized |
-| **Kraftwerk** | Claimed 10W | Butane SOFC | **Failed** — never shipped |
+| Product | Power | Method | Size | Status |
+|---|---|---|---|---|
+| BioLite CampStove 2+ | 3W peak | Wood-fire TEG | Pot-sized | Active, $150 |
+| FlameStower | 2–3W | Flame TEG blade | ~15×5 cm blade | Discontinued |
+| PowerPot V/X | 5–10W | Stove-top TEG | Pot-sized | Active |
+| **Kraftwerk** | Claimed 10W | Butane SOFC | Phone-sized | **Failed** — never shipped |
 
 The Kraftwerk failure is instructive: they promised 10W from a pocket
 device using SOFC (40–60% efficient, far better than TEG's 3–5%) and
 still couldn't deliver.
+
+### Academic Catalytic-TEG Results
+
+| Paper / Lab | Fuel | Electrical Output | Efficiency | Notes |
+|---|---|---|---|---|
+| Marton, Haldeman, Jensen (MIT, 2011) | Butane, Pt/Al₂O₃ catalyst, Si combustor | **5.8W** | 2.5% chem-to-elec | 321 Wh/kg energy density, 17 W/kg power density |
+| Yoshida et al. (2006, IEEE JMEMS) | Butane, catalytic combustion, 8×8×0.4mm Si chamber | ~0.18W | ~1% | Micro-scale, 34 BiTe couples on combustor |
+| ResearchGate dual microcombustor (2015) | LPG, catalytic premixed | ~0.5W | 4.66% | 0.14 mW/mm³ power density |
+
+The MIT result (5.8W at 2.5%) is the strongest validation: it uses the
+same Pt/Al₂O₃ catalyst + butane + Bi₂Te₃ combination we plan, at
+portable scale. Our 0.5–1.5W target is well within demonstrated range.
+
+### Catalytic Hand Warmer as Reference Heat Source
+
+Zippo/Peacock hand warmers use the same Pt/Al₂O₃ catalyst with naphtha:
+
+- Fuel: Zippo lighter fluid (naphtha, ~33 MJ/L)
+- Consumption: ~2 mL/hr measured (12 hours on ~24 mL fill)
+- Thermal output: 33 MJ/L × 0.002 L/hr ÷ 3600 = **~18W thermal**
+- Surface temp: 49–54°C (suitable for TEG cold side reference)
+
+With butane instead of naphtha:
+- Butane liquid: 29 MJ/kg × 0.58 kg/L = 16.8 MJ/L
+- For 18W thermal: 18 × 3600 / 16,800,000 = 3.9 mL/hr butane
+- A standard Bic lighter (~4 mL butane) would provide ~1 hour at 18W
+
+**Processta fuel budget**: At 0.5W electrical / 3% efficiency = 17W thermal.
+Butane consumption: ~3.6 mL/hr. A 30 mL cartridge = ~8 hours runtime.
+This aligns with `docs/architecture.md` fuel table (~24 hours from 30 mL
+at lower average draw, since idle draw is far below TX draw).
+
+### TEG Module Selection for Phone Scale
+
+From TEGpro/tegmart.com commercial modules (40×40mm Bi₂Te₃):
+
+| Module | Max Hot Side | Power at ΔT=100°C | Power at ΔT=200°C | Price |
+|---|---|---|---|---|
+| 1W rated (low-temp) | 100°C continuous | **~1W** | N/A (exceeds rating) | ~$15 |
+| 5W rated (mid-temp) | 330°C continuous | ~1.5W | ~5W | ~$25 |
+| 10W rated (high-temp) | 330°C continuous | ~2W | ~10W | ~$35 |
+
+For processta: catalytic hot face at 180°C, ambient cold side with small
+fin at 40–60°C → ΔT = 120–140°C. A single 40×40mm module at this ΔT
+produces **0.8–1.5W**. This is the basis for our 0.5–1.5W claim.
+
+The lower bound (0.5W) accounts for: thermal resistance in mounting,
+cold-side heating over time, and DC-DC conversion losses (~85-90%).
+
+Sources:
+- [MIT catalytic TEG paper](https://pubs.acs.org/doi/abs/10.1021/ie200210d)
+- [IEEE JMEMS catalytic microcombustor](https://ieeexplore.ieee.org/document/1588921/)
+- [TEGpro 1W module](https://www.tegmart.com/thermoelectric-modules/1w-2v-40m-teg-module)
+- [BioLite CampStove specs](https://www.bioliteenergy.com/products/campstove-2-plus)
+- [Catalytic hand warmer fuel rates](http://mparam.s3-website-us-east-1.amazonaws.com/handWarmers.html)
 
 ---
 

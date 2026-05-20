@@ -16,6 +16,8 @@ zero dollars. zero parts. open `https://carburetor.wtf/sim` in a browser. pour f
 
 vapore implements **all five layers** in TypeScript (and a parallel Python mirror in `python/sim_mini/`). the telemetry frames it produces are byte-identical to what classica and processta hardware emit — same `0xCB` sync byte, same 64-byte width, same sha-256 prefix. you can decode a vapore run with the same tools you'd use on a classica run.
 
+vapore simulates both editions: the classica power path (combustion → TEG → supercap → bus) and the processta power path (catalytic TEG → LiFePO4 → bus). the compute layer switches between cellular (classica) and LoRa (processta) profiles.
+
 vapore is not a toy. it is the first-class implementation of the architecture; the hardware editions are the second and third. when we write a new scenario, we write it in vapore first, then mirror it into a hardware bench test.
 
 **target:** anyone who wants to *encounter* the project at five minutes' notice. researchers comparing architectures. students learning what a power state machine looks like. people who want to verify that the warm-up really does take 45 seconds before committing $120 to a kit.
@@ -26,20 +28,21 @@ vapore is not a toy. it is the first-class implementation of the architecture; t
 
 `~$120 USD · one weekend · soldering iron + multimeter required`
 
-parts list: `hardware/mk1/bom-processta.csv`. firmware: `firmware/mk1-processta/` (TBD).
+hardware architecture: `docs/processta-architecture.md`. firmware: `firmware/processta/` (TBD).
 
-processta is built on parts you can put in a single AliExpress + Adafruit cart and have in a week. an ESP32-S3 dev board with a built-in TFT, a cheap nitro RC engine, a TP4056 charging module, a single 18650 cell, a single 100 F supercap, a $14 QWERTY keyboard, and an army-surplus canvas tool pouch.
+processta replaces the combustion engine with a butane catalytic heater (Pt/Al₂O₃ catalyst, silent, no moving parts) driving a Bi₂Te₃ thermoelectric generator. it replaces cellular with LoRa mesh (Meshtastic-compatible). the result is a device that runs on lighter fuel, communicates off-grid, and costs $120.
 
 **what processta trades away for the price:**
 
 | | classica | processta | trade |
 |---|---|---|---|
-| engine | cox tee dee .049 (0.81 cc, 78–108 W) | generic .15 nitro (2.49 cc, ~150 W) | 50 % more shaft power, but louder, dirtier exhaust, less polished idle. spare parts harder to find after ~2030 |
-| compute | nRF52840 + BG95 modem + Sharp Memory LCD + Q10 keyboard | LilyGo T-Display-S3 + M5 CardKB | no SIM, no standalone cellular, screen is backlit (10 mA) not reflective (50 µW) |
-| connectivity | cat-m1 / nb-iot / 2G fallback (real cellular, SMS works without paired device) | BLE to a paired smartphone (your phone does the cellular relay) | processta is *more* honest with the "you cannot call on it" rule — it can't even pretend |
-| bus | LTC3119 MPPT + 2 × 300 F supercap + 18350 protected li-ion | TP4056 + MT3608 boost + 18650 + 100 F supercap | smaller energy reserve; CC/CV regulation is dumber but it works |
-| keyboard | BlackBerry Q10 (the best thumb keyboard ever shipped) | M5Stack CardKB (QWERTY, smaller, less tactile) | tactile delta is significant; functional delta is small |
-| case | custom-sewn 10 oz olive canvas with brass zipper, brass terminals, leather strap | army-surplus canvas tool pouch + 3D-printed inner chassis | 90 % of the aesthetic at 10 % of the cost; lets a maker swap in their own bag |
+| power source | Cox Tee Dee .049 (0.81 cc, 78–108 W shaft) | butane catalytic TEG (0.5–1.5 W electrical) | no moving parts, silent, but much less power — sufficient for LoRa |
+| connectivity | BG95-M3 cat-M1 / nb-IoT / 2G (real cellular) | SX1262 LoRa 868/915 MHz (Meshtastic mesh) | no SIM, no cellular. range: 5–15 km LoS, 1–3 km urban. TX: 118 mA vs 600 mA |
+| compute | nRF52840 + BG95 modem | ESP32-S3-WROOM-1 + EBYTE E22-900M30S | simpler stack, well-supported (ESP-IDF, Arduino, MicroPython) |
+| display | Sharp LS027B7DH01 (same) | Sharp LS027B7DH01 (same) | identical — the right display for both |
+| keyboard | BlackBerry Q10 (the best thumb keyboard ever shipped) | 5 tactile buttons (up/down/select/back/power) | no QWERTY; T9-style or scroll compose. honest constraint. |
+| bus | LTC3119 MPPT + 2 × 300 F supercap + 18350 li-ion | BQ25170 charger + LiFePO4 18650 (3.5 Wh) | no supercap needed — LoRa TX peak (118 mA) is within battery C-rate |
+| case | custom-sewn canvas, brass fittings, leather strap | injection-molded ABS, brunswick green (#2D4A3E) | field-instrument aesthetic, not heirloom. $8 vs $80 |
 
 **what does *not* change:** the architecture (five layers, same as `docs/architecture.md`), the telemetry codec (same 64-byte frames, same sha-256 self-check), the simulator parity (both editions pass the same `pnpm sim:test` golden fixtures).
 
