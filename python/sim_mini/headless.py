@@ -27,7 +27,7 @@ def create_initial_device_state() -> DeviceState:
 def step_device(prev: DeviceState, next_t_us: int, event: UserEvent | None = None) -> DeviceState:
     dt_s = seconds_between(prev.t_us, next_t_us)
     warmup_hold_s = (
-        float(prev.combustor.runtime_s)
+        prev.combustor.phase_elapsed_s
         if prev.combustor.phase == "warmup"
         and prev.bus.v_bus_V >= INVARIANTS.warmup_v_bus_threshold_V
         else 0.0

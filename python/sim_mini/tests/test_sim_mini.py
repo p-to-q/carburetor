@@ -332,3 +332,18 @@ def test_integer_counters_use_ties_to_even_rounding() -> None:
 
     assert half_second.compute.uptime_s == live.compute.uptime_s
     assert half_second.combustor.runtime_s == live.combustor.runtime_s
+
+
+def test_subsecond_device_steps_can_complete_warmup_hold() -> None:
+    state = create_initial_device_state()
+    state = step_device(state, 0, RefuelEvent(volume_mL=15.0, t_us=0))
+    state = step_device(state, 1_000_000, PrimeEvent(pumps=3, t_us=1_000_000))
+    state = step_device(state, 2_000_000, CrankEvent(t_us=2_000_000))
+
+    for t_us in range(2_100_000, 60_100_000, 100_000):
+        state = step_device(state, t_us)
+        if state.combustor.phase == "run":
+            break
+
+    assert state.combustor.phase == "run"
+    assert state.ritual.stage == "live"

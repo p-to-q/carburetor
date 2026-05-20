@@ -347,3 +347,18 @@ test('integer counters use ties-to-even rounding', () => {
   assert.equal(halfSecond.compute.uptime_s, live.compute.uptime_s);
   assert.equal(halfSecond.combustor.runtime_s, live.combustor.runtime_s);
 });
+
+test('subsecond device steps can complete warmup hold', () => {
+  let state = createInitialDeviceState();
+  state = stepDevice(state, 0, { kind: 'refuel', volume_mL: 15, t_us: 0 });
+  state = stepDevice(state, 1_000_000, { kind: 'prime', pumps: 3, t_us: 1_000_000 });
+  state = stepDevice(state, 2_000_000, { kind: 'crank', t_us: 2_000_000 });
+
+  for (let t_us = 2_100_000; t_us <= 60_000_000; t_us += 100_000) {
+    state = stepDevice(state, t_us);
+    if (state.combustor.phase === 'run') break;
+  }
+
+  assert.equal(state.combustor.phase, 'run');
+  assert.equal(state.ritual.stage, 'live');
+});

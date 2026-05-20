@@ -21,7 +21,7 @@ export function stepDevice(prev: DeviceState, next_t_us: number, event?: UserEve
   const dt_s = secondsBetween(prev.t_us, next_t_us);
   const warmupHold_s =
     prev.combustor.phase === 'warmup' && prev.bus.v_bus_V >= INVARIANTS.warmup_v_bus_threshold_V
-      ? prev.combustor.runtime_s
+      ? prev.combustor.phase_elapsed_s
       : 0;
   const fuelAfterBurn = stepFuel({
     fuel: prev.fuel,
