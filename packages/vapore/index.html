@@ -338,7 +338,7 @@
     </style>
   </head>
   <body>
-    <button class="mute-btn" id="mute">sound: off</button>
+    <button class="mute-btn" id="mute">sound: on</button>
 
     <div class="vapore">
       <!-- fuel layer panel -->
@@ -513,6 +513,7 @@
         kill: $('btn-kill'),
         crank: $('crank'),
         keyboard: $('keyboard'),
+        mute: $('mute'),
       };
 
       let state = createInitialDeviceState();
@@ -535,6 +536,137 @@
       function fmt(value, digits = 1) {
         return Number.isFinite(value) ? value.toFixed(digits) : '0.0';
       }
+
+      function createAudioEngine() {
+        const AudioContextCtor = window.AudioContext || window.webkitAudioContext;
+        let audio = null;
+        let muted = false;
+        let engineGain = null;
+        let engineTone = null;
+        let engineNoise = null;
+        let engineNoiseSource = null;
+        let masterGain = null;
+
+        function ensure() {
+          if (!AudioContextCtor) return null;
+          if (audio) return audio;
+          audio = new AudioContextCtor();
+          masterGain = audio.createGain();
+          masterGain.gain.value = muted ? 0 : 0.3;
+          masterGain.connect(audio.destination);
+
+          engineGain = audio.createGain();
+          engineGain.gain.value = 0;
+          engineGain.connect(masterGain);
+
+          engineTone = audio.createOscillator();
+          const wave = audio.createPeriodicWave(
+            new Float32Array([0, 1, 0.52, 0.31, 0.18, 0.11, 0.07, 0.04, 0.02]),
+            new Float32Array(9),
+          );
+          engineTone.setPeriodicWave(wave);
+          engineTone.frequency.value = 90;
+          engineTone.connect(engineGain);
+          engineTone.start();
+
+          engineNoise = audio.createBiquadFilter();
+          engineNoise.type = 'bandpass';
+          engineNoise.frequency.value = 520;
+          engineNoise.Q.value = 0.8;
+          engineNoise.connect(engineGain);
+          engineNoiseSource = audio.createBufferSource();
+          engineNoiseSource.buffer = noiseBuffer(1.5);
+          engineNoiseSource.loop = true;
+          engineNoiseSource.connect(engineNoise);
+          engineNoiseSource.start();
+          return audio;
+        }
+
+        function noiseBuffer(seconds) {
+          const sampleRate = audio.sampleRate;
+          const buffer = audio.createBuffer(1, Math.floor(sampleRate * seconds), sampleRate);
+          const data = buffer.getChannelData(0);
+          let seed = 0x4d595df4;
+          for (let index = 0; index < data.length; index += 1) {
+            seed ^= seed << 13;
+            seed ^= seed >>> 17;
+            seed ^= seed << 5;
+            data[index] = ((seed >>> 0) / 0xffffffff) * 2 - 1;
+          }
+          return buffer;
+        }
+
+        function resume() {
+          const ctxAudio = ensure();
+          if (ctxAudio?.state === 'suspended') void ctxAudio.resume();
+        }
+
+        function setMuted(nextMuted) {
+          muted = nextMuted;
+          const ctxAudio = ensure();
+          if (masterGain && ctxAudio) {
+            masterGain.gain.setTargetAtTime(muted ? 0 : 0.3, ctxAudio.currentTime, 0.03);
+          }
+          controls.mute.textContent = muted ? 'sound: off' : 'sound: on';
+        }
+
+        function update(combustor) {
+          if (!audio || !engineGain || !engineTone || !engineNoise) return;
+          const now = audio.currentTime;
+          const rpm = combustor.rpm ?? 0;
+          const running = combustor.running && rpm > 0;
+          const roughness = combustor.phase === 'fuel_low' ? 1.25 : 1;
+          const rpmRatio = clamp(rpm / 18_000, 0, 1);
+          const frequency = clamp(70 + rpm / 60, 70, 370) * roughness;
+          const gain = running ? clamp(0.02 + rpmRatio * 0.22, 0, 0.24) : 0;
+          engineTone.frequency.setTargetAtTime(frequency, now, 0.06);
+          engineNoise.frequency.setTargetAtTime(clamp(frequency * 3.2, 260, 1100), now, 0.08);
+          engineGain.gain.setTargetAtTime(gain, now, combustor.phase === 'flameout' ? 0.015 : 0.12);
+        }
+
+        function playNoise({ duration_s, gain, filter_Hz, type = 'bandpass' }) {
+          const ctxAudio = ensure();
+          if (!ctxAudio || !masterGain) return;
+          const now = ctxAudio.currentTime;
+          const source = ctxAudio.createBufferSource();
+          const filter = ctxAudio.createBiquadFilter();
+          const hitGain = ctxAudio.createGain();
+          source.buffer = noiseBuffer(duration_s);
+          filter.type = type;
+          filter.frequency.value = filter_Hz;
+          filter.Q.value = 1.4;
+          hitGain.gain.setValueAtTime(gain, now);
+          hitGain.gain.exponentialRampToValueAtTime(0.001, now + duration_s);
+          source.connect(filter);
+          filter.connect(hitGain);
+          hitGain.connect(masterGain);
+          source.start(now);
+          source.stop(now + duration_s);
+        }
+
+        function prime() {
+          resume();
+          playNoise({ duration_s: 0.09, gain: 0.16, filter_Hz: 180, type: 'lowpass' });
+        }
+
+        function crank() {
+          resume();
+          playNoise({ duration_s: 0.22, gain: 0.2, filter_Hz: 720 });
+        }
+
+        return {
+          resume,
+          setMuted,
+          update,
+          prime,
+          crank,
+          get muted() {
+            return muted;
+          },
+        };
+      }
+
+      const audioEngine = createAudioEngine();
 
       function clearLcd() {
         ctx.imageSmoothingEnabled = false;
@@ -745,6 +877,7 @@
         renderPanels();
         renderChrome();
         renderLcd();
+        audioEngine.update(state.combustor);
       }
 
       function stepOnce(event) {
@@ -771,20 +904,33 @@
       }
 
       controls.pour.addEventListener('click', () => {
+        audioEngine.resume();
         queueEvent({ kind: 'refuel', volume_mL: Math.min(5, MAX_FUEL_ML - state.fuel.volume_mL) });
         if (state.combustor.phase === 'off' || state.combustor.phase === 'fuel_low') primePumps = 0;
       });
 
       controls.prime.addEventListener('click', () => {
+        audioEngine.prime();
         primePumps = Math.min(3, primePumps + 1);
         queueEvent({ kind: 'prime', pumps: 1 });
       });
 
       controls.crank.addEventListener('click', () => {
-        if (primePumps >= 3 || state.combustor.phase === 'prime') queueEvent({ kind: 'crank' });
+        if (primePumps >= 3 || state.combustor.phase === 'prime') {
+          audioEngine.crank();
+          queueEvent({ kind: 'crank' });
+        }
       });
 
-      controls.kill.addEventListener('click', () => queueEvent({ kind: 'kill' }));
+      controls.kill.addEventListener('click', () => {
+        audioEngine.resume();
+        queueEvent({ kind: 'kill' });
+      });
+
+      controls.mute.addEventListener('click', () => {
+        audioEngine.resume();
+        audioEngine.setMuted(!audioEngine.muted);
+      });
 
       controls.keyboard.addEventListener('click', (event) => {
         const key = event.target.closest('.key')?.textContent?.trim();
@@ -804,6 +950,7 @@
       });
 
       function handleKey(key) {
+        audioEngine.resume();
         if (state.ritual.stage !== 'live' && state.compute.mode !== 'compose') return;
         if (key === 'send') {
           queueEvent({ kind: 'compose_send' });
