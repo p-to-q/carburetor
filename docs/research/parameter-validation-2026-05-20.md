@@ -137,45 +137,82 @@ still couldn't deliver.
 | idle | 5 mA MCU + 8 mA modem | 20–30 mA modem sleep | **Modem draws more** |
 | tx | 5 mA MCU + 600 mA modem | 180–350 mA (depends on tech) | See below |
 
-### Modem Technology Comparison
+### Specific Modem Modules (with datasheets)
 
-| Technology | TX Current | RX Current | Sleep | Range |
-|---|---|---|---|---|
-| LTE Cat-M1 | 200–350 mA | 40–80 mA | 2–3 µA (PSM) | 10+ km |
-| NB-IoT | 120–220 mA | 30–50 mA | 2–3 µA (PSM) | 10+ km |
-| LoRa (SX1262) | 50–120 mA (@+22dBm) | 4.2–4.6 mA | ~1 µA | 5–15 km |
-| BLE | 8–15 mA | 8–15 mA | 1–2 µA | 100m |
+| Module | Tech | PSM Sleep | Idle/eDRX | TX Peak | RX |
+|---|---|---|---|---|---|
+| Quectel BG95-M3 | Cat-M1/NB-IoT/GNSS | ~3 µA | 10–15 mA | 350–490 mA | ~50 mA |
+| SIMCom SIM7080G | Cat-M1/NB-IoT | 3.2 µA | ~10 mA | 300–490 mA | ~50 mA |
+| Nordic nRF9160 | Cat-M1/NB-IoT (SiP) | 2.7 µA | ~6 mA | 230 mA | ~45 mA |
+| SX1262 (LoRa) | LoRa sub-GHz | 0.16 µA | — | 118 mA (+22dBm) | 4.6 mA |
 
-**Key finding**: Project models modem TX at 600 mA — this is **too high**
-for any modern LPWAN technology. Even LTE Cat-M1 peaks at ~350 mA.
-The 600 mA figure matches old 2G/GSM modules.
+**Key finding**: Project models modem TX at 600 mA — this matches LTE Cat-1
+(e.g., Quectel EC25) but is too high for Cat-M1/NB-IoT/LoRa. The nRF9160
+at 230 mA TX is the lowest cellular option. LoRa at 118 mA is 5x lower.
 
-**Recommendation**: If using LoRa (SX1262), TX is only 50–120 mA.
-If using LTE Cat-M1 (nRF9160), TX is 200–350 mA. Either way,
-600 mA is too pessimistic.
+**nRF9160 is notable**: it integrates its own ARM Cortex-M33, so it could
+potentially replace the ESP32-S3 entirely — single-chip solution for
+Cat-M1 messaging with 2.7 µA PSM sleep.
 
 ### LoRa as Alternative to Cellular
 
 **Strong fit for this project:**
-- TX: 50–120 mA (vs 200–350 mA cellular)
-- RX: 4.6 mA (vs 40–80 mA cellular)
-- Sleep: ~1 µA
-- Range: 5–15 km line of sight
-- No subscription fee
-- Meshtastic provides mesh networking with power-saving modes
-- ESP32-S3 + SX1262 is a proven combination
+- TX: 118 mA at +22 dBm, 45 mA at +14 dBm (vs 230–490 mA cellular)
+- RX: 4.6 mA (vs 40–80 mA cellular) — **10–17x lower**
+- Sleep: 0.16 µA (vs 2.7 µA cellular) — **17x lower**
+- No subscription fee, no SIM card
+- Meshtastic: 2–5 days on 1000 mAh battery with light-sleep intervals
+- ESP32-S3 + SX1262 is a proven combination (TTGO T-Beam, Heltec V3)
+- Eliminates need for supercap buffer (118 mA TX vs 600 mA doesn't need it)
 
-**Trade-offs**: Low data rate (~250 bps to 50 kbps), no guaranteed delivery,
-limited to short text messages. But for a "phone you refuel" that sends
-SMS-like messages, this is arguably *perfect*.
+**Trade-offs**: Low data rate (~1–5 kbps typical), no guaranteed delivery,
+limited to short text messages (~200 bytes), requires nearby mesh peers
+or gateway for internet. But for a "phone you refuel" that sends
+slow, deliberate messages, this fits the ritual philosophy.
 
-### Energy Storage
+**Dual-radio option**: nRF9160 (Cat-M1 fallback) + SX1262 (LoRa primary).
+LoRa for everyday mesh messaging, cellular for emergency or gateway.
 
-| Parameter | Model Value | Reality Check |
-|---|---|---|
-| Supercap buffer | 600 J | 48F @ 5V needed. Physical size: ~35×18mm cylindrical (e.g., Eaton HB series). Feasible but tight. |
-| LiFePO4 cell | 8000 J (2.2 Wh) | A 14500 (AA size) LiFePO4 cell is ~1.8 Wh. A 18650 is ~3.2 Wh. Model is between the two. |
-| Bus voltage | 4.0–5.2V | Requires boost converter from 3.2V LiFePO4. Or use supercap at higher voltage + buck for MCU. |
+### Sharp Memory LCD
+
+| Model | Size | Resolution | Static Power | Refresh Power | Notes |
+|---|---|---|---|---|---|
+| LS013B7DH03 | 1.28" | 128×128 | ~15 µW | ~175 µW @ 1Hz | Project's current model |
+| LS027B7DH01 | 2.7" | 400×240 | ~50 µW | ~500 µW | **Phone sweet spot** |
+| LS044Q7DH01 | 4.4" | 640×480 | — | >1 mW | Too power-hungry |
+
+The project's LCD model (~50–250 µA) matches the 1.28" panel well.
+For a phone-sized display, the 2.7" 400×240 is more realistic but draws
+~2–3x more power. Still under 1 mW — negligible vs modem/MCU.
+
+### Energy Storage (detailed)
+
+**Supercap: 600J target**
+
+Two 300F/2.7V EDLC cells in series = 150F at 5.4V.
+Usable energy (5.4V → 4.4V operating window): ~735J.
+Physical size per cell: **35mm dia × 62mm tall** (D-cell size).
+Two cells = significant volume but feasible in a ~650g phone.
+ESR: 3–6 mΩ — adequate for 600 mA TX transients (<4 mV sag).
+
+**If using LoRa**: 118 mA TX eliminates the need for supercap entirely.
+A small ceramic cap (100 µF) handles the transient. This saves ~140g
+and ~70 cm³ of volume — a major form factor improvement.
+
+**LiFePO4: 8000J = 2.2Wh**
+
+| Cell Size | Capacity | Energy | Fits 8kJ? |
+|---|---|---|---|
+| 14500 (AA) | ~600 mAh @ 3.2V | 1.9 Wh = 6.9 kJ | Close, slightly under |
+| 18350 | ~600 mAh @ 3.2V | 1.9 Wh = 6.9 kJ | Same |
+| 18650 | ~1100 mAh @ 3.2V | 3.5 Wh = 12.6 kJ | More than enough |
+
+Charging from 5–7W generator: LiFePO4 1C max (0.6A × 3.2V = 1.9W).
+Surplus charges supercap simultaneously.
+
+**Hybrid management ICs**: TI BQ25570 (energy harvesting PMIC, dual-path
+supercap + battery), LTC4041 (supercap backup), BQ25170 (simple
+LiFePO4 charger).
 
 ---
 
