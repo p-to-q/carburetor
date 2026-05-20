@@ -15,7 +15,7 @@ we did not invent five layers. we found five points along the chain where the ph
   │        │       │           │       │        │        │          │        │          │
   │chemical│       │ chem  →   │       │rectify │        │  mcu +   │        │ ear · eye│
   │potentl │       │ mech/therm│       │+ buffer│        │  lcd +   │        │ hand · OS│
-  │        │       │           │       │  mppt  │        │  modem   │        │  nose    │
+  │        │       │           │       │  mppt  │        │  radio   │        │  nose    │
   └────────┘       └───────────┘       └────────┘        └──────────┘        └──────────┘
        ▲                                                                          │
        │                            UserEvent (refuel / prime / crank / kill /    │
@@ -132,9 +132,12 @@ interface CombustorState {
 
 **what.** rectifies, regulates, buffers, distributes.
 
-**physics.** AC from the BLDC-as-PMG → schottky bridge (Vf ~0.3 V per leg) → MPPT buck (`LTC3119`, ~92 % η at operating point) → small supercap buffer (~50 J usable for the LoRa profile) running in parallel with a li-ion buffer (18350, 600 mAh × 3.7 V ≈ 8 kJ). the supercap absorbs the LoRa radio's ~118 mA TX transients; the li-ion buffers slower discharge between engine cycles.
+**physics.** the bus layer is edition-specific hardware but shares a typed contract (`BusState`).
 
-the key insight at this layer: **the engine is the charger, the li-ion is the capacitor.** inverted from a normal phone.
+- classica: AC from the BLDC-as-PMG → schottky bridge (Vf ~0.3 V per leg) → MPPT buck (`LTC3119`, ~92 % η) → supercap pair (300 F × 2 in series → 150 F at 5 V, ~600 J usable) in parallel with a li-ion buffer (18350, 600 mAh × 3.7 V ≈ 8 kJ). the supercap absorbs the modem's ~600 mA cat-M1 TX transients; the li-ion buffers slower discharge between engine cycles.
+- processta: DC from the catalytic TEG (0.1–0.3 W sustained) → TPS562200 buck → BQ25170 linear charger ($0.80) → LiFePO4 18650 buffer (modeled as ~20 kJ). no supercap bank needed — the LoRa TX transient (118 mA, ~0.39 W at the cell) is within the LiFePO4 discharge capability. optional USB-C input via the BQ25170's VIN for bench/development charging.
+
+the key insight at this layer: **the engine is the charger, the battery is the capacitor.** inverted from a normal phone. classica uses a supercap for peak shaving; processta's lower TX current means the LiFePO4 handles transients directly.
 
 **types.**
 
@@ -144,10 +147,10 @@ interface BusState {
   i_bus_A: number;
   v_li_V: number;
   i_li_A: number;
-  soc_li_pct: number; // li-ion state of charge
-  soc_cap_pct: number; // supercap state of charge
+  soc_li_pct: number; // LiFePO4 buffer state of charge
+  soc_cap_pct: number; // small regulator/output-cap buffer state of charge
   t_case_C: number;
-  mppt_locked: boolean;
+  mppt_locked: boolean; // charging regulator is accepting input
   e_in_J: number; // cumulative energy in from combustor
   e_out_J: number; // cumulative energy out to compute
   thermal_losses_J: number; // modeled waste heat rejected by combustor
@@ -156,19 +159,30 @@ interface BusState {
 
 energy accounting invariant: `buffer_initial_J + e_in_J ≈ buffer_final_J + e_out_J`; combustor waste heat is tracked separately as `thermal_losses_J`. both are enforced as CI gates, ±2 %.
 
-**numbers.**
+**numbers (classica).**
 
-|                                              | value                              |
-| -------------------------------------------- | ---------------------------------- |
-| supercap bus                                 | 5 V nominal, 4.4–5.4 V operating   |
-| li-ion bus                                   | 3.7 V nominal, 3.0–4.2 V operating |
-| LoRa TX transient                            | 118 mA @ 3.8 V = 0.45 W            |
-| supercap usable energy                       | ~50 J                              |
-| li-ion holdup at idle after one burst-charge | ~12 h                              |
+| | value |
+|---|---|
+| supercap bus | 5 V nominal, 4.4–5.4 V operating |
+| li-ion bus | 3.7 V nominal, 3.0–4.2 V operating |
+| cat-M1 TX transient | 600 mA @ 3.8 V = 2.3 W, ~5 ms |
+| supercap holdup at peak draw | 30+ s |
+| li-ion holdup at idle after one burst-charge | ~12 h |
+
+**numbers (processta).**
+
+| | value |
+|---|---|
+| LiFePO4 bus | 3.2 V plateau, 2.8–3.65 V modeled |
+| LoRa TX transient | 118 mA @ 3.3 V = 0.39 W |
+| TEG sustained input | 0.1–0.3 W (passive-cooled Bi₂Te₃) |
+| output-cap modeled energy | ~50 J |
+| LiFePO4 modeled energy | ~20 kJ |
+| USB-C input (optional) | 5 V via BQ25170, dev/bench only per classica constraint |
 
 **how to test.** four-trace scope on (v_bus, i_bus, v_li, t_case). USB-PD analyzer at the compute rail.
 
-**what you can swap.** any chip on the buck rail. supercap value. li-ion chemistry (LiFePO4 for longer cycle life at the cost of voltage).
+**what you can swap.** any chip on the buck rail. supercap value (classica). li-ion chemistry (LiFePO4 for processta; li-ion 18350 for classica). charger IC (BQ25170 → MCP73831 if single-cell simplicity is preferred).
 
 ---
 
@@ -176,26 +190,28 @@ energy accounting invariant: `buffer_initial_J + e_in_J ≈ buffer_final_J + e_o
 
 **what.** runs an OS, drives the screen, drives the radio.
 
-**physics.** esp32-s3 at 80 MHz, ~25 mA idle and ~35 mA active. sharp memory lcd at ~10 µA static, ~175 µA dynamic refresh. SX1262 LoRa sleeps near 0.16 µA, receives around 4.6 mA, and transmits at ~118 mA at +22 dBm. total time-averaged under typical messaging load stays below the old cellular profile.
+**physics.** the compute layer is edition-specific hardware but edition-invariant contracts.
+
+- classica: nRF52840 at 64 MHz + BG95-M3 cat-M1 modem + Sharp Memory LCD + Q10 keyboard.
+- processta: ESP32-S3 at 80–240 MHz + SX1262 LoRa 868/915 MHz + Sharp Memory LCD + 5 buttons.
+
+the sim currently models the processta profile (ESP32-S3 + LoRa). classica's cellular profile (higher TX current, different RSSI range) is a future variant.
 
 **types.**
 
 ```typescript
 type ComputeMode =
-  | 'sleep' // deep sleep, LoRa radio sleep, lcd holding image
-  | 'idle' // mcu awake, screen on, no traffic
-  | 'rx' // LoRa radio listening
-  | 'tx' // LoRa radio transmitting
-  | 'compose' // user typing
-  | 'engine_attn'; // engine ui (during warmup or refuel)
-
-type RadioTechnology = 'lora' | 'cat_m1';
+  | 'sleep'           // deep sleep, radio sleep, lcd holding image
+  | 'idle'            // mcu awake, screen on, no traffic
+  | 'rx'              // radio listening
+  | 'tx'              // radio transmitting
+  | 'compose'         // user typing
+  | 'engine_attn';    // engine ui (during warmup or refuel)
 
 interface ComputeState {
   mode: ComputeMode;
-  radio_technology: RadioTechnology;
   mcu_mA: number;
-  modem_mA: number;
+  radio_mA: number;
   lcd_uA: number;
   signal_dbm: number;
   rssi_bars: 0 | 1 | 2 | 3 | 4;
@@ -204,17 +220,25 @@ interface ComputeState {
 }
 ```
 
-**numbers.**
+**numbers (processta: ESP32-S3 + SX1262 LoRa).**
 
-| mode  | mcu   | modem   | lcd    | total   |
-| ----- | ----- | ------- | ------ | ------- |
-| sleep | 8 µA  | 0.16 µA | 10 µA  | ~30 µW  |
-| idle  | 25 mA | 4.6 mA  | 50 µA  | ~110 mW |
-| tx    | 25 mA | 118 mA  | 175 µA | ~530 mW |
+| mode | mcu | radio | lcd | total |
+|---|---|---|---|---|
+| sleep | 8 µA | 0.16 µA | 10 µA | ~60 µW |
+| idle | 25 mA | 4.6 mA | 50 µA | ~110 mW |
+| tx | 25 mA | 118 mA | 175 µA | ~530 mW |
+
+**numbers (classica: nRF52840 + BG95-M3 cat-M1).** future; not yet modeled in sim.
+
+| mode | mcu | radio | lcd | total |
+|---|---|---|---|---|
+| sleep | 2 µA | 3 µA | 50 µW | ~25 µW |
+| idle | 5 mA | 100 mA | 175 µW | ~390 mW |
+| tx (5 ms burst) | 5 mA | 600 mA | 175 µW | ~2.3 W |
 
 **how to test.** keithley source-measure unit on each rail. firmware exposes per-mode current expectations; `pnpm bench:power-modes` asserts.
 
-**what you can swap.** the SoC. the display (e-ink for mk ii). the radio (`cat_m1` remains a contract option for fallback). the OS (we use zephyr; nuttx is acceptable for ports).
+**what you can swap.** the SoC (classica: nRF52840; processta: ESP32-S3). the display (e-ink for mk ii). the radio (classica: BG95 cellular; processta: SX1262 LoRa). the OS (we use zephyr for classica, ESP-IDF for processta; nuttx is acceptable for ports).
 
 ---
 
