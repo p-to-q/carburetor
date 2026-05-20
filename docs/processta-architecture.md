@@ -23,7 +23,7 @@ powered by butane catalytic TEG (mk ii) or USB-C (dev/daily use).
                                      ▼       ▼
                               ┌──────────────────────┐
                               │   power management   │
-                              │   BQ25170 or LTC3119 │
+                              │   TPS562200 → BQ25170│
                               │                      │
                               │   charge: LiFePO4    │
                               │   rail: 3.3V buck    │
@@ -92,7 +92,7 @@ powered by butane catalytic TEG (mk ii) or USB-C (dev/daily use).
 - charge to 3.6V, discharge to 2.5V
 - fits standard 18650 holder
 
-### power management: TI BQ25170 (~$1.50)
+### power management: TI BQ25170 (~$0.80)
 
 - single-cell linear charger
 - input: 3.0–6.6V operating (30V tolerant, suspends charging >6.6V)
