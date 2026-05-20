@@ -3,11 +3,22 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>carburetor — vapore</title>
+    <title>carburetor · vapore</title>
     <meta
       name="description"
-      content="a phone you refuel. pour fuel, pull the crank, feel the burn."
+      content="A browser simulator for carburetor: pour fuel, pull the crank, wait for the bus, and send one message on finite energy."
     />
+    <meta property="og:title" content="carburetor · vapore" />
+    <meta
+      property="og:description"
+      content="A phone you refuel, simulated in the browser with live fuel, engine, bus, compute, and ritual layers."
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:image"
+      content="https://raw.githubusercontent.com/p-to-q/carburetor/main/design/exploded-view-mk1.svg"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <style>
       /* -- reset -- */
@@ -48,10 +59,10 @@
           'fuel     device   bus'
           'combustor device   compute'
           'ritual   ritual   ritual';
-        grid-template-columns: 1fr 2fr 1fr;
+        grid-template-columns: minmax(180px, 1fr) minmax(320px, 1.45fr) minmax(180px, 1fr);
         grid-template-rows: auto 1fr auto;
         gap: 16px;
-        max-width: 960px;
+        max-width: 1180px;
         margin: 0 auto;
         padding: 24px 16px;
         min-height: 100vh;
@@ -64,6 +75,11 @@
         border-radius: 4px;
         padding: 12px 16px;
         font-size: 12px;
+        min-width: 0;
+        transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          background 180ms ease;
       }
 
       .panel h3 {
@@ -79,6 +95,7 @@
       .panel .row {
         display: flex;
         justify-content: space-between;
+        gap: 12px;
         padding: 2px 0;
       }
 
@@ -91,9 +108,27 @@
       }
       .panel.active {
         border-color: var(--brass);
+        box-shadow: 0 0 0 1px rgba(181, 163, 106, 0.18);
       }
       .panel.warn {
         border-color: var(--warning);
+        animation: warning-pulse 900ms ease-in-out infinite alternate;
+      }
+
+      .bus-progress {
+        height: 6px;
+        margin-top: 8px;
+        border: 1px solid rgba(181, 163, 106, 0.28);
+        background: rgba(0, 0, 0, 0.22);
+        overflow: hidden;
+      }
+
+      .bus-progress-fill {
+        height: 100%;
+        width: 0%;
+        background: var(--brass);
+        transform-origin: left center;
+        transition: width 220ms linear;
       }
 
       .fuel {
@@ -122,7 +157,8 @@
       }
 
       .device {
-        width: 220px;
+        width: 320px;
+        max-width: 100%;
         background: var(--green);
         border-radius: 8px;
         border: 2px solid var(--brass);
@@ -162,13 +198,15 @@
         height: 0%;
         background: var(--warning);
         opacity: 0.7;
-        transition: height 0.3s ease;
+        transition: height 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
       }
 
       /* screen (sharp memory LCD) */
       .screen {
         width: 256px;
         height: 256px;
+        max-width: 100%;
+        aspect-ratio: 1;
         background: #d6d6d0;
         border: 1px solid rgba(181, 163, 106, 0.3);
         box-shadow: inset 0 0 0 6px rgba(26, 26, 26, 0.08);
@@ -202,6 +240,10 @@
         text-align: center;
         cursor: pointer;
         user-select: none;
+        min-width: 0;
+        transition:
+          background 120ms ease,
+          border-color 120ms ease;
       }
 
       .key:hover {
@@ -256,6 +298,10 @@
         cursor: pointer;
         text-transform: uppercase;
         letter-spacing: 0.05em;
+        transition:
+          background 120ms ease,
+          color 120ms ease,
+          opacity 120ms ease;
       }
 
       .btn:hover {
@@ -303,8 +349,27 @@
         font-family: var(--mono);
       }
 
+      @keyframes warning-pulse {
+        from {
+          box-shadow: 0 0 0 1px rgba(204, 102, 51, 0.18);
+        }
+        to {
+          box-shadow: 0 0 0 3px rgba(204, 102, 51, 0.34);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 1ms !important;
+          scroll-behavior: auto !important;
+          transition-duration: 1ms !important;
+        }
+      }
+
       /* -- responsive -- */
-      @media (max-width: 768px) {
+      @media (max-width: 1024px) {
         .vapore {
           grid-template-areas:
             'device   device'
@@ -313,6 +378,17 @@
             'ritual   ritual';
           grid-template-columns: 1fr 1fr;
           grid-template-rows: auto auto auto auto;
+          max-width: 760px;
+        }
+
+        .device-area {
+          justify-content: flex-start;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .vapore {
+          padding-top: 44px;
         }
       }
 
@@ -326,13 +402,28 @@
             'compute'
             'ritual';
           grid-template-columns: 1fr;
+          gap: 12px;
+          padding: 44px 12px 28px;
         }
         .device {
-          width: min(100%, 320px);
+          width: min(100%, 300px);
+          padding: 14px;
         }
         .screen {
-          width: min(256px, 78vw);
-          height: min(256px, 78vw);
+          width: min(256px, calc(100vw - 72px));
+          height: auto;
+        }
+        .controls {
+          flex-wrap: wrap;
+        }
+        .btn {
+          flex: 1 1 96px;
+        }
+        .panel .row {
+          gap: 8px;
+        }
+        .mute-btn {
+          right: 8px;
         }
       }
     </style>
@@ -447,6 +538,9 @@
         <div class="row">
           <span class="label">v_bus</span><span class="value" id="v-bus-v">0.00 V</span>
         </div>
+        <div class="bus-progress" aria-hidden="true">
+          <div class="bus-progress-fill" id="bus-progress-fill"></div>
+        </div>
         <div class="row">
           <span class="label">soc cap</span><span class="value" id="v-bus-cap">0 %</span>
         </div>
@@ -523,6 +617,7 @@
       let primePumps = 0;
       let composeText = '';
       let sentUntil_us = 0;
+      let displayedFuel_mL = 0;
       let pendingEvents = [];
 
       function queueEvent(event) {
@@ -615,12 +710,12 @@
           const now = audio.currentTime;
           const rpm = combustor.rpm ?? 0;
           const running = combustor.running && rpm > 0;
-          const roughness = combustor.phase === 'fuel_low' ? 1.25 : 1;
+          const lowFuel = combustor.phase === 'fuel_low' || state.fuel.volume_mL < 1;
           const rpmRatio = clamp(rpm / 18_000, 0, 1);
-          const frequency = clamp(70 + rpm / 60, 70, 370) * roughness;
-          const gain = running ? clamp(0.02 + rpmRatio * 0.22, 0, 0.24) : 0;
+          const frequency = clamp(70 + rpm / 60, 70, 370) * (lowFuel ? 0.9 : 1);
+          const gain = running ? clamp(0.02 + rpmRatio * (lowFuel ? 0.26 : 0.22), 0, 0.27) : 0;
           engineTone.frequency.setTargetAtTime(frequency, now, 0.06);
-          engineNoise.frequency.setTargetAtTime(clamp(frequency * 3.2, 260, 1100), now, 0.08);
+          engineNoise.frequency.setTargetAtTime(clamp(frequency * (lowFuel ? 4.1 : 3.2), 260, 1200), now, 0.08);
           engineGain.gain.setTargetAtTime(gain, now, combustor.phase === 'flameout' ? 0.015 : 0.12);
         }
 
@@ -796,7 +891,10 @@
       }
 
       function renderPanels() {
-        $('v-fuel-ml').textContent = `${fmt(state.fuel.volume_mL, 1)} mL`;
+        displayedFuel_mL += (state.fuel.volume_mL - displayedFuel_mL) * 0.22;
+        if (Math.abs(displayedFuel_mL - state.fuel.volume_mL) < 0.02)
+          displayedFuel_mL = state.fuel.volume_mL;
+        $('v-fuel-ml').textContent = `${fmt(displayedFuel_mL, 1)} mL`;
         $('v-fuel-kind').textContent = state.fuel.kind;
         $('v-fuel-temp').textContent = `${fmt(state.fuel.temperature_C, 0)} °C`;
         $('v-fuel-vapor').textContent = `${fmt(state.fuel.vapor_pressure_kPa, 0)} kPa`;
@@ -812,6 +910,8 @@
         $('v-comb-elec').textContent = `${fmt(state.combustor.electric_W_raw, 1)} W`;
 
         $('v-bus-v').textContent = `${fmt(state.bus.v_bus_V, 2)} V`;
+        $('bus-progress-fill').style.width =
+          `${clamp((state.bus.v_bus_V / WARMUP_THRESHOLD_V) * 100, 0, 100)}%`;
         $('v-bus-cap').textContent = `${fmt(state.bus.soc_cap_pct, 0)} %`;
         $('v-bus-li').textContent = `${fmt(state.bus.soc_li_pct, 0)} %`;
         $('v-bus-ein').textContent = `${fmt(state.bus.e_in_J, 0)} J`;
@@ -847,7 +947,8 @@
           panel.classList.toggle('active', panel.id === activeId);
           panel.classList.toggle(
             'warn',
-            state.combustor.phase === 'fuel_low' && panel.id === 'panel-fuel',
+            (state.combustor.phase === 'fuel_low' || state.fuel.volume_mL < 1) &&
+              panel.id === 'panel-fuel',
           );
         }
 
