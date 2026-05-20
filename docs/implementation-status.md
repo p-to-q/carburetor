@@ -28,6 +28,10 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 | engineering discipline     | ✅     | `docs/engineering-discipline.md`                    |
 | workflow                   | ✅     | `docs/workflow.md`                                  |
 | why (thesis scaffold)      | ⚠️     | `docs/why.md` — user authors final prose            |
+| vapore UX spec             | 🧪     | `docs/vapore-ux.md` (PR #43)                        |
+| vapore audio spec          | 🧪     | `docs/vapore-audio-spec.md` (PR #43)                |
+| vapore sim spec            | ✅     | `docs/vapore-spec.md`                               |
+| parameter validation       | 🧪     | `docs/research/parameter-validation-2026-05-20.md`  |
 | RFCs                       | 🔴     | `docs/rfcs/` — directory not present at v0.1        |
 | ADRs                       | 🔴     | `docs/adrs/` — directory not present at v0.1        |
 | postmortems                | 🔴     | `docs/postmortems/` — directory not present at v0.1 |
@@ -50,35 +54,36 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 | bus simulator                       | 🧪     | `packages/sim/src/bus/` — TS prerelease                      |
 | compute power model                 | 🧪     | TS + Python prerelease; mode-derived signal / RSSI           |
 | ritual stage driver                 | 🧪     | TS + Python prerelease; runtime guarded when engine is off   |
-| browser playable (`sim/index.html`) | 🔴     | TBD v0.2                                                     |
-| headless simulator                  | 🧪     | `packages/sim/src/headless.ts` — TS prerelease               |
+| vapore browser simulator            | ⚠️     | `packages/vapore/` — static shell exists, sim loop not wired |
+| headless simulator                  | 🧪     | TS + Python prerelease; `headless.ts` / `headless.py`        |
 | python thermo (Cox 049)             | 🔴     | TBD v0.2                                                     |
-| python state machine                | 🧪     | `python/sim_mini/` — prerelease                              |
 | telemetry codec TS                  | 🧪     | `packages/sim/src/telemetry.ts` — encode/decode with SHA-256 |
 | telemetry codec Python              | 🧪     | `python/sim_mini/telemetry.py` — encode/decode with SHA-256  |
-| golden fixtures                     | 🧪     | `fixtures/golden/cold-start-warmup/`                         |
+| golden fixtures                     | 🧪     | `fixtures/golden/` — 4 scenarios, codec under review (#44)   |
 | golden manifest checker             | ✅     | `scripts/tools/verify-golden.mjs`                            |
+| cross-language sim comparison       | 🧪     | `scripts/tools/compare-sim-headless.mjs`                     |
 
 ## firmware
 
 | item                   | status | location                                          |
 | ---------------------- | ------ | ------------------------------------------------- |
-| mk1-classica skeleton  | 🔴     | `firmware/mk1-classica/README.md` documents plan  |
-| mk1-processta skeleton | 🔴     | `firmware/mk1-processta/README.md` documents plan |
-| mk2 firmware           | 🔴     | not on v0.2 path                                  |
+| classica skeleton  | 🔴     | `firmware/classica/` — Zephyr + nRF52840, TBD v0.2c |
+| processta skeleton | 🔴     | `firmware/processta/` — ESP-IDF + ESP32-S3, TBD v0.2c |
+| mk ii firmware     | 🔴     | not on v0.2 path                                     |
 
 ## hardware
 
-| item                    | status | location                         |
-| ----------------------- | ------ | -------------------------------- |
-| mk1 BOM (classica)      | ✅     | `hardware/mk1/bom-classica.csv`  |
-| mk1 BOM (processta)     | ✅     | `hardware/mk1/bom-processta.csv` |
-| mk1 schematic (KiCad)   | 🔴     | TBD v0.3                         |
-| mk1 PCB                 | 🔴     | TBD v0.3                         |
-| mk1 enclosure CAD       | 🔴     | TBD v0.3                         |
-| mk1 exploded view (SVG) | ✅     | `design/exploded-view-mk1.svg`   |
-| mk2 BOM                 | 🔴     | TBD v0.4                         |
-| mk2 exploded view       | 🔴     | TBD v0.4                         |
+| item                       | status | location                                            |
+| -------------------------- | ------ | --------------------------------------------------- |
+| BOM (classica)             | ✅     | `hardware/mk1/bom-classica.csv`                     |
+| BOM (processta)            | ⚠️     | `hardware/mk1/bom-processta.csv` — pre-LoRa, stale  |
+| processta architecture     | 🧪     | `docs/processta-architecture.md` (PR #43)            |
+| processta BOM (in-doc)     | 🧪     | `docs/processta-architecture.md` — LoRa BOM, $49 COGS |
+| schematic (KiCad)          | 🔴     | TBD v0.3, processta first                            |
+| PCB                        | 🔴     | TBD v0.3, 4-layer 60×100mm (JLCPCB)                 |
+| enclosure CAD              | 🔴     | TBD v0.3, injection-molded ABS                       |
+| exploded view (SVG)        | ✅     | `design/exploded-view-mk1.svg`                       |
+| mk ii combustor BOM        | 🔴     | TBD v0.4                                             |
 
 ## edizione I (print)
 
@@ -126,7 +131,7 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 | acoustic signature            | 🔴           | `scripts/bench/acoustic.py` TBD v0.3     |
 | thermal soak                  | 🔴           | `scripts/bench/thermal-soak.py` TBD v0.3 |
 | case temp at user grip        | 🔴           | TBD v0.3                                 |
-| modem TX peak current         | 🔴           | TBD v0.3                                 |
+| radio TX peak current         | 🔴           | TBD v0.3                                 |
 | li-ion holdup at idle         | 🔴           | TBD v0.3                                 |
 
 ## workspace hygiene
