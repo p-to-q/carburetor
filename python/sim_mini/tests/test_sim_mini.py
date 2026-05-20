@@ -1,6 +1,6 @@
 from sim_mini.bus import create_bus_state, step_bus
 from sim_mini.combustor import TRANSITIONS, create_combustor_state
-from sim_mini.compute import compute_draw, create_compute_state, rssi_bars_from_signal
+from sim_mini.compute import compute_draw, create_compute_state, rssi_bars_from_signal, step_compute
 from sim_mini.headless import (
     cold_start_events,
     create_initial_device_state,
@@ -266,6 +266,105 @@ def test_lifepo4_charges_after_output_capacitor_reaches_full() -> None:
     assert charging.soc_cap_pct == 100
     assert charging.soc_li_pct > bus.soc_li_pct
     assert charging.i_li_A == -0.45
+
+
+def test_bus_clamps_full_output_capacitor_and_lifepo4_stores() -> None:
+    bus = create_bus_state()
+    bus.soc_cap_pct = 99.0
+    bus.soc_li_pct = 99.99
+    combustor = create_combustor_state()
+    combustor.running = True
+    combustor.electric_W_raw = 10_000.0 / 0.88
+
+    charged = step_bus(
+        bus=bus,
+        combustor=combustor,
+        compute_load_W=0.0,
+        dt_s=1.0,
+    )
+
+    assert charged.soc_cap_pct == 100
+    assert charged.soc_li_pct == 100
+    assert charged.i_li_A <= 0
+    assert charged.mppt_locked is True
+
+
+def test_bus_discharges_lifepo4_after_output_capacitor_is_empty() -> None:
+    bus = create_bus_state()
+    bus.soc_cap_pct = 0.0
+
+    discharged = step_bus(
+        bus=bus,
+        combustor=create_combustor_state(),
+        compute_load_W=2.0,
+        dt_s=1.0,
+    )
+
+    assert discharged.soc_cap_pct == 0
+    assert discharged.soc_li_pct < bus.soc_li_pct
+    assert discharged.i_li_A > 0
+    assert discharged.mppt_locked is False
+
+
+def test_bus_clamps_empty_stores_under_load() -> None:
+    bus = create_bus_state()
+    bus.soc_cap_pct = 0.0
+    bus.soc_li_pct = 0.0
+
+    discharged = step_bus(
+        bus=bus,
+        combustor=create_combustor_state(),
+        compute_load_W=2.0,
+        dt_s=10.0,
+    )
+
+    assert discharged.soc_cap_pct == 0
+    assert discharged.soc_li_pct == 0
+    assert discharged.i_li_A == 0
+    assert discharged.v_li_V == INVARIANTS.v_li_min_V
+
+
+def test_compute_mode_edges_and_currents_match_lora_profile() -> None:
+    low_bus = create_bus_state()
+    low_bus.v_bus_V = 4.39
+    low_bus.v_li_V = 3.25
+    low_bus.mppt_locked = True
+    low_li = create_bus_state()
+    low_li.v_bus_V = 4.8
+    low_li.v_li_V = 3.19
+    low_li.mppt_locked = True
+    online = create_bus_state()
+    online.v_bus_V = 4.8
+    online.v_li_V = 3.25
+    online.mppt_locked = True
+    offline = create_bus_state()
+    offline.v_bus_V = 4.8
+    offline.v_li_V = 3.25
+    offline.mppt_locked = False
+
+    idle = step_compute(create_compute_state("sleep"), online, 1.0)
+    engine_attention = step_compute(create_compute_state("sleep"), offline, 1.0)
+    tx = step_compute(idle, online, 1.0, event=ComposeSendEvent(t_us=1_000_000))
+    rx = step_compute(tx, online, 1.0)
+    compose = step_compute(
+        idle, online, 1.0, event=KeypressEvent(key="q", t_us=1_000_000)
+    )
+
+    assert step_compute(create_compute_state("idle"), low_bus, 1.0).mode == "sleep"
+    assert step_compute(create_compute_state("idle"), low_li, 1.0).mode == "sleep"
+    assert idle.mode == "idle"
+    assert idle.mcu_mA == 25
+    assert idle.radio_mA == 4.6
+    assert idle.lcd_uA == 50
+    assert engine_attention.mode == "engine_attn"
+    assert engine_attention.radio_mA == 0.00016
+    assert tx.mode == "tx"
+    assert tx.radio_mA == 118
+    assert rx.mode == "rx"
+    assert rx.radio_mA == 4.6
+    assert compose.mode == "compose"
+    assert compose.mcu_mA == 35
+    assert compose.lcd_uA == 250
 
 
 def test_compute_transitions_through_compose_tx_and_rx_on_user_messaging_events() -> None:

@@ -13,6 +13,7 @@ import {
   roundTiesToEven,
   runHeadless,
   stepBus,
+  stepCompute,
   stepDevice,
 } from '../dist/index.js';
 
@@ -290,6 +291,87 @@ test('LiFePO4 charges after output capacitor reaches full', () => {
   assert.equal(charging.soc_cap_pct, 100);
   assert.ok(charging.soc_li_pct > bus.soc_li_pct);
   assert.equal(charging.i_li_A, -0.45);
+});
+
+test('bus clamps full output capacitor and LiFePO4 stores', () => {
+  const bus = { ...createBusState(), soc_cap_pct: 99, soc_li_pct: 99.99 };
+  const combustor = {
+    ...createCombustorState(),
+    running: true,
+    electric_W_raw: 10_000 / 0.88,
+  };
+  const charged = stepBus({
+    bus,
+    combustor,
+    computeLoad_W: 0,
+    dt_s: 1,
+    invariants: INVARIANTS,
+  });
+
+  assert.equal(charged.soc_cap_pct, 100);
+  assert.equal(charged.soc_li_pct, 100);
+  assert.ok(charged.i_li_A <= 0);
+  assert.equal(charged.mppt_locked, true);
+});
+
+test('bus discharges LiFePO4 after output capacitor is empty', () => {
+  const bus = { ...createBusState(), soc_cap_pct: 0 };
+  const discharged = stepBus({
+    bus,
+    combustor: createCombustorState(),
+    computeLoad_W: 2,
+    dt_s: 1,
+    invariants: INVARIANTS,
+  });
+
+  assert.equal(discharged.soc_cap_pct, 0);
+  assert.ok(discharged.soc_li_pct < bus.soc_li_pct);
+  assert.ok(discharged.i_li_A > 0);
+  assert.equal(discharged.mppt_locked, false);
+});
+
+test('bus clamps empty stores under load', () => {
+  const bus = { ...createBusState(), soc_cap_pct: 0, soc_li_pct: 0 };
+  const discharged = stepBus({
+    bus,
+    combustor: createCombustorState(),
+    computeLoad_W: 2,
+    dt_s: 10,
+    invariants: INVARIANTS,
+  });
+
+  assert.equal(discharged.soc_cap_pct, 0);
+  assert.equal(discharged.soc_li_pct, 0);
+  assert.ok(Object.is(discharged.i_li_A, 0) || Object.is(discharged.i_li_A, -0));
+  assert.equal(discharged.v_li_V, INVARIANTS.v_li_min_V);
+});
+
+test('compute mode edges and currents match LoRa profile', () => {
+  const lowBus = { ...createBusState(), v_bus_V: 4.39, v_li_V: 3.25, mppt_locked: true };
+  const lowLi = { ...createBusState(), v_bus_V: 4.8, v_li_V: 3.19, mppt_locked: true };
+  const online = { ...createBusState(), v_bus_V: 4.8, v_li_V: 3.25, mppt_locked: true };
+  const offline = { ...online, mppt_locked: false };
+  const idle = stepCompute(createComputeState('sleep'), online, 1);
+  const engineAttention = stepCompute(createComputeState('sleep'), offline, 1);
+  const tx = stepCompute(idle, online, 1, { kind: 'compose_send', t_us: 1_000_000 });
+  const rx = stepCompute(tx, online, 1);
+  const compose = stepCompute(idle, online, 1, { kind: 'keypress', key: 'q', t_us: 1_000_000 });
+
+  assert.equal(stepCompute(createComputeState('idle'), lowBus, 1).mode, 'sleep');
+  assert.equal(stepCompute(createComputeState('idle'), lowLi, 1).mode, 'sleep');
+  assert.equal(idle.mode, 'idle');
+  assert.equal(idle.mcu_mA, 25);
+  assert.equal(idle.radio_mA, 4.6);
+  assert.equal(idle.lcd_uA, 50);
+  assert.equal(engineAttention.mode, 'engine_attn');
+  assert.equal(engineAttention.radio_mA, 0.00016);
+  assert.equal(tx.mode, 'tx');
+  assert.equal(tx.radio_mA, 118);
+  assert.equal(rx.mode, 'rx');
+  assert.equal(rx.radio_mA, 4.6);
+  assert.equal(compose.mode, 'compose');
+  assert.equal(compose.mcu_mA, 35);
+  assert.equal(compose.lcd_uA, 250);
 });
 
 test('compute transitions through compose, tx, and rx on user messaging events', () => {
