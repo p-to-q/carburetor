@@ -1,5 +1,5 @@
 import type { CombustorPhase, CombustorState, FuelState, INVARIANTS, UserEvent } from '../types.js';
-import { clamp, lerp } from '../math.js';
+import { clamp, lerp, roundTiesToEven } from '../math.js';
 
 type Invariants = typeof INVARIANTS;
 
@@ -105,7 +105,7 @@ export function stepCombustor({
   const targetHot_C = running ? (phase === 'run' ? 245 : 210) : 25;
   const hot_C = lerp(combustor.hot_C, targetHot_C, running ? dt_s / 12 : dt_s / 90);
   const rpm = running
-    ? Math.round(lerp(combustor.rpm ?? 0, phase === 'run' ? 18_000 : 12_000, dt_s / 5))
+    ? roundTiesToEven(lerp(combustor.rpm ?? 0, phase === 'run' ? 18_000 : 12_000, dt_s / 5))
     : null;
   const targetShaft_W = shaftPowerFromFuelBurn_W(fuelBurn_mL_per_s(phase));
   const shaft_W = running ? lerp(combustor.shaft_W ?? 0, targetShaft_W, dt_s / 8) : null;
@@ -125,7 +125,7 @@ export function stepCombustor({
     shaft_W,
     thermal_W,
     electric_W_raw,
-    runtime_s: combustor.runtime_s + (running ? Math.round(dt_s) : 0),
+    runtime_s: combustor.runtime_s + (running ? roundTiesToEven(dt_s) : 0),
     fuel_consumed_mL: combustor.fuel_consumed_mL + burn_mL,
   };
 }

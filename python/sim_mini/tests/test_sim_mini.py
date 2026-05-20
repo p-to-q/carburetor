@@ -7,6 +7,7 @@ from sim_mini.headless import (
     run_headless,
     step_device,
 )
+from sim_mini.mathx import round_ties_to_even
 from sim_mini.sim_types import (
     INVARIANTS,
     ComposeSendEvent,
@@ -264,3 +265,19 @@ def test_restart_after_flameout_requires_refuel_prime_then_crank() -> None:
     assert crank_without_prime.combustor.phase == "fuel_low"
     assert primed.combustor.phase == "prime"
     assert cranked.combustor.phase == "ignite"
+
+
+def test_integer_counters_use_ties_to_even_rounding() -> None:
+    assert round_ties_to_even(0.5) == 0
+    assert round_ties_to_even(1.5) == 2
+    assert round_ties_to_even(2.5) == 2
+
+    live = next(
+        frame
+        for frame in run_headless(cold_start_events(5.0), 80)
+        if frame.combustor.phase == "run"
+    )
+    half_second = step_device(live, live.t_us + 500_000)
+
+    assert half_second.compute.uptime_s == live.compute.uptime_s
+    assert half_second.combustor.runtime_s == live.combustor.runtime_s

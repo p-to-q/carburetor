@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 
+from .mathx import round_ties_to_even
 from .sim_types import BusState, ComputeMode, ComputeState, UserEvent
 
 
@@ -98,7 +99,7 @@ def step_compute(
         signal_dbm=MODE_SIGNAL_DBM[mode],
         rssi_bars=rssi_bars_from_signal(MODE_SIGNAL_DBM[mode]),
         queued_messages=max(0, prev.queued_messages + queued_delta),
-        uptime_s=prev.uptime_s + round(dt_s),
+        uptime_s=prev.uptime_s + round_ties_to_even(dt_s),
     )
 
 

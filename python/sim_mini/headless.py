@@ -8,7 +8,7 @@ from .bus import create_bus_state, step_bus
 from .combustor import create_combustor_state, fuel_burn_mL_per_s, step_combustor
 from .compute import compute_draw, create_compute_state, step_compute
 from .fuel import create_fuel_state, step_fuel
-from .mathx import seconds_between
+from .mathx import round_ties_to_even, seconds_between
 from .ritual import create_ritual_state, step_ritual
 from .sim_types import INVARIANTS, CrankEvent, DeviceState, PrimeEvent, RefuelEvent, UserEvent
 
@@ -79,7 +79,7 @@ def run_headless(events: list[UserEvent], duration_s: int, step_s: int = 1) -> l
     event_index = 0
 
     for t_s in range(step_s, duration_s + 1, step_s):
-        t_us = round(t_s * 1_000_000)
+        t_us = round_ties_to_even(t_s * 1_000_000)
         while event_index < len(sorted_events):
             event = sorted_events[event_index]
             if event.t_us > t_us:

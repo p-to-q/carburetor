@@ -9,6 +9,7 @@ import {
   createComputeState,
   createInitialDeviceState,
   rssiBarsFromSignal,
+  roundTiesToEven,
   runHeadless,
   stepDevice,
 } from '../dist/index.js';
@@ -273,4 +274,18 @@ test('restart after flameout requires refuel, prime, then crank', () => {
   assert.equal(crankWithoutPrime.combustor.phase, 'fuel_low');
   assert.equal(primed.combustor.phase, 'prime');
   assert.equal(cranked.combustor.phase, 'ignite');
+});
+
+test('integer counters use ties-to-even rounding', () => {
+  assert.equal(roundTiesToEven(0.5), 0);
+  assert.equal(roundTiesToEven(1.5), 2);
+  assert.equal(roundTiesToEven(2.5), 2);
+
+  const live = runHeadless(coldStartEvents(5), 80).find((frame) => frame.combustor.phase === 'run');
+  assert.ok(live);
+
+  const halfSecond = stepDevice(live, live.t_us + 500_000);
+
+  assert.equal(halfSecond.compute.uptime_s, live.compute.uptime_s);
+  assert.equal(halfSecond.combustor.runtime_s, live.combustor.runtime_s);
 });

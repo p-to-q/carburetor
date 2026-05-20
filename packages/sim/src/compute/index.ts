@@ -1,4 +1,5 @@
 import type { BusState, ComputeMode, ComputeState, UserEvent } from '../types.js';
+import { roundTiesToEven } from '../math.js';
 
 export interface ComputeDraw {
   current_A: number;
@@ -78,7 +79,7 @@ export function stepCompute(
     signal_dbm: MODE_SIGNAL_DBM[mode],
     rssi_bars: rssiBarsFromSignal(MODE_SIGNAL_DBM[mode]),
     queued_messages: Math.max(0, prev.queued_messages + queuedDelta),
-    uptime_s: prev.uptime_s + Math.round(dt_s),
+    uptime_s: prev.uptime_s + roundTiesToEven(dt_s),
   };
 }
 

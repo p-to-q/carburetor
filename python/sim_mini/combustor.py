@@ -1,6 +1,6 @@
 """Cox 049 prerelease combustor state machine."""
 
-from .mathx import clamp, lerp
+from .mathx import clamp, lerp, round_ties_to_even
 from .sim_types import INVARIANTS, CombustorPhase, CombustorState, FuelState, UserEvent
 
 COX_049_WASTE_HEAT_TO_SHAFT_RATIO = 7.0
@@ -109,7 +109,9 @@ def step_combustor(
     target_hot_C = 245.0 if phase == "run" else 210.0 if running else 25.0
     hot_C = lerp(combustor.hot_C, target_hot_C, dt_s / 12 if running else dt_s / 90)
     rpm = (
-        round(lerp(float(combustor.rpm or 0), 18_000.0 if phase == "run" else 12_000.0, dt_s / 5))
+        round_ties_to_even(
+            lerp(float(combustor.rpm or 0), 18_000.0 if phase == "run" else 12_000.0, dt_s / 5)
+        )
         if running
         else None
     )
@@ -137,7 +139,7 @@ def step_combustor(
         shaft_W=shaft_W,
         thermal_W=thermal_W,
         electric_W_raw=electric_W_raw,
-        runtime_s=combustor.runtime_s + (round(dt_s) if running else 0),
+        runtime_s=combustor.runtime_s + (round_ties_to_even(dt_s) if running else 0),
         fuel_consumed_mL=combustor.fuel_consumed_mL + burn_mL,
         phase=phase,
     )

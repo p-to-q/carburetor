@@ -11,3 +11,7 @@ def lerp(current: float, target: float, alpha: float) -> float:
 
 def seconds_between(prev_t_us: int, next_t_us: int) -> float:
     return max(0.0, (next_t_us - prev_t_us) / 1_000_000)
+
+
+def round_ties_to_even(value: float) -> int:
+    return round(value)

@@ -34,11 +34,11 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 
 ## types & contracts
 
-| item             | status | location                    |
-| ---------------- | ------ | --------------------------- |
-| TypeScript types | ✅     | `packages/sim/src/types.ts` |
-| Python types     | ✅     | `python/sim_mini/types.py`  |
-| INVARIANTS table | ✅     | both files                  |
+| item             | status | location                       |
+| ---------------- | ------ | ------------------------------ |
+| TypeScript types | ✅     | `packages/sim/src/types.ts`    |
+| Python types     | ✅     | `python/sim_mini/sim_types.py` |
+| INVARIANTS table | ✅     | both files                     |
 
 ## simulator
 

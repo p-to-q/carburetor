@@ -3,7 +3,7 @@ import { createBusState, stepBus } from './bus/index.js';
 import { createCombustorState, fuelBurn_mL_per_s, stepCombustor } from './combustor/index.js';
 import { computeDraw, createComputeState, stepCompute } from './compute/index.js';
 import { createFuelState, stepFuel } from './fuel/index.js';
-import { secondsBetween } from './math.js';
+import { roundTiesToEven, secondsBetween } from './math.js';
 import { createRitualState, stepRitual } from './ritual/index.js';
 
 export function createInitialDeviceState(): DeviceState {
@@ -69,7 +69,7 @@ export function runHeadless(events: UserEvent[], duration_s: number, step_s = 1)
   let eventIndex = 0;
 
   for (let t_s = step_s; t_s <= duration_s; t_s += step_s) {
-    const t_us = Math.round(t_s * 1_000_000);
+    const t_us = roundTiesToEven(t_s * 1_000_000);
     while (true) {
       const event = sortedEvents[eventIndex];
       if (event === undefined || event.t_us > t_us) break;
