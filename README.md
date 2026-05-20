@@ -23,7 +23,7 @@ mk i is loud. mk ii is silent. both wait. both ask you to wait with them.
 the project ships at three levels of commitment — all implementing the same five-layer architecture, all emitting byte-identical telemetry:
 
 - **vapore** — the simulator. $0. five minutes. browser only. (v0.2 — headless-only at v0.1.)
-- **processta** — the maker edition. ~$120. one weekend. esp32-s3 + cheap nitro + tool-pouch case.
+- **processta** — the maker edition. ~$120. one weekend. esp32-s3 + LoRa mesh + catalytic TEG + sharp memory lcd.
 - **classica** — the definitive build. ~$760. multi-weekend. cox tee dee + bg95 + sharp memory lcd + q10 + brass + custom canvas.
 
 see [`docs/editions.md`](docs/editions.md) for the comparison. the three editions exist to validate the architecture's "implementation swap" claim: if you cannot build a $120 version and a $760 version against the same interfaces, the interfaces are not interfaces.
