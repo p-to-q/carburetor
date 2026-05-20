@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { arch, platform, release } from 'node:os';
 import { join } from 'node:path';
 import {
   coldStartEvents,
@@ -15,6 +16,11 @@ const goldenRoot = join(root, 'fixtures', 'golden');
 const seed = 42;
 const git_sha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
 const lockfile_hash = sha256(readFileSync(join(root, 'pnpm-lock.yaml')));
+const pythonVersion = execFileSync(
+  join(root, 'python', 'sim_mini', '.venv', 'bin', 'python'),
+  ['--version'],
+  { encoding: 'utf8' },
+).trim();
 const F32_VIEW = new Float32Array(1);
 const U32_VIEW = new Uint32Array(F32_VIEW.buffer);
 const PHASES = [
@@ -108,6 +114,8 @@ function encodeFrames(frames) {
 function writeScenario({ name, description, duration_s, step_s = 1, events, frames, assertions }) {
   const outDir = join(goldenRoot, name);
   const runBytes = encodeFrames(frames);
+  const start_us = frames.at(0)?.t_us ?? 0;
+  const end_us = frames.at(-1)?.t_us ?? start_us;
 
   mkdirSync(outDir, { recursive: true });
   writeFileSync(join(outDir, 'run.cbf'), runBytes);
@@ -118,6 +126,8 @@ function writeScenario({ name, description, duration_s, step_s = 1, events, fram
         git_sha,
         lockfile_hash,
         seed,
+        start_us,
+        end_us,
         inputs: {
           scenario: name,
           duration_s,
@@ -127,6 +137,12 @@ function writeScenario({ name, description, duration_s, step_s = 1, events, fram
         assertions,
         outputs: {
           'run.cbf': sha256(runBytes),
+        },
+        host: {
+          os: `${platform()}-${release()}`,
+          arch: arch(),
+          node: process.version,
+          python: pythonVersion.replace(/^Python\s+/, ''),
         },
       },
       null,

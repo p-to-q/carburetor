@@ -1,7 +1,9 @@
 {
-  "git_sha": "ea3719f7d501c331853e96c154db3992d48860cc",
+  "git_sha": "f784316edbbce6ca513a8cb10d8668b5dc0ff95f",
   "lockfile_hash": "sha256:6d07f4f1dc094f0e8217faa22fcef59b27e2a4b9e6dff92da63a101d34ad9b2d",
   "seed": 42,
+  "start_us": 0,
+  "end_us": 60000000,
   "inputs": {
     "scenario": "cold-start-warmup",
     "duration_s": 60,
@@ -30,5 +32,11 @@
   },
   "outputs": {
     "run.cbf": "sha256:06e00fbf104f69e2ef75aad913f6729b19592755d97a47bff4042ab51a7e5df0"
+  },
+  "host": {
+    "os": "darwin-25.5.0",
+    "arch": "arm64",
+    "node": "v22.20.0",
+    "python": "3.13.2"
   }
 }

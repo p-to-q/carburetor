@@ -37,6 +37,20 @@ const PHASES = [
   'thermal_high',
 ];
 
+function f16ToF32(bits) {
+  const sign = bits & 0x8000 ? -1 : 1;
+  const exponent = (bits >>> 10) & 0x1f;
+  const mantissa = bits & 0x03ff;
+
+  if (exponent === 0) {
+    return sign * (mantissa === 0 ? 0 : 2 ** -14 * (mantissa / 1024));
+  }
+  if (exponent === 31) {
+    return mantissa === 0 ? sign * Infinity : NaN;
+  }
+  return sign * 2 ** (exponent - 15) * (1 + mantissa / 1024);
+}
+
 function decodeCombustorFrames(buf) {
   const frameBytes = 64;
   if (buf.length % frameBytes !== 0) {
@@ -50,9 +64,14 @@ function decodeCombustorFrames(buf) {
     frames.push({
       phase: PHASES[frame[40]],
       running: (frame[14] & 0b10) !== 0,
-      hot_C: frame.readFloatLE(20),
-      thermal_W: frame.readFloatLE(24),
-      electric_W_raw: frame.readFloatLE(28),
+      rpm: frame.readUInt32LE(16),
+      hot_C: f16ToF32(frame.readUInt16LE(20)),
+      cold_C: f16ToF32(frame.readUInt16LE(22)),
+      exhaust_dB_1m: f16ToF32(frame.readUInt16LE(24)),
+      shaft_W: f16ToF32(frame.readUInt16LE(26)),
+      thermal_W: f16ToF32(frame.readUInt16LE(28)),
+      electric_W_raw: f16ToF32(frame.readUInt16LE(30)),
+      runtime_s: frame.readUInt32LE(32),
       fuel_consumed_mL: frame.readFloatLE(36),
     });
   }
