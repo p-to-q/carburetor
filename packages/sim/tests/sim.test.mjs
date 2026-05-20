@@ -194,3 +194,83 @@ test('flameout triggers from failed ignition and falls back to buffer', () => {
   assert.equal(primed.combustor.phase, 'prime');
   assert.equal(cranked.combustor.phase, 'ignite');
 });
+
+test('bus recovers from warmup draw once raw electric output is available', () => {
+  const frames = runHeadless(coldStartEvents(5), 30);
+  const warmup = frames.find((frame) => frame.combustor.phase === 'warmup');
+  const charged = frames.at(-1);
+
+  assert.ok(warmup);
+  assert.ok(charged);
+  assert.ok(charged.bus.e_in_J > warmup.bus.e_in_J);
+  assert.ok(charged.bus.soc_cap_pct > warmup.bus.soc_cap_pct);
+  assert.equal(charged.bus.mppt_locked, true);
+});
+
+test('compute transitions through compose, tx, and rx on user messaging events', () => {
+  const live = runHeadless(coldStartEvents(5), 80).find((frame) => frame.ritual.stage === 'live');
+  assert.ok(live);
+
+  const composing = stepDevice(live, live.t_us + 1_000_000, {
+    kind: 'keypress',
+    key: 'q',
+    t_us: live.t_us + 1_000_000,
+  });
+  const sending = stepDevice(composing, composing.t_us + 1_000_000, {
+    kind: 'compose_send',
+    t_us: composing.t_us + 1_000_000,
+  });
+  const receiving = stepDevice(sending, sending.t_us + 1_000_000);
+
+  assert.equal(composing.compute.mode, 'compose');
+  assert.equal(composing.compute.queued_messages, 1);
+  assert.equal(sending.compute.mode, 'tx');
+  assert.equal(sending.compute.queued_messages, 0);
+  assert.equal(receiving.compute.mode, 'rx');
+});
+
+test('low fuel warning appears before full exhaustion', () => {
+  const live = runHeadless(coldStartEvents(5), 80).find((frame) => frame.combustor.phase === 'run');
+  assert.ok(live);
+
+  const nearlyEmpty = {
+    ...live,
+    fuel: { ...live.fuel, volume_mL: 0.002 },
+  };
+  const low = stepDevice(nearlyEmpty, nearlyEmpty.t_us + 1_000_000);
+
+  assert.equal(low.combustor.phase, 'fuel_low');
+  assert.equal(low.ritual.stage, 'refuel_needed');
+  assert.equal(low.compute.mode, 'engine_attn');
+});
+
+test('restart after flameout requires refuel, prime, then crank', () => {
+  const live = runHeadless(coldStartEvents(5), 80).find((frame) => frame.combustor.phase === 'run');
+  assert.ok(live);
+  const emptyRun = { ...live, fuel: { ...live.fuel, volume_mL: 0 } };
+  const fuelLow = stepDevice(emptyRun, emptyRun.t_us + 1_000_000);
+  const refueled = stepDevice(fuelLow, fuelLow.t_us + 1_000_000, {
+    kind: 'refuel',
+    volume_mL: 5,
+    t_us: fuelLow.t_us + 1_000_000,
+  });
+  const crankWithoutPrime = stepDevice(refueled, refueled.t_us + 1_000_000, {
+    kind: 'crank',
+    t_us: refueled.t_us + 1_000_000,
+  });
+  const primed = stepDevice(refueled, refueled.t_us + 1_000_000, {
+    kind: 'prime',
+    pumps: 3,
+    t_us: refueled.t_us + 1_000_000,
+  });
+  const cranked = stepDevice(primed, primed.t_us + 1_000_000, {
+    kind: 'crank',
+    t_us: primed.t_us + 1_000_000,
+  });
+
+  assert.equal(fuelLow.combustor.phase, 'fuel_low');
+  assert.equal(refueled.combustor.phase, 'fuel_low');
+  assert.equal(crankWithoutPrime.combustor.phase, 'fuel_low');
+  assert.equal(primed.combustor.phase, 'prime');
+  assert.equal(cranked.combustor.phase, 'ignite');
+});

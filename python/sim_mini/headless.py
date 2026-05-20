@@ -1,12 +1,16 @@
 """deterministic headless runner for scripted scenarios."""
 
+import argparse
+import json
+from dataclasses import asdict
+
 from .bus import create_bus_state, step_bus
 from .combustor import create_combustor_state, fuel_burn_mL_per_s, step_combustor
 from .compute import compute_draw, create_compute_state, step_compute
 from .fuel import create_fuel_state, step_fuel
 from .mathx import seconds_between
 from .ritual import create_ritual_state, step_ritual
-from .types import INVARIANTS, CrankEvent, DeviceState, PrimeEvent, RefuelEvent, UserEvent
+from .sim_types import INVARIANTS, CrankEvent, DeviceState, PrimeEvent, RefuelEvent, UserEvent
 
 
 def create_initial_device_state() -> DeviceState:
@@ -51,7 +55,11 @@ def step_device(prev: DeviceState, next_t_us: int, event: UserEvent | None = Non
         compute_load_W=draw.power_W,
         dt_s=dt_s,
     )
-    compute = step_compute(pre_compute, bus, 0.0)
+    compute = (
+        pre_compute
+        if event is not None or pre_compute.mode != prev.compute.mode
+        else step_compute(pre_compute, bus, 0.0)
+    )
     ritual = step_ritual(fuel_after_burn, combustor, bus.t_case_C)
 
     return DeviceState(
@@ -90,3 +98,39 @@ def cold_start_events(fill_mL: float = 5.0) -> list[UserEvent]:
         PrimeEvent(pumps=3, t_us=1_000_000),
         CrankEvent(t_us=2_000_000),
     ]
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="run deterministic sim_mini headless scenario")
+    parser.add_argument("--fill", type=float, default=5.0, help="initial refuel volume in mL")
+    parser.add_argument(
+        "--steps",
+        type=int,
+        default=80,
+        help="duration in whole simulation seconds",
+    )
+    parser.add_argument(
+        "--step-s",
+        type=int,
+        default=1,
+        help="frame interval in simulation seconds",
+    )
+    args = parser.parse_args()
+
+    frames = run_headless(cold_start_events(args.fill), args.steps, args.step_s)
+    print(
+        json.dumps(
+            {
+                "scenario": "cold-start",
+                "fill_mL": args.fill,
+                "duration_s": args.steps,
+                "step_s": args.step_s,
+                "frames": [asdict(frame) for frame in frames],
+            },
+            separators=(",", ":"),
+        )
+    )
+
+
+if __name__ == "__main__":
+    main()

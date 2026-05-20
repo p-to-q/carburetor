@@ -1,6 +1,6 @@
 """ritual-layer stage driver."""
 
-from .types import CombustorState, FuelState, RitualStage, RitualState
+from .sim_types import CombustorState, FuelState, RitualStage, RitualState
 
 
 def create_ritual_state() -> RitualState:

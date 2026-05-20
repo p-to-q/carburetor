@@ -1,0 +1,51 @@
+{
+  "seed": 42,
+  "inputs": {
+    "scenario": "kill-restart",
+    "duration_s": 460,
+    "step_s": 1,
+    "events": [
+      {
+        "kind": "refuel",
+        "volume_mL": 5,
+        "t_us": 0
+      },
+      {
+        "kind": "prime",
+        "pumps": 3,
+        "t_us": 1000000
+      },
+      {
+        "kind": "crank",
+        "t_us": 2000000
+      },
+      {
+        "kind": "kill",
+        "t_us": 81000000
+      },
+      {
+        "kind": "refuel",
+        "volume_mL": 2,
+        "t_us": 401000000
+      },
+      {
+        "kind": "prime",
+        "pumps": 3,
+        "t_us": 402000000
+      },
+      {
+        "kind": "crank",
+        "t_us": 403000000
+      }
+    ]
+  },
+  "assertions": {
+    "expected_frame_count": 87,
+    "final_combustor_phase": "warmup",
+    "final_running": true,
+    "saw_combustor_phase": "cooldown"
+  },
+  "outputs": {
+    "run.cbf": "sha256:025722264f462641a8aa93ba895b5991a28b3d6039112fca0217b50419c5b6d6"
+  }
+}

@@ -9,7 +9,7 @@ emit byte-identical telemetry frames.
 
 __version__ = "0.1.0"
 
-from .types import (
+from .sim_types import (
     INVARIANTS,
     BusState,
     CombustorKind,

@@ -7,7 +7,15 @@ from sim_mini.headless import (
     run_headless,
     step_device,
 )
-from sim_mini.types import INVARIANTS, CrankEvent, KillEvent, PrimeEvent, RefuelEvent
+from sim_mini.sim_types import (
+    INVARIANTS,
+    ComposeSendEvent,
+    CrankEvent,
+    KeypressEvent,
+    KillEvent,
+    PrimeEvent,
+    RefuelEvent,
+)
 
 
 def test_combustor_state_machine_has_exit_per_phase() -> None:
@@ -169,5 +177,90 @@ def test_flameout_triggers_from_failed_ignition_and_falls_back_to_buffer() -> No
     assert flameout.bus.mppt_locked is False
     assert flameout.bus.soc_li_pct < state.bus.soc_li_pct
     assert no_prime.combustor.phase == "flameout"
+    assert primed.combustor.phase == "prime"
+    assert cranked.combustor.phase == "ignite"
+
+
+def test_bus_recovers_from_warmup_draw_once_raw_electric_output_is_available() -> None:
+    frames = run_headless(cold_start_events(5.0), 30)
+    warmup = next(frame for frame in frames if frame.combustor.phase == "warmup")
+    charged = frames[-1]
+
+    assert charged.bus.e_in_J > warmup.bus.e_in_J
+    assert charged.bus.soc_cap_pct > warmup.bus.soc_cap_pct
+    assert charged.bus.mppt_locked is True
+
+
+def test_compute_transitions_through_compose_tx_and_rx_on_user_messaging_events() -> None:
+    live = next(
+        frame for frame in run_headless(cold_start_events(5.0), 80) if frame.ritual.stage == "live"
+    )
+
+    composing = step_device(
+        live,
+        live.t_us + 1_000_000,
+        event=KeypressEvent(key="q", t_us=live.t_us + 1_000_000),
+    )
+    sending = step_device(
+        composing,
+        composing.t_us + 1_000_000,
+        event=ComposeSendEvent(t_us=composing.t_us + 1_000_000),
+    )
+    receiving = step_device(sending, sending.t_us + 1_000_000)
+
+    assert composing.compute.mode == "compose"
+    assert composing.compute.queued_messages == 1
+    assert sending.compute.mode == "tx"
+    assert sending.compute.queued_messages == 0
+    assert receiving.compute.mode == "rx"
+
+
+def test_low_fuel_warning_appears_before_full_exhaustion() -> None:
+    live = next(
+        frame
+        for frame in run_headless(cold_start_events(5.0), 80)
+        if frame.combustor.phase == "run"
+    )
+    live.fuel.volume_mL = 0.002
+
+    low = step_device(live, live.t_us + 1_000_000)
+
+    assert low.combustor.phase == "fuel_low"
+    assert low.ritual.stage == "refuel_needed"
+    assert low.compute.mode == "engine_attn"
+
+
+def test_restart_after_flameout_requires_refuel_prime_then_crank() -> None:
+    live = next(
+        frame
+        for frame in run_headless(cold_start_events(5.0), 80)
+        if frame.combustor.phase == "run"
+    )
+    live.fuel.volume_mL = 0.0
+    fuel_low = step_device(live, live.t_us + 1_000_000)
+    refueled = step_device(
+        fuel_low,
+        fuel_low.t_us + 1_000_000,
+        event=RefuelEvent(volume_mL=5.0, t_us=fuel_low.t_us + 1_000_000),
+    )
+    crank_without_prime = step_device(
+        refueled,
+        refueled.t_us + 1_000_000,
+        event=CrankEvent(t_us=refueled.t_us + 1_000_000),
+    )
+    primed = step_device(
+        refueled,
+        refueled.t_us + 1_000_000,
+        event=PrimeEvent(pumps=3, t_us=refueled.t_us + 1_000_000),
+    )
+    cranked = step_device(
+        primed,
+        primed.t_us + 1_000_000,
+        event=CrankEvent(t_us=primed.t_us + 1_000_000),
+    )
+
+    assert fuel_low.combustor.phase == "fuel_low"
+    assert refueled.combustor.phase == "fuel_low"
+    assert crank_without_prime.combustor.phase == "fuel_low"
     assert primed.combustor.phase == "prime"
     assert cranked.combustor.phase == "ignite"

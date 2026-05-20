@@ -1,0 +1,32 @@
+{
+  "seed": 42,
+  "inputs": {
+    "scenario": "low-fuel-warning",
+    "duration_s": 80,
+    "step_s": 1,
+    "events": [
+      {
+        "kind": "refuel",
+        "volume_mL": 1,
+        "t_us": 0
+      },
+      {
+        "kind": "prime",
+        "pumps": 3,
+        "t_us": 1000000
+      },
+      {
+        "kind": "crank",
+        "t_us": 2000000
+      }
+    ]
+  },
+  "assertions": {
+    "expected_frame_count": 81,
+    "final_combustor_phase": "fuel_low",
+    "saw_combustor_phase": "run"
+  },
+  "outputs": {
+    "run.cbf": "sha256:59a9e35120e6f147c49a1181ef390caac230c3b5006e79000071c7f6dee383f8"
+  }
+}

@@ -8,7 +8,7 @@ carburetor — python prototype counterpart to `packages/sim/`.
 
 ## what's here
 
-- `types.py` — canonical type contracts (mirror of `packages/sim/src/types.ts`).
+- `sim_types.py` — canonical type contracts (mirror of `packages/sim/src/types.ts`).
 - `__init__.py` — public exports.
 - `pyproject.toml` — package metadata.
 

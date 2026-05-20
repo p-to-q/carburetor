@@ -48,7 +48,8 @@ export function stepDevice(prev: DeviceState, next_t_us: number, event?: UserEve
     dt_s,
     invariants: INVARIANTS,
   });
-  const compute = stepCompute(preCompute, bus, 0);
+  const compute =
+    event || preCompute.mode !== prev.compute.mode ? preCompute : stepCompute(preCompute, bus, 0);
   const ritual = stepRitual(fuelAfterBurn, combustor, bus.t_case_C);
 
   return {

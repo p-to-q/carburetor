@@ -1,7 +1,7 @@
 """fuel layer simulator."""
 
 from .mathx import clamp, lerp
-from .types import FuelKind, FuelState, UserEvent
+from .sim_types import FuelKind, FuelState, UserEvent
 
 VAPOR_PRESSURE_KPA: dict[FuelKind, float] = {
     "glow": 13.0,

@@ -79,6 +79,7 @@
     .panel .label { color: rgba(232, 228, 220, 0.5); }
     .panel .value { color: var(--text); font-weight: 500; }
     .panel.active { border-color: var(--brass); }
+    .panel.warn { border-color: var(--warning); }
 
     .fuel      { grid-area: fuel; }
     .combustor { grid-area: combustor; }
@@ -159,6 +160,8 @@
     .screen canvas {
       width: 100%;
       height: 100%;
+      display: block;
+      image-rendering: pixelated;
     }
 
     /* keyboard */
@@ -323,7 +326,7 @@
         <span class="device-label">carburetor mk i</span>
         <div class="fuel-tube"><div class="fuel-level" id="fuel-level"></div></div>
         <div class="screen" id="screen">
-          <span>off</span>
+          <canvas id="lcd" width="128" height="128" aria-label="sharp memory lcd"></canvas>
         </div>
         <div class="keyboard" id="keyboard">
           <!-- row 1 -->
@@ -390,13 +393,282 @@
 
   <!-- sim engine — loaded from browser bundle built by `pnpm bundle:browser` -->
   <script type="module">
-    // Phase 2 will wire this up. For now, static shell only.
-    // import * as sim from './sim.browser.js';
-    //
-    // The simulation loop, user event binding, and panel rendering
-    // will be implemented in issues #25–#29.
+    import { createInitialDeviceState, stepDevice } from './sim.browser.js';
 
-    console.log('vapore shell loaded. simulation engine not yet wired.');
+    const ACCELERATION = 6;
+    const STEP_US = 100_000;
+    const MAX_FUEL_ML = 15;
+    const WARMUP_THRESHOLD_V = 4.8;
+
+    const $ = (id) => document.getElementById(id);
+    const lcd = $('lcd');
+    const ctx = lcd.getContext('2d');
+    const controls = {
+      pour: $('btn-pour'),
+      prime: $('btn-prime'),
+      kill: $('btn-kill'),
+      crank: $('crank'),
+      keyboard: $('keyboard'),
+    };
+
+    let state = createInitialDeviceState();
+    let simTime_us = 0;
+    let lastWall_ms = null;
+    let accumulator_us = 0;
+    let primePumps = 0;
+    let composeText = '';
+    let sentUntil_us = 0;
+    let pendingEvents = [];
+
+    function queueEvent(event) {
+      pendingEvents.push({ ...event, t_us: simTime_us });
+    }
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function fmt(value, digits = 1) {
+      return Number.isFinite(value) ? value.toFixed(digits) : '0.0';
+    }
+
+    function drawText(lines, options = {}) {
+      ctx.fillStyle = '#d6d6d0';
+      ctx.fillRect(0, 0, 128, 128);
+      ctx.fillStyle = '#1a1a1a';
+      ctx.font = options.font || '10px "IBM Plex Mono", monospace';
+      ctx.textBaseline = 'top';
+      let y = options.y ?? 8;
+      for (const line of lines) {
+        ctx.fillText(line, 8, y);
+        y += options.lineHeight ?? 13;
+      }
+    }
+
+    function drawBars(x, y, bars) {
+      ctx.fillStyle = '#1a1a1a';
+      for (let index = 0; index < 4; index += 1) {
+        const h = 4 + index * 3;
+        ctx.globalAlpha = index < bars ? 1 : 0.22;
+        ctx.fillRect(x + index * 6, y + 14 - h, 4, h);
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function drawProgress(x, y, width, pct) {
+      ctx.strokeStyle = '#1a1a1a';
+      ctx.strokeRect(x, y, width, 8);
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(x + 2, y + 2, Math.max(0, (width - 4) * clamp(pct, 0, 1)), 4);
+    }
+
+    function lcdState() {
+      if (state.fuel.volume_mL <= 0 && state.combustor.phase !== 'off') return 'low_fuel';
+      if (state.combustor.phase === 'fuel_low' || state.ritual.stage === 'refuel_needed')
+        return 'low_fuel';
+      if (simTime_us < sentUntil_us) return 'sent';
+      if (state.compute.mode === 'tx') return 'tx';
+      if (state.compute.mode === 'compose' || composeText.length > 0) return 'compose';
+      if (state.ritual.stage === 'live') return 'idle';
+      if (state.combustor.running || state.compute.mode === 'engine_attn') return 'warmup';
+      return 'off';
+    }
+
+    function renderLcd() {
+      const screen = lcdState();
+      if (screen === 'off') {
+        drawText([]);
+        return;
+      }
+      if (screen === 'warmup') {
+        drawText([
+          'carburetor',
+          '----------',
+          'warming up',
+          `v_bus ${fmt(state.bus.v_bus_V, 2)} V`,
+          `${Math.round(clamp(state.bus.v_bus_V / WARMUP_THRESHOLD_V, 0, 1) * 100)}% hold`,
+          'wait.',
+        ]);
+        drawProgress(8, 74, 86, state.bus.v_bus_V / WARMUP_THRESHOLD_V);
+        return;
+      }
+      if (screen === 'low_fuel') {
+        drawText(['fuel low', '----------', '< 1 min left', 'refuel', 'or shut down']);
+        return;
+      }
+      if (screen === 'tx') {
+        drawText(['sending...', '', `${state.compute.queued_messages} queued`]);
+        drawProgress(8, 42, 96, 0.8);
+        return;
+      }
+      if (screen === 'sent') {
+        drawText(['sent', '----------', 'waiting', 'for reply']);
+        return;
+      }
+      if (screen === 'compose') {
+        const wrapped = wrapText(composeText || ' ', 17).slice(0, 5);
+        drawText(['to: +1 555 0100', '----------', ...wrapped, '_']);
+        return;
+      }
+
+      drawText(['carburetor', '----------', 'ready', `fuel ${fmt(state.ritual.minutes_runtime_remaining, 1)} min`, '', '> compose']);
+      drawBars(96, 7, state.compute.rssi_bars);
+    }
+
+    function wrapText(text, width) {
+      const chunks = text.match(new RegExp(`.{1,${width}}`, 'g'));
+      return chunks ?? [''];
+    }
+
+    function renderPanels() {
+      $('v-fuel-ml').textContent = `${fmt(state.fuel.volume_mL, 1)} mL`;
+      $('v-fuel-kind').textContent = state.fuel.kind;
+      $('v-fuel-temp').textContent = `${fmt(state.fuel.temperature_C, 0)} °C`;
+      $('v-fuel-vapor').textContent = `${fmt(state.fuel.vapor_pressure_kPa, 0)} kPa`;
+      $('fuel-level').style.height = `${clamp((state.fuel.volume_mL / MAX_FUEL_ML) * 100, 0, 100)}%`;
+
+      $('v-comb-phase').textContent = state.combustor.phase;
+      $('v-comb-rpm').textContent = state.combustor.rpm ? state.combustor.rpm.toLocaleString() : '0';
+      $('v-comb-hot').textContent = `${fmt(state.combustor.hot_C, 0)} °C`;
+      $('v-comb-shaft').textContent = `${fmt(state.combustor.shaft_W ?? 0, 1)} W`;
+      $('v-comb-elec').textContent = `${fmt(state.combustor.electric_W_raw, 1)} W`;
+
+      $('v-bus-v').textContent = `${fmt(state.bus.v_bus_V, 2)} V`;
+      $('v-bus-cap').textContent = `${fmt(state.bus.soc_cap_pct, 0)} %`;
+      $('v-bus-li').textContent = `${fmt(state.bus.soc_li_pct, 0)} %`;
+      $('v-bus-ein').textContent = `${fmt(state.bus.e_in_J, 0)} J`;
+
+      $('v-comp-mode').textContent = state.compute.mode;
+      $('v-comp-mcu').textContent = `${fmt(state.compute.mcu_mA, 0)} mA`;
+      $('v-comp-modem').textContent = `${fmt(state.compute.modem_mA, 0)} mA`;
+      $('v-comp-signal').textContent = `${fmt(state.compute.signal_dbm, 0)} dBm`;
+
+      $('v-rit-stage').textContent = state.ritual.stage;
+      $('v-rit-runtime').textContent =
+        state.ritual.minutes_runtime_remaining > 0
+          ? `${fmt(state.ritual.minutes_runtime_remaining, 1)} min`
+          : '—';
+      $('v-rit-noise').textContent = `${fmt(state.ritual.dB_at_ear, 0)} dB`;
+    }
+
+    function activePanelId() {
+      if (state.fuel.volume_mL <= 0 || state.combustor.phase === 'fuel_low') return 'panel-fuel';
+      if (state.combustor.running || ['prime', 'ignite', 'cooldown'].includes(state.combustor.phase))
+        return 'panel-combustor';
+      if (state.ritual.stage === 'live' && state.compute.mode !== 'sleep') return 'panel-compute';
+      if (state.bus.v_bus_V < WARMUP_THRESHOLD_V) return 'panel-bus';
+      return 'panel-ritual';
+    }
+
+    function renderChrome() {
+      const activeId = activePanelId();
+      for (const panel of document.querySelectorAll('.panel')) {
+        panel.classList.toggle('active', panel.id === activeId);
+        panel.classList.toggle('warn', state.combustor.phase === 'fuel_low' && panel.id === 'panel-fuel');
+      }
+
+      controls.prime.disabled = state.fuel.volume_mL <= 0 || state.combustor.running;
+      controls.kill.disabled = !state.combustor.running && state.combustor.phase !== 'cooldown';
+      controls.pour.disabled = state.fuel.volume_mL >= MAX_FUEL_ML;
+
+      $('prompt').textContent = promptText();
+    }
+
+    function promptText() {
+      if (state.fuel.volume_mL <= 0) return 'pour fuel to begin';
+      if (state.combustor.phase === 'off') return 'prime — three pumps';
+      if (state.combustor.phase === 'prime' && primePumps < 3) return `prime — ${3 - primePumps} more`;
+      if (state.combustor.phase === 'prime') return 'pull crank';
+      if (state.combustor.phase === 'ignite' || state.combustor.phase === 'warmup') return 'wait for the bus';
+      if (state.ritual.stage === 'live') return 'compose and send';
+      if (state.combustor.phase === 'cooldown') return 'cooling down';
+      if (state.combustor.phase === 'fuel_low' || state.combustor.phase === 'flameout')
+        return 'pour fuel, prime, crank';
+      return state.ritual.next_user_action ?? 'wait';
+    }
+
+    function render() {
+      renderPanels();
+      renderChrome();
+      renderLcd();
+    }
+
+    function stepOnce(event) {
+      state = stepDevice(state, simTime_us, event);
+    }
+
+    function tick(wall_ms) {
+      if (lastWall_ms === null) lastWall_ms = wall_ms;
+      const dtWall_ms = Math.min(250, wall_ms - lastWall_ms);
+      lastWall_ms = wall_ms;
+      accumulator_us += dtWall_ms * 1000 * ACCELERATION;
+
+      while (accumulator_us >= STEP_US) {
+        simTime_us += STEP_US;
+        const events = pendingEvents;
+        pendingEvents = [];
+        for (const event of events) stepOnce({ ...event, t_us: simTime_us });
+        stepOnce();
+        accumulator_us -= STEP_US;
+      }
+
+      render();
+      requestAnimationFrame(tick);
+    }
+
+    controls.pour.addEventListener('click', () => {
+      queueEvent({ kind: 'refuel', volume_mL: Math.min(5, MAX_FUEL_ML - state.fuel.volume_mL) });
+      if (state.combustor.phase === 'off' || state.combustor.phase === 'fuel_low') primePumps = 0;
+    });
+
+    controls.prime.addEventListener('click', () => {
+      primePumps = Math.min(3, primePumps + 1);
+      queueEvent({ kind: 'prime', pumps: 1 });
+    });
+
+    controls.crank.addEventListener('click', () => {
+      if (primePumps >= 3 || state.combustor.phase === 'prime') queueEvent({ kind: 'crank' });
+    });
+
+    controls.kill.addEventListener('click', () => queueEvent({ kind: 'kill' }));
+
+    controls.keyboard.addEventListener('click', (event) => {
+      const key = event.target.closest('.key')?.textContent?.trim();
+      if (key) handleKey(key);
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (event.key === 'Backspace') {
+        event.preventDefault();
+        handleKey('del');
+      } else if (event.key === 'Enter') {
+        handleKey('send');
+      } else if (event.key.length === 1) {
+        handleKey(event.key);
+      }
+    });
+
+    function handleKey(key) {
+      if (state.ritual.stage !== 'live' && state.compute.mode !== 'compose') return;
+      if (key === 'send') {
+        queueEvent({ kind: 'compose_send' });
+        composeText = '';
+        sentUntil_us = simTime_us + 2_000_000;
+        return;
+      }
+      if (key === 'del') {
+        composeText = composeText.slice(0, -1);
+        return;
+      }
+      const character = key === 'space' ? ' ' : key === 'shift' ? '' : key.slice(0, 1);
+      if (!character || composeText.length >= 85) return;
+      composeText += character;
+      queueEvent({ kind: 'keypress', key: character });
+    }
+
+    render();
+    requestAnimationFrame(tick);
   </script>
 
 </body>

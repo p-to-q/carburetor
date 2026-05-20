@@ -1,7 +1,7 @@
 """bus-layer prerelease simulator."""
 
 from .mathx import clamp, lerp
-from .types import INVARIANTS, BusState, CombustorState
+from .sim_types import INVARIANTS, BusState, CombustorState
 
 
 def create_bus_state() -> BusState:

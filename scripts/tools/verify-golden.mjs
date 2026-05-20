@@ -25,6 +25,85 @@ function readJson(filePath) {
   }
 }
 
+const PHASES = [
+  'off',
+  'prime',
+  'ignite',
+  'warmup',
+  'run',
+  'cooldown',
+  'flameout',
+  'fuel_low',
+  'thermal_high',
+];
+
+function decodeCombustorFrames(buf) {
+  const frameBytes = 64;
+  if (buf.length % frameBytes !== 0) {
+    fail(`run.cbf byte length ${buf.length} is not divisible by ${frameBytes}`);
+    return [];
+  }
+
+  const frames = [];
+  for (let offset = 0; offset < buf.length; offset += frameBytes) {
+    const frame = buf.subarray(offset, offset + frameBytes);
+    frames.push({
+      phase: PHASES[frame[40]],
+      running: (frame[14] & 0b10) !== 0,
+      hot_C: frame.readFloatLE(20),
+      thermal_W: frame.readFloatLE(24),
+      electric_W_raw: frame.readFloatLE(28),
+      fuel_consumed_mL: frame.readFloatLE(36),
+    });
+  }
+  return frames;
+}
+
+function verifyAssertions(name, scenarioPath, assertions) {
+  if (!assertions || typeof assertions !== 'object' || Array.isArray(assertions)) return;
+
+  const runPath = join(scenarioPath, 'run.cbf');
+  if (!existsSync(runPath)) return;
+
+  const frames = decodeCombustorFrames(readFileSync(runPath));
+  const final = frames.at(-1);
+  if (!final) {
+    fail(`${name}/run.cbf contains no frames`);
+    return;
+  }
+
+  if (
+    typeof assertions.expected_frame_count === 'number' &&
+    frames.length !== assertions.expected_frame_count
+  ) {
+    fail(
+      `${name} frame count mismatch: expected ${assertions.expected_frame_count}, got ${frames.length}`,
+    );
+  }
+
+  if (
+    typeof assertions.final_combustor_phase === 'string' &&
+    final.phase !== assertions.final_combustor_phase
+  ) {
+    fail(
+      `${name} final combustor phase mismatch: expected ${assertions.final_combustor_phase}, got ${final.phase}`,
+    );
+  }
+
+  if (typeof assertions.final_running === 'boolean' && final.running !== assertions.final_running) {
+    fail(
+      `${name} final running mismatch: expected ${assertions.final_running}, got ${final.running}`,
+    );
+  }
+
+  if (
+    typeof assertions.saw_combustor_phase === 'string' &&
+    !frames.some((frame) => frame.phase === assertions.saw_combustor_phase)
+  ) {
+    fail(`${name} never saw combustor phase ${assertions.saw_combustor_phase}`);
+  }
+}
+
 if (!existsSync(goldenRoot)) {
   fail('fixtures/golden/ is missing');
   process.exit();
@@ -90,6 +169,8 @@ for (const scenarioPath of scenarios) {
       fail(`${name}/${outputName} hash mismatch: expected ${expectedHash}, got ${actualHash}`);
     }
   }
+
+  verifyAssertions(name, scenarioPath, manifest.assertions);
 }
 
 if (process.exitCode) {

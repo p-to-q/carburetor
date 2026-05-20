@@ -1,0 +1,32 @@
+{
+  "seed": 42,
+  "inputs": {
+    "scenario": "full-burn",
+    "duration_s": 260,
+    "step_s": 1,
+    "events": [
+      {
+        "kind": "refuel",
+        "volume_mL": 5,
+        "t_us": 0
+      },
+      {
+        "kind": "prime",
+        "pumps": 3,
+        "t_us": 1000000
+      },
+      {
+        "kind": "crank",
+        "t_us": 2000000
+      }
+    ]
+  },
+  "assertions": {
+    "expected_frame_count": 261,
+    "final_combustor_phase": "fuel_low",
+    "saw_combustor_phase": "run"
+  },
+  "outputs": {
+    "run.cbf": "sha256:6dda861fe259bd0aabb0b6a89b37464e8db4653e0a5bd3e84d6ba0a826986814"
+  }
+}
