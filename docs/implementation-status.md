@@ -54,12 +54,12 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 | bus simulator                 | 🧪     | `packages/sim/src/bus/` — TS prerelease                      |
 | compute power model           | 🧪     | TS + Python prerelease; mode-derived signal / RSSI           |
 | ritual stage driver           | 🧪     | TS + Python prerelease; runtime guarded when engine is off   |
-| vapore browser simulator      | ⚠️     | `packages/vapore/` — static shell exists, sim loop not wired |
+| vapore browser simulator      | 🧪     | `packages/vapore/` — LCD canvas, audio, responsive (PRs #55–57, pending merge) |
 | headless simulator            | 🧪     | TS + Python prerelease; `headless.ts` / `headless.py`        |
 | python thermo (Cox 049)       | 🔴     | TBD v0.2                                                     |
 | telemetry codec TS            | 🧪     | `packages/sim/src/telemetry.ts` — encode/decode with SHA-256 |
 | telemetry codec Python        | 🧪     | `python/sim_mini/telemetry.py` — encode/decode with SHA-256  |
-| golden fixtures               | 🧪     | `fixtures/golden/` — 4 scenarios, codec under review (#44)   |
+| golden fixtures               | 🧪     | `fixtures/golden/` — 4 scenarios, codec review items #44–#48 closed |
 | golden manifest checker       | ✅     | `scripts/tools/verify-golden.mjs`                            |
 | cross-language sim comparison | 🧪     | `scripts/tools/compare-sim-headless.mjs`                     |
 
@@ -76,7 +76,7 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 | item                   | status | location                                              |
 | ---------------------- | ------ | ----------------------------------------------------- |
 | BOM (classica)         | ✅     | `hardware/mk1/bom-classica.csv`                       |
-| BOM (processta)        | ⚠️     | `hardware/mk1/bom-processta.csv` — pre-LoRa, stale    |
+| BOM (processta)        | 🧪     | `hardware/mk1/bom-processta.csv` — LoRa BOM, $49 COGS (PR #51, pending merge) |
 | processta architecture | 🧪     | `docs/processta-architecture.md` (PR #43)             |
 | processta BOM (in-doc) | 🧪     | `docs/processta-architecture.md` — LoRa BOM, $49 COGS |
 | schematic (KiCad)      | 🔴     | TBD v0.3, processta first                             |

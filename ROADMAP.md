@@ -27,23 +27,27 @@ all four original items completed in PR #30. blocked on review fixes.
 - ✅ #17: edge-case tests (flameout, fuel exhaustion, kill during warmup)
 - ✅ #16: golden fixtures — four scenarios (cold-start, full-burn, kill-restart, low-fuel)
 
-**review debt** (PR #30, moapacha): codec spec violation, rounding divergence, energy invariant, manifest spine. tracked in #44–#48. these must clear before merge.
+**review debt** (PR #30, moapacha): codec spec violation, rounding divergence, energy invariant, manifest spine. tracked in #44–#48 (all closed). awaiting moapacha re-review.
 
-### phase 2a.1 — LoRa architecture pivot (Claude Code: spec; Codex: impl)
+### phase 2a.1 — LoRa architecture pivot (Claude Code: spec; Codex: impl) — DONE, pending merge
 
-the processta edition switched from cellular (BG95 cat-M1) to LoRa mesh (SX1262, Meshtastic-compatible). design spec landed in PR #43. simulator types and bus model need to follow.
+the processta edition switched from cellular (BG95 cat-M1) to LoRa mesh (SX1262, Meshtastic-compatible). design spec landed in PR #43. simulator types and bus model updated in PR #53.
 
-- 🔴 #41: update types.ts/sim_types.py — radio technology field, LoRa RSSI thresholds
-- 🔴 #42: resize bus supercap model — 600J → ~50J (LoRa TX is 118 mA, not 600 mA)
-- 🔴 TEG power model correction — sustained output is 0.1–0.3W (passive cooling), not 1.5–2.0W. research validated (MIT catalytic TEG paper). architecture still works because LoRa idle is 2.8 mW.
+- ✅ #41: update types.ts/sim_types.py — `modem_mA` → `radio_mA`, LoRa RSSI thresholds (PR #53)
+- ✅ #42: resize bus model — LiFePO4 20 kJ + 50 J output cap, no supercap bank (PR #53)
+- ✅ TEG power model correction — sustained output 0.1–0.3 W confirmed in architecture.md
+- ✅ #36: bus/compute edge-case tests (PR #54, stacked on #53)
+- ✅ #49: processta BOM rewritten for LoRa (PR #51)
+- ✅ #50: Edizione I processta content updated (PR #52)
 
-### phase 2b — browser simulator (Claude Code + Codex)
+### phase 2b — browser simulator (Claude Code + Codex) — DONE, pending merge
 
-- ⚠️ vapore static HTML shell exists (`packages/vapore/`), awaiting sim loop wiring
-- 🔴 #28: Web Audio engine sound synthesis
-- 🔴 #29: responsive polish, animations, meta tags
-- 🔴 #32: Sharp Memory LCD canvas renderer
-- 🔴 Cox 049 Otto-cycle thermodynamics in Python
+vapore is feature-complete: sim loop, LCD canvas, audio, responsive layout, polish.
+
+- ✅ #32: Sharp Memory LCD 128×128 canvas renderer (PR #55)
+- ✅ #28: Web Audio engine sound — sawtooth + noise, RPM-driven (PR #56)
+- ✅ #29: responsive polish, animations, reduced-motion, meta tags (PR #57)
+- 🔴 Cox 049 Otto-cycle thermodynamics in Python (deferred to v0.3)
 
 ### phase 2c — firmware skeletons (Codex)
 
