@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from .types import BusState, ComputeMode, ComputeState, UserEvent
+from .sim_types import BusState, ComputeMode, ComputeState, UserEvent
 
 
 @dataclass(frozen=True)
@@ -11,13 +11,15 @@ class ComputeDraw:
     power_W: float
 
 
+# Power profile: ESP32-S3 MCU + LoRa SX1262 radio + Sharp Memory LCD.
+# (mcu_mA, modem_mA, lcd_uA)
 MODE_CURRENTS: dict[ComputeMode, tuple[float, float, float]] = {
-    "sleep": (0.002, 0.003, 10.0),
-    "idle": (5.0, 4.0, 50.0),
-    "rx": (5.0, 100.0, 175.0),
-    "tx": (5.0, 600.0, 175.0),
-    "compose": (7.0, 100.0, 250.0),
-    "engine_attn": (8.0, 4.0, 250.0),
+    "sleep": (0.008, 0.00016, 10.0),
+    "idle": (25.0, 4.6, 50.0),
+    "rx": (25.0, 4.6, 175.0),
+    "tx": (25.0, 118.0, 175.0),
+    "compose": (35.0, 4.6, 250.0),
+    "engine_attn": (25.0, 0.00016, 250.0),
 }
 
 MODE_SIGNAL_DBM: dict[ComputeMode, float] = {

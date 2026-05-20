@@ -5,13 +5,18 @@ export interface ComputeDraw {
   power_W: number;
 }
 
+// Power profile: ESP32-S3 MCU + LoRa SX1262 radio + Sharp Memory LCD.
+// MCU: deep sleep ~8 µA, modem-sleep 80 MHz ~25 mA, active ~35 mA.
+// Radio: SX1262 sleep 0.16 µA, RX 4.6 mA, TX +22dBm 118 mA.
+// LCD: LS013B7DH03 static ~10 µA, 1Hz refresh ~50 µA, active ~250 µA.
+// See docs/research/parameter-validation-2026-05-20.md for sources.
 const MODE_CURRENTS: Record<ComputeMode, Pick<ComputeState, 'mcu_mA' | 'modem_mA' | 'lcd_uA'>> = {
-  sleep: { mcu_mA: 0.002, modem_mA: 0.003, lcd_uA: 10 },
-  idle: { mcu_mA: 5, modem_mA: 4, lcd_uA: 50 },
-  rx: { mcu_mA: 5, modem_mA: 100, lcd_uA: 175 },
-  tx: { mcu_mA: 5, modem_mA: 600, lcd_uA: 175 },
-  compose: { mcu_mA: 7, modem_mA: 100, lcd_uA: 250 },
-  engine_attn: { mcu_mA: 8, modem_mA: 4, lcd_uA: 250 },
+  sleep: { mcu_mA: 0.008, modem_mA: 0.00016, lcd_uA: 10 },
+  idle: { mcu_mA: 25, modem_mA: 4.6, lcd_uA: 50 },
+  rx: { mcu_mA: 25, modem_mA: 4.6, lcd_uA: 175 },
+  tx: { mcu_mA: 25, modem_mA: 118, lcd_uA: 175 },
+  compose: { mcu_mA: 35, modem_mA: 4.6, lcd_uA: 250 },
+  engine_attn: { mcu_mA: 25, modem_mA: 0.00016, lcd_uA: 250 },
 };
 
 const MODE_SIGNAL_DBM: Record<ComputeMode, number> = {

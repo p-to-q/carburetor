@@ -6,7 +6,10 @@ type Invariants = typeof INVARIANTS;
 export const COX_049_WASTE_HEAT_TO_SHAFT_RATIO = 7.0;
 export const SHAFT_TO_RAW_ELECTRIC_EFFICIENCY = 0.65;
 export const RAW_ELECTRIC_OUTPUT_CAP_W = 7.2;
-export const GLOW_FUEL_CHEMICAL_W_PER_ML_PER_S = 18_720;
+// Glow fuel: ~75% methanol (15.7 MJ/L) + ~25% nitromethane (12.9 MJ/L),
+// displaced ~15-20% by oil. Net volumetric energy density: ~12.5 MJ/L.
+// Previous value (18,720) was ~45% too high — see docs/research/parameter-validation-2026-05-20.md
+export const GLOW_FUEL_CHEMICAL_W_PER_ML_PER_S = 12_500;
 export const COX_049_SHAFT_THERMAL_EFFICIENCY = 0.125;
 export const COX_049_RUN_FUEL_BURN_ML_PER_S =
   45 / (GLOW_FUEL_CHEMICAL_W_PER_ML_PER_S * COX_049_SHAFT_THERMAL_EFFICIENCY);

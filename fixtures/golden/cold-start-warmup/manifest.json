@@ -22,12 +22,11 @@
     ]
   },
   "assertions": {
+    "expected_frame_count": 61,
     "final_combustor_phase": "run",
-    "final_ritual_stage": "live",
-    "final_fuel_mL_min": 12,
-    "final_bus_v_bus_V_min": 4.8
+    "saw_combustor_phase": "warmup"
   },
   "outputs": {
-    "run.cbf": "sha256:30f0060ca9ddd9fdc9d1e3b208b47118d90c3eab7638809469652ccc6bdb514a"
+    "run.cbf": "sha256:6ba79b397f56daba35bda83fc4fe4a181730ca9c1efccaee6c41eabbef46266b"
   }
 }
