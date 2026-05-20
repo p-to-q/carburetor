@@ -50,7 +50,8 @@ mk ii catalyst pad: 400–600 °C. catalyst is shielded by ceramic plus aerogel;
 **FCC / CE / equivalents.**
 
 - the BG95-M3 modem (classica edition) ships pre-certified for cat-M1 / nb-IoT / 2G in supported regions. carburetor's enclosure does not modify the modem's RF characteristics.
-- the ESP32-S3 (processta edition) uses BLE only; pre-certified for FCC, CE, and MIC.
+- the EBYTE E22-900M22S (processta edition) uses LoRa at 868 MHz (EU) or 915 MHz (US/AU). the SX1262 is pre-certified by EBYTE for FCC and CE. regional duty-cycle and power limits apply: EU 868 MHz is limited to 1% duty cycle or listen-before-talk; US 915 MHz allows up to 1W EIRP under FCC Part 15.247. processta TX at +22 dBm (~158 mW) is well within limits.
+- the ESP32-S3 (processta edition) also uses BLE for Meshtastic phone pairing; pre-certified for FCC, CE, and MIC.
 - the engine is not a regulated component in any consumer jurisdiction we know of, but check local hobby-fuel and small-engine emissions law before commercial distribution.
 - **the device is not certified for aviation use.** do not bring it on aircraft, in checked baggage or carry-on. glow fuel is air-hazmat; lithium cells are restricted; the engine itself, while small, is a combustion device.
 
