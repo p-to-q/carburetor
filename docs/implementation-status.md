@@ -46,44 +46,44 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 
 ## simulator
 
-| item                                | status | location                                                     |
-| ----------------------------------- | ------ | ------------------------------------------------------------ |
-| `@carburetor/sim` package           | 🧪     | `packages/sim/` — TS core builds and tests                   |
-| fuel layer simulator                | 🧪     | TS + Python prerelease; temperature responds to case heat    |
-| combustor state machine             | 🧪     | TS + Python prerelease; fuel burn coupled to shaft power     |
-| bus simulator                       | 🧪     | `packages/sim/src/bus/` — TS prerelease                      |
-| compute power model                 | 🧪     | TS + Python prerelease; mode-derived signal / RSSI           |
-| ritual stage driver                 | 🧪     | TS + Python prerelease; runtime guarded when engine is off   |
-| vapore browser simulator            | ⚠️     | `packages/vapore/` — static shell exists, sim loop not wired |
-| headless simulator                  | 🧪     | TS + Python prerelease; `headless.ts` / `headless.py`        |
-| python thermo (Cox 049)             | 🔴     | TBD v0.2                                                     |
-| telemetry codec TS                  | 🧪     | `packages/sim/src/telemetry.ts` — encode/decode with SHA-256 |
-| telemetry codec Python              | 🧪     | `python/sim_mini/telemetry.py` — encode/decode with SHA-256  |
-| golden fixtures                     | 🧪     | `fixtures/golden/` — 4 scenarios, codec under review (#44)   |
-| golden manifest checker             | ✅     | `scripts/tools/verify-golden.mjs`                            |
-| cross-language sim comparison       | 🧪     | `scripts/tools/compare-sim-headless.mjs`                     |
+| item                          | status | location                                                     |
+| ----------------------------- | ------ | ------------------------------------------------------------ |
+| `@carburetor/sim` package     | 🧪     | `packages/sim/` — TS core builds and tests                   |
+| fuel layer simulator          | 🧪     | TS + Python prerelease; temperature responds to case heat    |
+| combustor state machine       | 🧪     | TS + Python prerelease; fuel burn coupled to shaft power     |
+| bus simulator                 | 🧪     | `packages/sim/src/bus/` — TS prerelease                      |
+| compute power model           | 🧪     | TS + Python prerelease; mode-derived signal / RSSI           |
+| ritual stage driver           | 🧪     | TS + Python prerelease; runtime guarded when engine is off   |
+| vapore browser simulator      | ⚠️     | `packages/vapore/` — static shell exists, sim loop not wired |
+| headless simulator            | 🧪     | TS + Python prerelease; `headless.ts` / `headless.py`        |
+| python thermo (Cox 049)       | 🔴     | TBD v0.2                                                     |
+| telemetry codec TS            | 🧪     | `packages/sim/src/telemetry.ts` — encode/decode with SHA-256 |
+| telemetry codec Python        | 🧪     | `python/sim_mini/telemetry.py` — encode/decode with SHA-256  |
+| golden fixtures               | 🧪     | `fixtures/golden/` — 4 scenarios, codec under review (#44)   |
+| golden manifest checker       | ✅     | `scripts/tools/verify-golden.mjs`                            |
+| cross-language sim comparison | 🧪     | `scripts/tools/compare-sim-headless.mjs`                     |
 
 ## firmware
 
-| item                   | status | location                                          |
-| ---------------------- | ------ | ------------------------------------------------- |
-| classica skeleton  | 🔴     | `firmware/classica/` — Zephyr + nRF52840, TBD v0.2c |
-| processta skeleton | 🔴     | `firmware/processta/` — ESP-IDF + ESP32-S3, TBD v0.2c |
-| mk ii firmware     | 🔴     | not on v0.2 path                                     |
+| item               | status | location                                                  |
+| ------------------ | ------ | --------------------------------------------------------- |
+| classica skeleton  | 🔴     | `firmware/mk1-classica/` — Zephyr + nRF52840, TBD v0.2c   |
+| processta skeleton | 🔴     | `firmware/mk1-processta/` — ESP-IDF + ESP32-S3, TBD v0.2c |
+| mk ii firmware     | 🔴     | not on v0.2 path                                          |
 
 ## hardware
 
-| item                       | status | location                                            |
-| -------------------------- | ------ | --------------------------------------------------- |
-| BOM (classica)             | ✅     | `hardware/mk1/bom-classica.csv`                     |
-| BOM (processta)            | ⚠️     | `hardware/mk1/bom-processta.csv` — pre-LoRa, stale  |
-| processta architecture     | 🧪     | `docs/processta-architecture.md` (PR #43)            |
-| processta BOM (in-doc)     | 🧪     | `docs/processta-architecture.md` — LoRa BOM, $49 COGS |
-| schematic (KiCad)          | 🔴     | TBD v0.3, processta first                            |
-| PCB                        | 🔴     | TBD v0.3, 4-layer 60×100mm (JLCPCB)                 |
-| enclosure CAD              | 🔴     | TBD v0.3, injection-molded ABS                       |
-| exploded view (SVG)        | ✅     | `design/exploded-view-mk1.svg`                       |
-| mk ii combustor BOM        | 🔴     | TBD v0.4                                             |
+| item                   | status | location                                              |
+| ---------------------- | ------ | ----------------------------------------------------- |
+| BOM (classica)         | ✅     | `hardware/mk1/bom-classica.csv`                       |
+| BOM (processta)        | ⚠️     | `hardware/mk1/bom-processta.csv` — pre-LoRa, stale    |
+| processta architecture | 🧪     | `docs/processta-architecture.md` (PR #43)             |
+| processta BOM (in-doc) | 🧪     | `docs/processta-architecture.md` — LoRa BOM, $49 COGS |
+| schematic (KiCad)      | 🔴     | TBD v0.3, processta first                             |
+| PCB                    | 🔴     | TBD v0.3, 4-layer 60×100mm (JLCPCB)                   |
+| enclosure CAD          | 🔴     | TBD v0.3, injection-molded ABS                        |
+| exploded view (SVG)    | ✅     | `design/exploded-view-mk1.svg`                        |
+| mk ii combustor BOM    | 🔴     | TBD v0.4                                              |
 
 ## edizione I (print)
 
