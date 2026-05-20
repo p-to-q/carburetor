@@ -11,66 +11,67 @@ the actual artwork is `05-bom-foldout.svg`. this markdown documents the layout f
 │                                  │                                   │
 │  CLASSICA · ~$760                │   PROCESSTA · ~$120               │
 │                                  │                                   │
-│  FUEL                            │   FUEL                            │
-│    pyrex 15 mL                   │     PET 30 mL                     │
-│    brass filler cap (chained)    │     rubber stopper                │
-│    silicone fuel line            │     silicone fuel line            │
-│    primer bulb 3 cc              │     primer bulb 3 cc              │
+│  FUEL                            │   FUEL / HEAT                     │
+│    pyrex 15 mL                   │     butane catalytic heater       │
+│    brass filler cap (chained)    │     Pt/Al2O3 catalyst             │
+│    silicone fuel line            │     Bi2Te3 TEG module             │
+│    primer bulb 3 cc              │     passive cold-side fins        │
 │                                  │                                   │
-│  COMBUSTOR                       │   COMBUSTOR                       │
-│    cox tee dee .049              │     SH .15 nitro                  │
-│    glow plug short ×2            │     glow plug universal ×2        │
-│    cox 049 muffler               │     generic muffler               │
-│    t-motor 1806 (PMG)            │     emax 1806 (PMG)               │
-│    shaft coupling                │     shaft coupling                │
-│    k-type thermocouple ×2        │     ds18b20 sensor ×2             │
-│    glow plug driver              │     glow plug igniter clip        │
+│  COMBUSTOR                       │   RADIO                           │
+│    cox tee dee .049              │     E22-900M22S / SX1262          │
+│    glow plug short ×2            │     868/915 MHz LoRa              │
+│    cox 049 muffler               │     +22 dBm TX                    │
+│    t-motor 1806 (PMG)            │     SMA or spring antenna         │
+│    shaft coupling                │     Meshtastic-compatible         │
+│    k-type thermocouple ×2        │                                   │
+│    glow plug driver              │                                   │
 │    prop hub adapter              │                                   │
 │                                  │                                   │
 │  BUS                             │   BUS                             │
-│    schottky bridge 1N5817 ×4     │     schottky bridge 1N5819 ×4     │
-│    LTC3119 MPPT eval             │     TP4056 charging module        │
-│    Maxwell BCAP0300 ×2           │     MT3608 boost module           │
-│    KeepPower 18350 600 mAh       │     generic 18650 3000 mAh        │
-│    18350 holder vertical         │     18650 holder                  │
-│    sk26 schottky ×2              │     100 F supercap                │
-│    SRR1280-470M inductor         │     SMD inductor 47 µH            │
+│    schottky bridge 1N5817 ×4     │     LiFePO4 18650 1800 mAh        │
+│    LTC3119 MPPT eval             │     BQ25170 charger               │
+│    Maxwell BCAP0300 ×2           │     TPS562200 input buck          │
+│    KeepPower 18350 600 mAh       │     AP2112 3.3 V regulator        │
+│    18350 holder vertical         │     USB-C power connector         │
+│    sk26 schottky ×2              │     18650 spring clip             │
+│    SRR1280-470M inductor         │                                   │
 │    output filter cap ×4          │                                   │
 │                                  │                                   │
 │  COMPUTE                         │   COMPUTE                         │
-│    nRF52840 dongle               │     LilyGo T-Display-S3           │
-│    Quectel BG95-M3               │     M5Stack CardKB Mini           │
-│    BG95 EVB breakout             │     USB-C cable                   │
-│    Sharp Memory LCD 2.7"         │     header pins 40-pin            │
+│    nRF52840 dongle               │     ESP32-S3-WROOM-1-N8           │
+│    Quectel BG95-M3               │     Sharp LS027B7DH01             │
+│    BG95 EVB breakout             │     5× tactile switches           │
+│    Sharp Memory LCD 2.7"         │     passives                      │
 │    Sharp LCD breakout            │                                   │
-│    BlackBerry Q10 keyboard       │   (no modem — BLE to paired phone)│
+│    BlackBerry Q10 keyboard       │   (LoRa mesh, no cellular modem)  │
 │    Solder Party Q10 carrier      │                                   │
 │    nano-SIM socket               │                                   │
 │    u.fl to sma pigtail           │                                   │
 │    quad-band cell antenna        │                                   │
 │                                  │                                   │
-│  RITUAL                          │   RITUAL                          │
-│    analog voltmeter 0–6 V        │     analog voltmeter (generic)    │
-│    brass mil-toggle DPDT         │     toggle SPDT                   │
-│    chrome flip-guard             │     LED amber 3 mm                │
-│    brass hand-crank (custom)     │     pull-cord (salvage or fab)    │
-│    incandescent indicator T1-3/4 │     piezo buzzer 3–5 V            │
-│    piezo buzzer 30 mm            │     canvas tool pouch             │
-│    canvas case (custom-sewn)     │     banana terminals ×2           │
-│    brass banana terminals ×2     │     nylon strap                   │
+│  RITUAL                          │   ENCLOSURE / UI                  │
+│    analog voltmeter 0–6 V        │     injection-molded ABS          │
+│    brass mil-toggle DPDT         │     brunswick green finish        │
+│    chrome flip-guard             │     recessed display window       │
+│    brass hand-crank (custom)     │     bottom USB-C opening          │
+│    incandescent indicator T1-3/4 │     rear battery door             │
+│    piezo buzzer 30 mm            │     internal antenna option       │
+│    canvas case (custom-sewn)     │                                   │
+│    brass banana terminals ×2     │                                   │
 │    leather strap + d-rings       │                                   │
 │                                  │                                   │
 │  HARDWARE-SHARED                 │   HARDWARE-SHARED                 │
-│    M2.5 brass screws kit         │     M2.5 screws assortment        │
-│    heat-set inserts ×50          │     heat-set inserts ×25          │
-│    silicone gasket sheet 1 mm    │     perfboard 70×90               │
-│    aerogel blanket 5 mm          │     dupont jumper bundle          │
-│    workshop consumables          │     workshop consumables          │
-│    PCB fab JLCPCB 4-layer ×5     │     3D-printed enclosure (PLA)    │
+│    M2.5 brass screws kit         │     4-layer PCB 60×100 mm         │
+│    heat-set inserts ×50          │     PCBA assembly                 │
+│    silicone gasket sheet 1 mm    │     packaging                     │
+│    aerogel blanket 5 mm          │                                   │
+│    workshop consumables          │                                   │
+│    PCB fab JLCPCB 4-layer ×5     │                                   │
 │                                  │                                   │
 │  ─────────────                   │   ─────────────                   │
-│  TOTAL                  ~$763.50 │   TOTAL              ~$193.85     │
-│                                  │   stretch            ~$120        │
+│  TOTAL                  ~$763.50 │   BOM subtotal        ~$41.20     │
+│                                  │   COGS                ~$49        │
+│                                  │   retail target       ~$120       │
 │                                  │                                   │
 └──────────────────────────────────┴───────────────────────────────────┘
 ```

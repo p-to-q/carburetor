@@ -97,65 +97,61 @@
   <!-- ============ RIGHT COLUMN: PROCESSTA ============ -->
   <text x="440" y="65" class="h">PROCESSTA · ~$120</text>
 
-  <!-- fuel -->
-  <text x="440" y="92" class="layer">FUEL</text>
+  <!-- fuel / heat -->
+  <text x="440" y="92" class="layer">FUEL / HEAT</text>
   <g transform="translate(450, 105)">
-    <text class="body">PET 30 mL · rubber stopper + brass collar</text>
-    <text y="11" class="body">silicone fuel line · primer bulb</text>
+    <text class="body">butane catalytic heater · Pt/Al2O3 catalyst</text>
+    <text y="11" class="body">Bi2Te3 TEG module · passive cold-side fins</text>
   </g>
 
-  <!-- combustor -->
-  <text x="440" y="142" class="layer">COMBUSTOR</text>
+  <!-- radio -->
+  <text x="440" y="142" class="layer">RADIO</text>
   <g transform="translate(450, 155)">
-    <text class="body">SH .15 nitro 2-stroke (or comparable)</text>
-    <text y="10" class="body">glow plug universal ×2 · generic muffler</text>
-    <text y="20" class="body">EMAX 1806 PMG · shaft coupling</text>
-    <text y="30" class="body">DS18B20 temp sensor ×2</text>
-    <text y="40" class="body">glow plug igniter clip (rechargeable)</text>
+    <text class="body">E22-900M22S / SX1262 LoRa</text>
+    <text y="10" class="body">868/915 MHz · +22 dBm TX</text>
+    <text y="20" class="body">SMA or spring antenna</text>
+    <text y="30" class="body">Meshtastic-compatible mesh</text>
   </g>
 
   <!-- bus -->
   <text x="440" y="217" class="layer">BUS</text>
   <g transform="translate(450, 230)">
-    <text class="body">1N5819 schottky bridge ×4</text>
-    <text y="10" class="body">TP4056 charging module</text>
-    <text y="20" class="body">MT3608 boost converter</text>
-    <text y="30" class="body">18650 3000 mAh · single holder</text>
-    <text y="40" class="body">100 F supercap · SMD 47 µH inductor</text>
+    <text class="body">LiFePO4 18650 1800 mAh</text>
+    <text y="10" class="body">BQ25170 charger · TPS562200 input buck</text>
+    <text y="20" class="body">AP2112 3.3 V regulator</text>
+    <text y="30" class="body">USB-C power · 18650 spring clip</text>
   </g>
 
   <!-- compute -->
   <text x="440" y="290" class="layer">COMPUTE</text>
   <g transform="translate(450, 303)">
-    <text class="body">LilyGo T-Display-S3 (ESP32-S3 + 1.9" TFT)</text>
-    <text y="10" class="body">M5Stack CardKB Mini i²c QWERTY</text>
-    <text y="20" class="body">USB-C cable + header pins</text>
+    <text class="body">ESP32-S3-WROOM-1-N8</text>
+    <text y="10" class="body">Sharp LS027B7DH01 memory LCD</text>
+    <text y="20" class="body">5× tactile switches · passives</text>
   </g>
-  <text x="450" y="340" class="micro">no modem — BLE serial to paired smartphone</text>
+  <text x="450" y="340" class="micro">LoRa mesh · no cellular modem</text>
 
-  <!-- ritual -->
-  <text x="440" y="397" class="layer">RITUAL</text>
+  <!-- enclosure / ui -->
+  <text x="440" y="397" class="layer">ENCLOSURE / UI</text>
   <g transform="translate(450, 410)">
-    <text class="body">analog voltmeter 0–10 V (chinese-export)</text>
-    <text y="10" class="body">toggle SPDT · LED amber 3 mm</text>
-    <text y="20" class="body">pull-cord (salvage or fab)</text>
-    <text y="30" class="body">piezo buzzer 3–5 V</text>
-    <text y="40" class="body">army-surplus canvas tool pouch</text>
-    <text y="50" class="body">banana terminals ×2 · nylon strap</text>
+    <text class="body">injection-molded ABS · brunswick green</text>
+    <text y="10" class="body">recessed display window · 5-button face</text>
+    <text y="20" class="body">bottom USB-C opening · battery door</text>
+    <text y="30" class="body">internal antenna option</text>
   </g>
 
   <!-- shared -->
   <text x="440" y="482" class="layer">HARDWARE-SHARED</text>
   <g transform="translate(450, 495)">
-    <text class="body">M2.5 screws · heat-set inserts ×25</text>
-    <text y="10" class="body">perfboard · dupont jumpers · solder</text>
-    <text y="20" class="body">3D-printed enclosure (PLA, ~80 g)</text>
+    <text class="body">4-layer PCB 60×100 mm</text>
+    <text y="10" class="body">PCBA assembly · packaging</text>
+    <text y="20" class="body">BOM subtotal ~$41.20 · COGS ~$49</text>
   </g>
 
   <!-- right total -->
   <line x1="440" y1="535" x2="800" y2="535" class="brass-rule"/>
   <text x="440" y="548" class="total">TOTAL</text>
-  <text x="800" y="548" class="total" text-anchor="end">~$193.85 · stretch ~$120</text>
+  <text x="800" y="548" class="total" text-anchor="end">COGS ~$49 · retail ~$120</text>
 
   <!-- bottom small print across both columns -->
   <text x="420" y="578" class="italic" text-anchor="middle">classica and processta are the same project. the architecture does not move.</text>

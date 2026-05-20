@@ -10,18 +10,19 @@ set in Plex Mono 9pt / 13pt leading. brass column rules between the three column
 cost                │  $0           │  ~$120 USD       │  ~$760 USD
 time                │  5 minutes    │  one weekend     │  several weekends
 parts               │  browser only │  esp32-s3 +      │  cox tee dee +
-                    │               │   nitro engine + │   bg95 + sharp
-                    │               │   M5 cardkb +    │   memory lcd + q10
-                    │               │   tool pouch     │   + brass + canvas
+                    │               │   catalytic TEG +│   bg95 + sharp
+                    │               │   LoRa + sharp   │   memory lcd + q10
+                    │               │   lcd + ABS case │   + brass + canvas
 ─────────────────────────────────────────────────────────────────────────
-modem               │  simulated    │  none — BLE to   │  cat-m1 / nb-iot /
-                    │               │   paired phone   │   2g fallback
-display             │  canvas       │  1.9" backlit    │  2.7" sharp memory
-                    │               │   TFT            │   LCD (reflective)
-keyboard            │  on-screen    │  M5 cardkb       │  blackberry q10
-case                │  none         │  army-surplus    │  custom-sewn
-                    │               │   canvas tool    │   brunswick green
-                    │               │   pouch          │   canvas + brass
+radio               │  simulated    │  sx1262 LoRa     │  cat-m1 / nb-iot /
+                    │               │   mesh           │   2g fallback
+display             │  canvas       │  2.7" sharp      │  2.7" sharp memory
+                    │               │   memory lcd     │   LCD (reflective)
+keyboard            │  on-screen    │  5 tactile       │  blackberry q10
+                    │               │   buttons        │
+case                │  none         │  injection-      │  custom-sewn
+                    │               │   molded ABS     │   brunswick green
+                    │               │                 │   canvas + brass
 ─────────────────────────────────────────────────────────────────────────
 target reader       │  curious      │  maker · student │  archival
                     │               │   · weekend      │   builder · long
@@ -42,13 +43,13 @@ toy. it is the architecture's first-class implementation.
 
 PROCESSTA — the maker
 
-~$120, one weekend, parts from a single aliexpress order.
-an esp32-s3 with a built-in display, a generic .15
-nitro engine, a tp4056 charging module, a tool-pouch
-case. no cellular modem; the phone in your pocket does
-the cellular work over BLE. processta is more honest
-with the "you cannot call on it" rule than classica —
-it cannot even pretend.
+~$120, one weekend, a quieter bill of materials.
+an esp32-s3, an sx1262 LoRa radio, a sharp memory
+lcd, five tactile buttons, a catalytic TEG power path,
+a BQ25170 charger, and an injection-molded ABS case.
+no cellular modem, no SIM slot, no calls. processta is
+more honest with the "you cannot call on it" rule than
+classica — it cannot even pretend.
 
 CLASSICA — the definitive
 
