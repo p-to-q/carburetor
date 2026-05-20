@@ -15,7 +15,7 @@ powered by butane catalytic TEG (mk ii) or USB-C (dev/daily use).
                           │    catalyst ──► TEG module          │
                           │    (Pt/Al₂O₃)    (Bi₂Te₃)         │
                           │                   │                 │
-                          │              0.5–1.5W DC            │
+                          │         0.1–0.3W sustained DC       │
                           └───────────────────┼─────────────────┘
                                               │
                     USB-C ────────────┐       │
@@ -93,10 +93,12 @@ powered by butane catalytic TEG (mk ii) or USB-C (dev/daily use).
 ### power management: TI BQ25170 (~$1.50)
 
 - single-cell linear charger
-- input: 4.35–13.5V (handles TEG and USB-C)
-- configurable charge current: 10–350 mA
-- charge voltage: 3.6V for LiFePO4 (configurable via resistor)
-- tiny: SOT-23 package
+- input: 3.0–6.6V operating (30V tolerant, suspends charging >6.6V)
+- configurable charge current: 10–800 mA (set via ISET resistor)
+- charge voltage: 3.6V for LiFePO4 (configurable via VSET resistor)
+- tiny: SOT-23-6 package
+- note: TEG output must be regulated to <6.6V. a 5V buck (TPS562200,
+  ~$0.40) between rectifier and BQ25170 is recommended for noisy sources
 
 ### antenna: 868/915 MHz spring or PCB trace (~$0.50)
 
@@ -162,17 +164,25 @@ messages per charge:       1100 / 0.29 = ~3,800 messages
 ### TEG-powered continuous
 
 ```
-TEG output (realistic):    0.5–1.0W
-at 3.2V:                   156–312 mA charge current
-idle draw:                 0.86 mA
+TEG output (peak, cold start):    0.5–1.0W (ΔT ~100°C)
+TEG output (sustained, passive):  0.1–0.3W (ΔT collapses to 30–50°C)
+at 3.2V sustained:                31–94 mA charge current
+idle draw:                        0.86 mA
 ──────────────────────────────────
-net charge rate:           155–311 mA
-time to full from 50%:     550 mAh / 155 mA = 3.5 hours (worst case)
+net charge rate (worst case):     ~30 mA
+time to full from 50%:            550 mAh / 30 mA = 18 hours
 ```
 
-the TEG provides vastly more power than LoRa consumes. the fuel
-becomes a "top off whenever" ritual rather than a "must refuel now"
-emergency. this is the right energy relationship.
+the TEG provides ~35–100× more power than LoRa idle draw. the cold-side
+thermal management limits sustained output (passive fins can't reject
+heat fast enough in a phone-sized enclosure), but even worst-case 0.1W
+keeps the battery topped up. the fuel becomes a "top off whenever"
+ritual rather than a "must refuel now" emergency.
+
+note: the bottleneck is cold-side heatsinking, not the catalyst or TEG
+module. a larger fin area or thermally conductive case back could push
+sustained output toward 0.3–0.5W. this is a mechanical design problem,
+not an electrical one.
 
 ---
 
