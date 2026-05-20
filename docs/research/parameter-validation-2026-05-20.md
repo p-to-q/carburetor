@@ -80,16 +80,32 @@ Butane (28.4 kJ/mL) → Catalytic combustion (85–95%)
   = Overall: 2–4% fuel-to-electrical
 ```
 
-### Achievable Power at Phone Scale
+### Achievable Power at Phone Scale — REVISED
 
-| Configuration | Power Output | Notes |
-|---|---|---|
-| Single 56mm TEG module, passive cooling | 0.5–1.5W | deltaT ~80–120°C realistic |
-| Single module, active heatsink + fan | 1.5–2.5W | Fan consumes 0.2–0.5W |
-| Two modules, larger form factor | 2–3W | No longer phone-sized |
-| Academic bench results | 8–10W | Meso-scale, lab conditions |
+| Configuration | Peak Output | Sustained Output | Notes |
+|---|---|---|---|
+| Single 40mm TEG, passive cooling | 0.5–1.0W | **0.1–0.3W** | Cold side heats up, ΔT collapses to 30–50°C |
+| Single module, active heatsink + fan | 1.5–2.5W | 1.0–1.5W | Fan consumes 0.2–0.5W, not phone-scale |
+| Two modules, larger form factor | 2–3W | 1.5–2.0W | No longer phone-sized |
+| Academic bench results (MIT, active cooling) | 5.8W | — | Lab conditions, water-cooled cold side |
 
-**Verdict**: 0.5–1.5W continuous is realistic for a phone-sized device.
+**CRITICAL CORRECTION**: The previous "0.5–1.5W continuous" claim was
+overstated. The bottleneck is **cold-side thermal management**. In a
+phone-sized device with passive cooling (small fins, no fan), the cold
+side equilibrates within minutes, collapsing ΔT from 100°C to 30–50°C.
+
+Realistic sustained output: **0.1–0.3W** with passive cooling.
+
+**Why the architecture still works**: LoRa idle draw is 0.86 mA × 3.3V
+= 2.8 mW. Even 0.1W (100 mW) sustained is **35× the idle requirement**.
+The TEG charges the LiFePO4 battery continuously; the battery handles
+TX bursts (118 mA × 1 second = negligible drain). Net charge rate at
+0.1W: ~30 mA into a 1100 mAh cell → full charge in ~37 hours from empty.
+
+**Implication for docs**: The `docs/architecture.md` figure of "1.5–2.0W
+into bus" for mk ii should be revised to "0.1–0.3W sustained, 0.5W peak
+at cold start." The processta power budget remains viable because LoRa's
+power draw is so low.
 
 ### Butane Fuel Properties (verified)
 

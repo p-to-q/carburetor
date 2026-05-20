@@ -111,7 +111,7 @@ interface CombustorState {
 | acoustic at 1 m, muffled | 85–90 dBA | < 30 dBA |
 | hot face | 200–300 °C | 400–600 °C catalyst, 180 °C TEG hot |
 | warm-up | 10–15 s | 30–60 s |
-| usable electric output | 5–8 W into bus | 1.5–2.0 W into bus |
+| usable electric output | 5–8 W into bus | 0.1–0.3 W sustained (passive cooling) |
 | state-machine transitions | 11 | 9 |
 
 **how to test.** torque transducer + tachometer for mk i; thermocouples + load resistor for mk ii. both produce telemetry frames at 100 Hz (see `codec-protocol.md`).
@@ -124,7 +124,7 @@ interface CombustorState {
 
 **what.** rectifies, regulates, buffers, distributes.
 
-**physics.** AC from the BLDC-as-PMG → schottky bridge (Vf ~0.3 V per leg) → MPPT buck (`LTC3119`, ~92 % η at operating point) → supercap pair (300 F × 2 in series → 150 F at 5 V, ~600 J usable) running in parallel with a li-ion buffer (18350, 600 mAh × 3.7 V ≈ 8 kJ). the supercap absorbs the modem's ~600 mA TX transients; the li-ion buffers slower discharge between engine cycles.
+**physics.** AC from the BLDC-as-PMG → schottky bridge (Vf ~0.3 V per leg) → MPPT buck (`LTC3119`, ~92 % η at operating point) → small supercap buffer (~50 J usable for the LoRa profile) running in parallel with a li-ion buffer (18350, 600 mAh × 3.7 V ≈ 8 kJ). the supercap absorbs the LoRa radio's ~118 mA TX transients; the li-ion buffers slower discharge between engine cycles.
 
 the key insight at this layer: **the engine is the charger, the li-ion is the capacitor.** inverted from a normal phone.
 
@@ -153,8 +153,8 @@ energy-conservation invariant: `e_in_J >= e_out_J + thermal_losses`. enforced as
 |---|---|
 | supercap bus | 5 V nominal, 4.4–5.4 V operating |
 | li-ion bus | 3.7 V nominal, 3.0–4.2 V operating |
-| modem TX transient | 600 mA @ 3.8 V = 2.3 W, ~5 ms |
-| supercap holdup at peak draw | 30+ s |
+| LoRa TX transient | 118 mA @ 3.8 V = 0.45 W |
+| supercap usable energy | ~50 J |
 | li-ion holdup at idle after one burst-charge | ~12 h |
 
 **how to test.** four-trace scope on (v_bus, i_bus, v_li, t_case). USB-PD analyzer at the compute rail.
@@ -165,23 +165,26 @@ energy-conservation invariant: `e_in_J >= e_out_J + thermal_losses`. enforced as
 
 ## layer 4 — compute
 
-**what.** runs an OS, drives the screen, drives the modem.
+**what.** runs an OS, drives the screen, drives the radio.
 
-**physics.** nrf52840 at 64 MHz, ~5 mA active. sharp memory lcd at 50 µW static, ~175 µW dynamic refresh. bg95 in PSM at 3 µA, in RRC-connected at 100 mA, in TX peak at 600 mA. total time-averaged under typical messaging load: ~50 mW.
+**physics.** esp32-s3 at 80 MHz, ~25 mA idle and ~35 mA active. sharp memory lcd at ~10 µA static, ~175 µA dynamic refresh. SX1262 LoRa sleeps near 0.16 µA, receives around 4.6 mA, and transmits at ~118 mA at +22 dBm. total time-averaged under typical messaging load stays below the old cellular profile.
 
 **types.**
 
 ```typescript
 type ComputeMode =
-  | 'sleep'           // deep sleep, modem PSM, lcd holding image
+  | 'sleep'           // deep sleep, LoRa radio sleep, lcd holding image
   | 'idle'            // mcu awake, screen on, no traffic
-  | 'rx'              // modem registered, listening
-  | 'tx'              // modem transmitting
+  | 'rx'              // LoRa radio listening
+  | 'tx'              // LoRa radio transmitting
   | 'compose'         // user typing
   | 'engine_attn';    // engine ui (during warmup or refuel)
 
+type RadioTechnology = 'lora' | 'cat_m1';
+
 interface ComputeState {
   mode: ComputeMode;
+  radio_technology: RadioTechnology;
   mcu_mA: number;
   modem_mA: number;
   lcd_uA: number;
@@ -196,13 +199,13 @@ interface ComputeState {
 
 | mode | mcu | modem | lcd | total |
 |---|---|---|---|---|
-| sleep | 2 µA | 3 µA | 50 µW | ~25 µW |
-| idle | 5 mA | 100 mA | 175 µW | ~390 mW |
-| tx (5 ms burst) | 5 mA | 600 mA | 175 µW | ~2.3 W |
+| sleep | 8 µA | 0.16 µA | 10 µA | ~30 µW |
+| idle | 25 mA | 4.6 mA | 50 µA | ~110 mW |
+| tx | 25 mA | 118 mA | 175 µA | ~530 mW |
 
 **how to test.** keithley source-measure unit on each rail. firmware exposes per-mode current expectations; `pnpm bench:power-modes` asserts.
 
-**what you can swap.** the SoC (esp32-s3 if onboard wifi/bt is needed). the display (e-ink for mk ii). the modem (sim7080g as fallback). the OS (we use zephyr; nuttx is acceptable for ports).
+**what you can swap.** the SoC. the display (e-ink for mk ii). the radio (`cat_m1` remains a contract option for fallback). the OS (we use zephyr; nuttx is acceptable for ports).
 
 ---
 
