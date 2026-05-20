@@ -69,16 +69,16 @@ what ships, what is partial, what is stub. this is the project's live cross-sect
 
 ## hardware
 
-| item                    | status | location                         |
-| ----------------------- | ------ | -------------------------------- |
-| mk1 BOM (classica)      | ✅     | `hardware/mk1/bom-classica.csv`  |
-| mk1 BOM (processta)     | ✅     | `hardware/mk1/bom-processta.csv` |
-| mk1 schematic (KiCad)   | 🔴     | TBD v0.3                         |
-| mk1 PCB                 | 🔴     | TBD v0.3                         |
-| mk1 enclosure CAD       | 🔴     | TBD v0.3                         |
-| mk1 exploded view (SVG) | ✅     | `design/exploded-view-mk1.svg`   |
-| mk2 BOM                 | 🔴     | TBD v0.4                         |
-| mk2 exploded view       | 🔴     | TBD v0.4                         |
+| item                    | status | location                                              |
+| ----------------------- | ------ | ----------------------------------------------------- |
+| mk1 BOM (classica)      | ✅     | `hardware/mk1/bom-classica.csv`                       |
+| mk1 BOM (processta)     | ✅     | `hardware/mk1/bom-processta.csv` — LoRa BOM, $49 COGS |
+| mk1 schematic (KiCad)   | 🔴     | TBD v0.3                                              |
+| mk1 PCB                 | 🔴     | TBD v0.3                                              |
+| mk1 enclosure CAD       | 🔴     | TBD v0.3                                              |
+| mk1 exploded view (SVG) | ✅     | `design/exploded-view-mk1.svg`                        |
+| mk2 BOM                 | 🔴     | TBD v0.4                                              |
+| mk2 exploded view       | 🔴     | TBD v0.4                                              |
 
 ## edizione I (print)
 
