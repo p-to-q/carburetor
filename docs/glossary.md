@@ -17,7 +17,7 @@ vocabulary locked at v0.1. introduce new terms only via a PR with rationale in t
 - **the fuel layer** — layer 1. a refillable container of chemical potential.
 - **the combustor** — layer 2. either an internal-combustion engine (mk i) or a catalytic combustor + TEG stack (mk ii). a Stirling option is future-tracked.
 - **the bus** — layer 3. rectifier + MPPT buck + supercap + li-ion buffer. distributes DC.
-- **compute** — layer 4. MCU + display + modem. the digital surface.
+- **compute** — layer 4. MCU + display + radio (LoRa or cellular). the digital surface.
 - **ritual** — layer 5. the user-facing sensory experience: sound, heat, light, weight, scent, pause.
 - **burst-charge** — the operating mode where the engine runs for several minutes, dumps energy into the buffer, then shuts off. the phone runs on the buffer thereafter.
 

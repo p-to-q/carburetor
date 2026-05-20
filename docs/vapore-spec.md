@@ -54,7 +54,7 @@ refusing to let you rush it.
                   - battery/fuel indicator
                   - "compose" prompt
                 action: type a message on the on-screen keyboard.
-                        hit send. watch modem TX spike on the bus.
+                        hit send. watch radio TX spike on the bus.
                 fuel depletes in real time (accelerated ~60× so
                 15 mL lasts ~3 minutes of wall clock).
 
@@ -101,7 +101,7 @@ refusing to let you rush it.
 │   ┌──── bus ────┐  ┌─── compute ───┐               │
 │   │  v_bus 4.6V │  │  mode: idle   │               │
 │   │  soc_cap 62%│  │  mcu: 5 mA   │               │
-│   │  soc_li  48%│  │  modem: 4 mA │               │
+│   │  soc_li  48%│  │  radio: 4 mA │               │
 │   │  e_in: 142J │  │  signal: -89  │               │
 │   └─────────────┘  └──────────────┘               │
 │                                                     │

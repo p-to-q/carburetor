@@ -96,7 +96,7 @@ open a tab, pour fuel, watch the chain run. the simulator implements all five la
 
 **~$120 · one weekend · soldering iron required.**
 
-an esp32-s3, a generic nitro engine, a tool-pouch case. no cellular modem — your phone bridges SMS over bluetooth. processta is more honest with "you cannot call on it" than classica. it cannot even pretend.
+an esp32-s3, a butane catalytic heater, a LoRa radio, a sharp memory lcd, five buttons, and an injection-molded brunswick-green case. no cellular — it speaks to other carburetors and Meshtastic nodes over sub-GHz mesh, up to 15 km line of sight. processta is more honest with "you cannot call on it" than classica. it does not even have a SIM slot.
 
 ### classica
 
@@ -116,9 +116,9 @@ the loud one. a cox tee dee .049 micro internal-combustion engine, a brushless o
 
 ### mk ii · pilot
 
-the quiet one. a butane catalytic combustor over a thermoelectric stack, in an anodized-aluminum unibody with one honda-red accent at the fuel cap. a 2.9-inch e-ink panel, a silicone keymat, the same modem as mk i. takes forty-five seconds to wake. once awake, stays awake for a day.
+the quiet one. a platinum-catalyzed butane combustor — no flame, no moving parts — over a bismuth telluride thermoelectric stack. silent. the only sign it is running is warmth on the case back. replaces the Cox engine in either edition; a different answer to the same architecture contract.
 
-**280 g loaded · 30 mL liquid butane · 24 hours of text per cartridge · cat-m1 data only.**
+**mk ii is a combustor swap, not a separate device.** classica with mk ii: same case, same modem, same keyboard. processta with mk ii: this is the default — the TEG is already in the architecture spec.
 
 ---
 
@@ -172,20 +172,20 @@ Wooden Computer Co., Ltd., has released the first public artifacts
 of carburetor: a feature phone whose energy source is fuel, not
 battery. carburetor ships in two physical forms — mk i, a brunswick-
 green canvas-cased handset with a cox tee dee .049 micro internal-
-combustion engine, and mk ii, an anodized-aluminum unibody with a
-butane catalytic combustor over a thermoelectric stack — and three
-editions of varying fidelity. the simulator (vapore) runs in a
-browser at zero cost. the maker edition (processta) is approximately
-$120 USD and built in a weekend from an esp32-s3 dev board and
-parts from a single aliexpress order. the definitive edition
-(classica) is approximately $760, multi-weekend, and curated with
-the canonical low-power parts of its era: sharp memory lcd, blackberry
-q10 keyboard, quectel bg95 modem.
+combustion engine, and mk ii, a butane catalytic combustor over a
+thermoelectric stack — silent, no moving parts — and three editions
+of varying fidelity. the simulator (vapore) runs in a browser at
+zero cost. the maker edition (processta, ~$120, one weekend) uses
+an esp32-s3, a LoRa mesh radio, and a catalytic TEG, communicating
+off-grid with Meshtastic-compatible nodes. the definitive edition
+(classica, ~$760, multi-weekend) is curated with the canonical
+low-power parts of its era: sharp memory lcd, blackberry q10
+keyboard, quectel bg95 cellular modem.
 
-both units speak cat-m1 cellular data only — no voice. removing the
-voice radio removes the regulatory burden, the analog front-end,
-and half the modem's idle current. what remains is sms, matrix,
-ssh.
+classica speaks cat-m1 cellular data only — no voice. processta
+speaks LoRa mesh — no cellular at all. both editions refuse voice
+by design: removing the voice radio removes the regulatory burden,
+the analog front-end, and the temptation. what remains is text.
 
 v0.1 includes the full five-layer architecture, two BOMs, a printed
 edizione, and a browser simulator whose telemetry frames are byte-

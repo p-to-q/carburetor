@@ -38,7 +38,7 @@ processta replaces the combustion engine with a butane catalytic heater (Pt/Al�
 |---|---|---|---|
 | power source | Cox Tee Dee .049 (0.81 cc, 78–108 W shaft) | butane catalytic TEG (0.5–1.5 W electrical) | no moving parts, silent, but much less power — sufficient for LoRa |
 | connectivity | BG95-M3 cat-M1 / nb-IoT / 2G (real cellular) | SX1262 LoRa 868/915 MHz (Meshtastic mesh) | no SIM, no cellular. range: 5–15 km LoS, 1–3 km urban. TX: 118 mA vs 600 mA |
-| compute | nRF52840 + BG95 modem | ESP32-S3-WROOM-1 + EBYTE E22-900M30S | simpler stack, well-supported (ESP-IDF, Arduino, MicroPython) |
+| compute | nRF52840 + BG95 modem | ESP32-S3-WROOM-1 + EBYTE E22-900M22S | simpler stack, well-supported (ESP-IDF, Arduino, MicroPython) |
 | display | Sharp LS027B7DH01 (same) | Sharp LS027B7DH01 (same) | identical — the right display for both |
 | keyboard | BlackBerry Q10 (the best thumb keyboard ever shipped) | 5 tactile buttons (up/down/select/back/power) | no QWERTY; T9-style or scroll compose. honest constraint. |
 | bus | LTC3119 MPPT + 2 × 300 F supercap + 18350 li-ion | BQ25170 charger + LiFePO4 18650 (3.5 Wh) | no supercap needed — LoRa TX peak (118 mA) is within battery C-rate |
