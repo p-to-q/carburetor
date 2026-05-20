@@ -4,7 +4,7 @@
 
 carburetor is a chain of five typed transformations. each one consumes a state in its own native units and emits a state in the next layer's native units. naming each transition gives us five things at once: a place to test, a place to swap implementations, a place to instrument, a place to document, and a place to put a callout on the exploded view.
 
-we did not invent five layers. we found five points along the chain where the physical *type* of energy changes — chemical, mechanical-or-thermal, electrical, digital, sensory — and refused to collapse them.
+we did not invent five layers. we found five points along the chain where the physical _type_ of energy changes — chemical, mechanical-or-thermal, electrical, digital, sensory — and refused to collapse them.
 
 ## the chain
 
@@ -39,7 +39,7 @@ this is the same shape as `wittgenstein` — typed codecs producing real artifac
 - liquid butane (n-C4H10) ≈ 49 MJ/kg ≈ 13.6 Wh/g.
 - gasoline ≈ 46 MJ/kg ≈ 12.8 Wh/g. (mk i could in principle run on it; the cox .049 requires a spark conversion we have not budgeted for v1.)
 
-a tank can spill, can evaporate, can dissolve plastic, can ignite. these are not edge cases; they are the *defining* properties of the layer.
+a tank can spill, can evaporate, can dissolve plastic, can ignite. these are not edge cases; they are the _defining_ properties of the layer.
 
 **types.**
 
@@ -57,16 +57,16 @@ interface FuelState {
 
 **numbers.**
 
-| | mk i | mk ii |
-|---|---|---|
-| tank | 15 mL pyrex | 30 mL butane cartridge |
-| typical fill | 3–5 s squeeze bottle | 8 s cartridge swap |
-| usable runtime per fill | ~8 hours phone time | ~24 hours phone time |
-| evaporation rate at 25 °C, open | ~0.05 mL/hr | ~0 (sealed) |
+|                                 | mk i                 | mk ii                  |
+| ------------------------------- | -------------------- | ---------------------- |
+| tank                            | 15 mL pyrex          | 30 mL butane cartridge |
+| typical fill                    | 3–5 s squeeze bottle | 8 s cartridge swap     |
+| usable runtime per fill         | ~8 hours phone time  | ~24 hours phone time   |
+| evaporation rate at 25 °C, open | ~0.05 mL/hr          | ~0 (sealed)            |
 
 **how to test.** weigh the device before and after a benchmark cycle; subtract.
 
-**what you can swap.** the fuel kind. the tank capacity. the filler interface. anything *upstream* of `FuelState` is replaceable so long as the type contract holds.
+**what you can swap.** the fuel kind. the tank capacity. the filler interface. anything _upstream_ of `FuelState` is replaceable so long as the type contract holds.
 
 ---
 
@@ -84,35 +84,43 @@ mk i loses ~70 % of fuel energy to heat, sound, and unburnt fuel exiting the muf
 type CombustorKind = 'cox-049' | 'catalytic-teg' | 'stirling' /* future */;
 
 type CombustorPhase =
-  | 'off' | 'prime' | 'ignite' | 'warmup' | 'run' | 'cooldown'
-  | 'flameout' | 'fuel_low' | 'thermal_high';
+  | 'off'
+  | 'prime'
+  | 'ignite'
+  | 'warmup'
+  | 'run'
+  | 'cooldown'
+  | 'flameout'
+  | 'fuel_low'
+  | 'thermal_high';
 
 interface CombustorState {
   kind: CombustorKind;
   running: boolean;
-  rpm: number | null;             // mk i only
+  rpm: number | null; // mk i only
   hot_C: number;
-  cold_C: number | null;          // mk ii only
+  cold_C: number | null; // mk ii only
   exhaust_dB_1m: number;
-  shaft_W: number | null;         // mk i only
+  shaft_W: number | null; // mk i only
   thermal_W: number;
-  electric_W_raw: number;         // pre-rectifier, feeds bus
+  electric_W_raw: number; // pre-rectifier, feeds bus
   runtime_s: number;
   fuel_consumed_mL: number;
   phase: CombustorPhase;
+  phase_elapsed_s: number;
 }
 ```
 
 **numbers.**
 
-| | mk i | mk ii |
-|---|---|---|
-| fuel burn at usable load | 2.5 mL/min | ~0.5 mL/min equivalent |
-| acoustic at 1 m, muffled | 85–90 dBA | < 30 dBA |
-| hot face | 200–300 °C | 400–600 °C catalyst, 180 °C TEG hot |
-| warm-up | 10–15 s | 30–60 s |
-| usable electric output | 5–8 W into bus | 0.1–0.3 W sustained (passive cooling) |
-| state-machine transitions | 11 | 9 |
+|                           | mk i           | mk ii                                 |
+| ------------------------- | -------------- | ------------------------------------- |
+| fuel burn at usable load  | 2.5 mL/min     | ~0.5 mL/min equivalent                |
+| acoustic at 1 m, muffled  | 85–90 dBA      | < 30 dBA                              |
+| hot face                  | 200–300 °C     | 400–600 °C catalyst, 180 °C TEG hot   |
+| warm-up                   | 10–15 s        | 30–60 s                               |
+| usable electric output    | 5–8 W into bus | 0.1–0.3 W sustained (passive cooling) |
+| state-machine transitions | 11             | 9                                     |
 
 **how to test.** torque transducer + tachometer for mk i; thermocouples + load resistor for mk ii. both produce telemetry frames at 100 Hz (see `codec-protocol.md`).
 
@@ -136,26 +144,27 @@ interface BusState {
   i_bus_A: number;
   v_li_V: number;
   i_li_A: number;
-  soc_li_pct: number;       // li-ion state of charge
-  soc_cap_pct: number;      // supercap state of charge
+  soc_li_pct: number; // li-ion state of charge
+  soc_cap_pct: number; // supercap state of charge
   t_case_C: number;
   mppt_locked: boolean;
-  e_in_J: number;           // cumulative energy in from combustor
-  e_out_J: number;          // cumulative energy out to compute
+  e_in_J: number; // cumulative energy in from combustor
+  e_out_J: number; // cumulative energy out to compute
+  thermal_losses_J: number; // modeled waste heat rejected by combustor
 }
 ```
 
-energy-conservation invariant: `e_in_J >= e_out_J + thermal_losses`. enforced as a CI gate, ±2 %.
+energy accounting invariant: `buffer_initial_J + e_in_J ≈ buffer_final_J + e_out_J`; combustor waste heat is tracked separately as `thermal_losses_J`. both are enforced as CI gates, ±2 %.
 
 **numbers.**
 
-| | value |
-|---|---|
-| supercap bus | 5 V nominal, 4.4–5.4 V operating |
-| li-ion bus | 3.7 V nominal, 3.0–4.2 V operating |
-| LoRa TX transient | 118 mA @ 3.8 V = 0.45 W |
-| supercap usable energy | ~50 J |
-| li-ion holdup at idle after one burst-charge | ~12 h |
+|                                              | value                              |
+| -------------------------------------------- | ---------------------------------- |
+| supercap bus                                 | 5 V nominal, 4.4–5.4 V operating   |
+| li-ion bus                                   | 3.7 V nominal, 3.0–4.2 V operating |
+| LoRa TX transient                            | 118 mA @ 3.8 V = 0.45 W            |
+| supercap usable energy                       | ~50 J                              |
+| li-ion holdup at idle after one burst-charge | ~12 h                              |
 
 **how to test.** four-trace scope on (v_bus, i_bus, v_li, t_case). USB-PD analyzer at the compute rail.
 
@@ -173,12 +182,12 @@ energy-conservation invariant: `e_in_J >= e_out_J + thermal_losses`. enforced as
 
 ```typescript
 type ComputeMode =
-  | 'sleep'           // deep sleep, LoRa radio sleep, lcd holding image
-  | 'idle'            // mcu awake, screen on, no traffic
-  | 'rx'              // LoRa radio listening
-  | 'tx'              // LoRa radio transmitting
-  | 'compose'         // user typing
-  | 'engine_attn';    // engine ui (during warmup or refuel)
+  | 'sleep' // deep sleep, LoRa radio sleep, lcd holding image
+  | 'idle' // mcu awake, screen on, no traffic
+  | 'rx' // LoRa radio listening
+  | 'tx' // LoRa radio transmitting
+  | 'compose' // user typing
+  | 'engine_attn'; // engine ui (during warmup or refuel)
 
 type RadioTechnology = 'lora' | 'cat_m1';
 
@@ -197,11 +206,11 @@ interface ComputeState {
 
 **numbers.**
 
-| mode | mcu | modem | lcd | total |
-|---|---|---|---|---|
-| sleep | 8 µA | 0.16 µA | 10 µA | ~30 µW |
-| idle | 25 mA | 4.6 mA | 50 µA | ~110 mW |
-| tx | 25 mA | 118 mA | 175 µA | ~530 mW |
+| mode  | mcu   | modem   | lcd    | total   |
+| ----- | ----- | ------- | ------ | ------- |
+| sleep | 8 µA  | 0.16 µA | 10 µA  | ~30 µW  |
+| idle  | 25 mA | 4.6 mA  | 50 µA  | ~110 mW |
+| tx    | 25 mA | 118 mA  | 175 µA | ~530 mW |
 
 **how to test.** keithley source-measure unit on each rail. firmware exposes per-mode current expectations; `pnpm bench:power-modes` asserts.
 
@@ -215,14 +224,19 @@ interface ComputeState {
 
 **physics.** human sensorimotor. you hear engine note (~85 dBA muffled at arm's length, equivalent to a kitchen blender — not pleasant, not dangerous, deliberately present). you feel weight (~650 g, heavier than any contemporary phone — deliberate). you smell castor oil if mk i, nothing if mk ii. you wait (45 s warm-up for mk ii, ~10 s prime + crank + ignite for mk i). you watch a needle climb.
 
-this is not decoration. it is the layer that *makes* the device honest about what it is doing.
+this is not decoration. it is the layer that _makes_ the device honest about what it is doing.
 
 **types.**
 
 ```typescript
 type RitualStage =
-  | 'cold' | 'priming' | 'cranking' | 'warmup' | 'live'
-  | 'cooldown' | 'refuel_needed';
+  | 'cold'
+  | 'priming'
+  | 'cranking'
+  | 'warmup'
+  | 'live'
+  | 'cooldown'
+  | 'refuel_needed';
 
 type Scent = 'none' | 'castor' | 'butane';
 
@@ -233,19 +247,19 @@ interface RitualState {
   scent: Scent;
   minutes_runtime_remaining: number;
   minutes_until_refuel: number;
-  next_user_action: string | null;   // e.g., 'pour 5 mL', 'pull crank', 'wait 38 s'
+  next_user_action: string | null; // e.g., 'pour 5 mL', 'pull crank', 'wait 38 s'
 }
 ```
 
 **numbers.**
 
-| stage | duration | what the user does | what the device emits |
-|---|---|---|---|
-| priming | ~8 s | three pumps of the primer | (nothing) |
-| cranking | ~5 s | one pull of the brass crank | engine "brap", warm exhaust |
-| warmup | ~45 s | wait | needle climbs 0 → 5 V, lamp lights |
-| live | 6–8 h | use the phone | screen + faint engine hum (mk i auto-stopped) |
-| refuel | ~8 s | unscrew cap, pour, replace | (nothing) |
+| stage    | duration | what the user does          | what the device emits                         |
+| -------- | -------- | --------------------------- | --------------------------------------------- |
+| priming  | ~8 s     | three pumps of the primer   | (nothing)                                     |
+| cranking | ~5 s     | one pull of the brass crank | engine "brap", warm exhaust                   |
+| warmup   | ~45 s    | wait                        | needle climbs 0 → 5 V, lamp lights            |
+| live     | 6–8 h    | use the phone               | screen + faint engine hum (mk i auto-stopped) |
+| refuel   | ~8 s     | unscrew cap, pour, replace  | (nothing)                                     |
 
 **how to test.** stopwatch + decibel meter + a person. sim: a playable widget where each stage is dragged through manually.
 
@@ -279,9 +293,9 @@ frame definitions per layer are in `docs/codec-protocol.md`. the host decodes fr
 
 ## three readings
 
-**for the engineer.** each layer has a typed interface. you can implement an alternative `Combustor` (a Stirling, say) and as long as it emits a valid `CombustorState`, the bus and compute layers are unchanged. the layer boundary is *exactly* the place to put unit tests. our golden-fixture pattern (`fixtures/golden/<scenario>/`) pins reference telemetry as sha-256-locked binary files, so a refactor that changes one layer's internal logic but preserves its interface must produce byte-identical output. that is the strongest form of regression test we know how to write.
+**for the engineer.** each layer has a typed interface. you can implement an alternative `Combustor` (a Stirling, say) and as long as it emits a valid `CombustorState`, the bus and compute layers are unchanged. the layer boundary is _exactly_ the place to put unit tests. our golden-fixture pattern (`fixtures/golden/<scenario>/`) pins reference telemetry as sha-256-locked binary files, so a refactor that changes one layer's internal logic but preserves its interface must produce byte-identical output. that is the strongest form of regression test we know how to write.
 
-**for the researcher.** every layer is independently instrumentable. you can replay a recorded fuel + combustor session into the bus simulator and ask *what would the supercap have done with a slightly different MPPT setpoint?* the manifest spine — `git_sha`, `lockfile_hash`, `seed`, full I/O — means any run is reproducible from a clean checkout. we publish numbers as `5.4 ± 0.3 %`, not `~5 %`; the `±` is the measured 1σ over the latest 12 bench runs, pinned in `artifacts/runs/`.
+**for the researcher.** every layer is independently instrumentable. you can replay a recorded fuel + combustor session into the bus simulator and ask _what would the supercap have done with a slightly different MPPT setpoint?_ the manifest spine — `git_sha`, `lockfile_hash`, `seed`, full I/O — means any run is reproducible from a clean checkout. we publish numbers as `5.4 ± 0.3 %`, not `~5 %`; the `±` is the measured 1σ over the latest 12 bench runs, pinned in `artifacts/runs/`.
 
 **for the user.** the device is built to be understood. the voltmeter shows you the supercap bus voltage — the same number you'd read in the spec sheet. the sight glass shows you the fuel level — the same number the firmware uses to estimate remaining runtime. the screen tells you what state the device is in and what you should do next. if it asks you to wait, it tells you for how long. if it needs fuel, it tells you how much.
 

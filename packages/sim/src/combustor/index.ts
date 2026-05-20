@@ -50,6 +50,7 @@ export function createCombustorState(): CombustorState {
     runtime_s: 0,
     fuel_consumed_mL: 0,
     phase: 'off',
+    phase_elapsed_s: 0,
   };
 }
 
@@ -73,11 +74,13 @@ export function stepCombustor({
   invariants,
 }: CombustorStepInput): CombustorState {
   let phase = combustor.phase;
+  const elapsedInPhase_s = combustor.phase_elapsed_s + dt_s;
 
   if (event?.kind === 'kill') phase = combustor.running ? 'cooldown' : 'off';
   else if (fuel.volume_mL <= 0 && combustor.running) phase = 'fuel_low';
-  else if (phase === 'ignite' && dt_s >= 3 && combustor.rpm === null) phase = 'flameout';
-  else if (combustor.hot_C >= 300) phase = 'thermal_high';
+  else if (phase === 'ignite' && elapsedInPhase_s >= 3 && combustor.rpm === null) {
+    phase = 'flameout';
+  } else if (combustor.hot_C >= 300) phase = 'thermal_high';
   else if (phase === 'off' && event?.kind === 'prime' && event.pumps > 0 && fuel.volume_mL > 0) {
     phase = 'prime';
   } else if (phase === 'prime' && event?.kind === 'crank' && fuel.volume_mL > 0) {
@@ -127,5 +130,6 @@ export function stepCombustor({
     electric_W_raw,
     runtime_s: combustor.runtime_s + (running ? roundTiesToEven(dt_s) : 0),
     fuel_consumed_mL: combustor.fuel_consumed_mL + burn_mL,
+    phase_elapsed_s: phase === combustor.phase ? elapsedInPhase_s : 0,
   };
 }

@@ -17,6 +17,7 @@ import {
 } from '../dist/index.js';
 
 test('combustor state machine has at least one exit per phase', () => {
+  assert.equal(INVARIANTS.state_machine_totality_required, true);
   for (const [phase, exits] of Object.entries(TRANSITIONS)) {
     assert.ok(exits.length > 0, `${phase} has no exit`);
   }
@@ -40,12 +41,22 @@ test('long cold start eventually gates live on bus voltage', () => {
   assert.ok(firstRun.bus.v_bus_V >= INVARIANTS.warmup_v_bus_threshold_V);
 });
 
-test('bus output remains inside energy-conservation tolerance', () => {
+function storedBusEnergy_J(frame) {
+  return frame.bus.soc_cap_pct * 6 + frame.bus.soc_li_pct * 80;
+}
+
+test('bus energy accounting includes buffer delta and thermal losses', () => {
   const frames = runHeadless(coldStartEvents(5), 80);
+  const initial = frames[0];
   const final = frames.at(-1);
 
   assert.ok(final);
-  assert.ok(final.bus.e_out_J <= final.bus.e_in_J * 1.02);
+  const lhs = storedBusEnergy_J(initial) + final.bus.e_in_J;
+  const rhs = storedBusEnergy_J(final) + final.bus.e_out_J;
+  const tolerance_J = (INVARIANTS.energy_conservation_pct_tolerance / 100) * Math.max(1, lhs);
+
+  assert.ok(Math.abs(lhs - rhs) <= tolerance_J);
+  assert.ok(final.bus.thermal_losses_J > final.bus.e_in_J);
   assert.ok(final.bus.v_bus_V <= INVARIANTS.v_bus_max_V);
   assert.ok(final.bus.v_li_V <= INVARIANTS.v_li_max_V);
   assert.ok(final.bus.v_li_V >= INVARIANTS.v_li_min_V);
@@ -196,6 +207,24 @@ test('flameout triggers from failed ignition and falls back to buffer', () => {
   assert.equal(noPrime.combustor.phase, 'flameout');
   assert.equal(primed.combustor.phase, 'prime');
   assert.equal(cranked.combustor.phase, 'ignite');
+});
+
+test('flameout detection accumulates across subsecond steps', () => {
+  const state = {
+    ...createInitialDeviceState(),
+    fuel: { ...createInitialDeviceState().fuel, volume_mL: 5 },
+    combustor: {
+      ...createInitialDeviceState().combustor,
+      phase: 'ignite',
+      hot_C: 120,
+      fuel_consumed_mL: 0.5,
+      phase_elapsed_s: 2.9,
+    },
+  };
+
+  const flameout = stepDevice(state, 100_000);
+  assert.equal(flameout.combustor.phase, 'flameout');
+  assert.equal(flameout.combustor.phase_elapsed_s, 0);
 });
 
 test('bus recovers from warmup draw once raw electric output is available', () => {

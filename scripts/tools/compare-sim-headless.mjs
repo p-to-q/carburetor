@@ -165,6 +165,7 @@ const tolerances = {
   'bus.t_case_C': 0.1,
   'bus.e_in_J': 0.5,
   'bus.e_out_J': 0.5,
+  'bus.thermal_losses_J': 2.0,
   'compute.mcu_mA': 0.001,
   'compute.modem_mA': 0.001,
   'compute.lcd_uA': 0.001,

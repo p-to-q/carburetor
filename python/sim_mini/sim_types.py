@@ -52,6 +52,7 @@ class CombustorState:
     runtime_s: int
     fuel_consumed_mL: float
     phase: CombustorPhase
+    phase_elapsed_s: float
 
 
 # ============ layer 3: bus ============
@@ -69,6 +70,7 @@ class BusState:
     mppt_locked: bool
     e_in_J: float  # cumulative
     e_out_J: float  # cumulative
+    thermal_losses_J: float
 
 
 # ============ layer 4: compute ============

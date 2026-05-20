@@ -23,6 +23,7 @@ export function createBusState(): BusState {
     mppt_locked: false,
     e_in_J: 0,
     e_out_J: 0,
+    thermal_losses_J: 0,
   };
 }
 
@@ -36,6 +37,7 @@ export function stepBus({
   const rectified_W = combustor.electric_W_raw * 0.88;
   const eInDelta_J = rectified_W * dt_s;
   const eOutDelta_J = computeLoad_W * dt_s;
+  const thermalLossDelta_J = Math.max(0, combustor.thermal_W) * dt_s;
   const net_J = eInDelta_J - eOutDelta_J;
   const cap_J = 600;
   const li_J = 8_000;
@@ -64,5 +66,6 @@ export function stepBus({
     mppt_locked: rectified_W >= 0.5 && combustor.running,
     e_in_J: bus.e_in_J + eInDelta_J,
     e_out_J: bus.e_out_J + eOutDelta_J,
+    thermal_losses_J: bus.thermal_losses_J + thermalLossDelta_J,
   };
 }

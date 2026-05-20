@@ -12,6 +12,7 @@ from sim_mini.sim_types import (
     INVARIANTS,
     ComposeSendEvent,
     CrankEvent,
+    DeviceState,
     KeypressEvent,
     KillEvent,
     PrimeEvent,
@@ -20,6 +21,7 @@ from sim_mini.sim_types import (
 
 
 def test_combustor_state_machine_has_exit_per_phase() -> None:
+    assert INVARIANTS.state_machine_totality_required is True
     for phase, exits in TRANSITIONS.items():
         assert exits, f"{phase} has no exit"
 
@@ -42,10 +44,21 @@ def test_long_cold_start_eventually_gates_live_on_bus_voltage() -> None:
     assert first_run.ritual.stage == "live"
 
 
-def test_bus_output_remains_inside_energy_conservation_tolerance() -> None:
-    final = run_headless(cold_start_events(5.0), 80)[-1]
+def stored_bus_energy_J(frame: DeviceState) -> float:
+    return frame.bus.soc_cap_pct * 6.0 + frame.bus.soc_li_pct * 80.0
 
-    assert final.bus.e_out_J <= final.bus.e_in_J * 1.02
+
+def test_bus_energy_accounting_includes_buffer_delta_and_thermal_losses() -> None:
+    frames = run_headless(cold_start_events(5.0), 80)
+    initial = frames[0]
+    final = frames[-1]
+
+    lhs = stored_bus_energy_J(initial) + final.bus.e_in_J
+    rhs = stored_bus_energy_J(final) + final.bus.e_out_J
+    tolerance_J = (INVARIANTS.energy_conservation_pct_tolerance / 100) * max(1.0, lhs)
+
+    assert abs(lhs - rhs) <= tolerance_J
+    assert final.bus.thermal_losses_J > final.bus.e_in_J
     assert final.bus.v_bus_V <= INVARIANTS.v_bus_max_V
     assert final.bus.v_li_V <= INVARIANTS.v_li_max_V
     assert final.bus.v_li_V >= INVARIANTS.v_li_min_V
@@ -180,6 +193,19 @@ def test_flameout_triggers_from_failed_ignition_and_falls_back_to_buffer() -> No
     assert no_prime.combustor.phase == "flameout"
     assert primed.combustor.phase == "prime"
     assert cranked.combustor.phase == "ignite"
+
+
+def test_flameout_detection_accumulates_across_subsecond_steps() -> None:
+    state = create_initial_device_state()
+    state.fuel.volume_mL = 5.0
+    state.combustor.phase = "ignite"
+    state.combustor.hot_C = 120.0
+    state.combustor.fuel_consumed_mL = 0.5
+    state.combustor.phase_elapsed_s = 2.9
+
+    flameout = step_device(state, 100_000)
+    assert flameout.combustor.phase == "flameout"
+    assert flameout.combustor.phase_elapsed_s == 0
 
 
 def test_bus_recovers_from_warmup_draw_once_raw_electric_output_is_available() -> None:

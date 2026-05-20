@@ -42,6 +42,7 @@ def create_combustor_state() -> CombustorState:
         runtime_s=0,
         fuel_consumed_mL=0.0,
         phase="off",
+        phase_elapsed_s=0.0,
     )
 
 
@@ -67,12 +68,13 @@ def step_combustor(
     invariants: type[INVARIANTS] = INVARIANTS,
 ) -> CombustorState:
     phase = combustor.phase
+    elapsed_in_phase_s = combustor.phase_elapsed_s + dt_s
 
     if event is not None and event.kind == "kill":
         phase = "cooldown" if combustor.running else "off"
     elif fuel.volume_mL <= 0 and combustor.running:
         phase = "fuel_low"
-    elif phase == "ignite" and dt_s >= 3 and combustor.rpm is None:
+    elif phase == "ignite" and elapsed_in_phase_s >= 3 and combustor.rpm is None:
         phase = "flameout"
     elif combustor.hot_C >= 300:
         phase = "thermal_high"
@@ -142,4 +144,5 @@ def step_combustor(
         runtime_s=combustor.runtime_s + (round_ties_to_even(dt_s) if running else 0),
         fuel_consumed_mL=combustor.fuel_consumed_mL + burn_mL,
         phase=phase,
+        phase_elapsed_s=elapsed_in_phase_s if phase == combustor.phase else 0.0,
     )

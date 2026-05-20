@@ -42,6 +42,7 @@ export interface CombustorState {
   runtime_s: number;
   fuel_consumed_mL: number;
   phase: CombustorPhase;
+  phase_elapsed_s: number;
 }
 
 // ============ layer 3: bus ============
@@ -57,6 +58,7 @@ export interface BusState {
   mppt_locked: boolean;
   e_in_J: number; // cumulative energy in from combustor
   e_out_J: number; // cumulative energy out to compute
+  thermal_losses_J: number; // modeled waste heat rejected by the combustor
 }
 
 // ============ layer 4: compute ============

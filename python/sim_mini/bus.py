@@ -16,6 +16,7 @@ def create_bus_state() -> BusState:
         mppt_locked=False,
         e_in_J=0.0,
         e_out_J=0.0,
+        thermal_losses_J=0.0,
     )
 
 
@@ -29,6 +30,7 @@ def step_bus(
     rectified_W = combustor.electric_W_raw * 0.88
     e_in_delta_J = rectified_W * dt_s
     e_out_delta_J = compute_load_W * dt_s
+    thermal_loss_delta_J = max(0.0, combustor.thermal_W) * dt_s
     net_J = e_in_delta_J - e_out_delta_J
     cap_J = 600.0
     li_J = 8_000.0
@@ -57,4 +59,5 @@ def step_bus(
         mppt_locked=rectified_W >= 0.5 and combustor.running,
         e_in_J=bus.e_in_J + e_in_delta_J,
         e_out_J=bus.e_out_J + e_out_delta_J,
+        thermal_losses_J=bus.thermal_losses_J + thermal_loss_delta_J,
     )
