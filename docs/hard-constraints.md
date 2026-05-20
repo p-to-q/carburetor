@@ -10,25 +10,23 @@ constraints not on this list are soft. they will move when the bench tells us to
 
 ## no voice radio
 
-mk i and mk ii both speak cat-m1 / nb-iot / 2G-fallback **data only**. no voice.
+no voice, either edition. classica speaks cat-m1 / nb-iot data only. processta speaks LoRa mesh (Meshtastic-compatible, sub-GHz). neither has a voice path.
 
-removing the voice front-end removes the regulatory burden (no PTCRB carrier certification for voice paths), the analog amplifier, the audio codec, and roughly half the modem's idle current. what is left is SMS, Matrix, Signal-CLI, ssh.
+removing voice removes the regulatory burden (no PTCRB carrier certification), the analog amplifier, the audio codec, and the temptation. what is left is text: SMS, Matrix, Signal-CLI, ssh.
 
 you cannot call on it. you can text on it.
 
 ## no battery as primary energy store
 
-the li-ion buffer is a capacitor, not a battery. it is sized to hold one engine burst plus modem TX transients. it does not, by itself, power the phone for more than ~20 minutes of standby.
+the combustor (ICE or catalytic TEG) is the primary energy source. the li-ion cell is a buffer — it smooths transients and stores charge between burns. in classica, the 300 F supercap handles TX bursts and the 18350 li-ion holds ~20 minutes of standby. in processta, the LiFePO4 18650 handles both roles (LoRa TX peak is 118 mA — within battery C-rate, no supercap needed).
 
 the engine is the source of energy. this is the project.
 
-## no off-grid charge
+## no off-grid charge (classica)
 
-no USB-C power input. no wireless charging. the only way to put energy into the device is to pour fuel.
+classica: no USB-C power input. the only way to put energy into the device is to pour fuel. the USB-C port is data + firmware only, with VBUS deliberately disconnected from the bus.
 
-people will ask. the answer is no.
-
-(the USB-C port on the device is data + firmware only, with VBUS deliberately not connected to the bus.)
+processta: USB-C charging is permitted as an alternative to the catalytic TEG. the maker edition is a development platform first and a philosophical statement second. but the TEG path must always work — USB-C is convenience, not a crutch.
 
 ## no firmware over the air
 
@@ -85,12 +83,12 @@ you wait with the device. the device is built so that this is the experience.
 
 these are not hard. they will change:
 
-- the exact SoC (nrf52840 → possibly nrf54L15 or esp32-s3 if the power budget demands).
-- the exact modem (bg95-m3 → sim7080g acceptable in regions where bg95 is unavailable).
-- the exact display (LS027B7DH01 → e-ink panel for mk ii).
-- the keyboard (q10 → silicone T9 for mk ii).
-- the supercap value (300 F → adjusted by bench).
-- mppt setpoint algorithm.
+- the exact SoC (classica: nRF52840; processta: ESP32-S3. either could migrate to nRF54L15).
+- the exact radio module (classica: BG95-M3; processta: EBYTE E22-900M22S. the contract is data-only, not the part number).
+- the exact display (LS027B7DH01 is current for both; e-ink is future-tracked for mk ii).
+- the keyboard (classica: Q10; processta: 5 tactile buttons. form factor may change).
+- the supercap value (classica: 300 F, adjusted by bench; processta: none).
+- charge controller algorithm (classica: LTC3119 MPPT; processta: BQ25170 CC/CV).
 - frame rate of ritual telemetry (currently 10 Hz, may rise to 30 Hz).
 
 if it is on the soft list and you have measured a better number, open a PR.
