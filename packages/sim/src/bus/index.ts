@@ -46,6 +46,7 @@ export function stepBus({
   const targetBus_V = clamp(4.0 + soc_cap_pct * 0.014, 4.0, invariants.v_bus_max_V);
   const v_bus_V = lerp(bus.v_bus_V, targetBus_V, dt_s / 4);
   const v_li_V = clamp(3.0 + soc_li_pct * 0.012, invariants.v_li_min_V, invariants.v_li_max_V);
+  const net_W = net_J / Math.max(dt_s, 0.001);
   const t_case_C = clamp(
     lerp(bus.t_case_C, 25 + Math.max(0, combustor.hot_C - 25) * 0.11, dt_s / 120),
     20,
@@ -56,8 +57,7 @@ export function stepBus({
     v_bus_V,
     i_bus_A: computeLoad_W / Math.max(0.1, v_bus_V),
     v_li_V,
-    i_li_A:
-      net_J >= 0 ? -Math.min(0.45, net_J / Math.max(dt_s, 0.001) / v_li_V) : computeLoad_W / v_li_V,
+    i_li_A: net_W >= 0 ? -Math.min(0.45, net_W / v_li_V) : -net_W / v_li_V,
     soc_li_pct,
     soc_cap_pct,
     t_case_C,

@@ -6,11 +6,13 @@ import {
   coldStartEvents,
   computeDraw,
   createBusState,
+  createCombustorState,
   createComputeState,
   createInitialDeviceState,
   rssiBarsFromSignal,
   roundTiesToEven,
   runHeadless,
+  stepBus,
   stepDevice,
 } from '../dist/index.js';
 
@@ -206,6 +208,33 @@ test('bus recovers from warmup draw once raw electric output is available', () =
   assert.ok(charged.bus.e_in_J > warmup.bus.e_in_J);
   assert.ok(charged.bus.soc_cap_pct > warmup.bus.soc_cap_pct);
   assert.equal(charged.bus.mppt_locked, true);
+});
+
+test('li-ion current reflects net bus power', () => {
+  const bus = createBusState();
+  const combustor = {
+    ...createCombustorState(),
+    running: true,
+    electric_W_raw: 1 / 0.88,
+  };
+  const nearlyBalanced = stepBus({
+    bus,
+    combustor,
+    computeLoad_W: 1.5,
+    dt_s: 1,
+    invariants: INVARIANTS,
+  });
+  const charging = stepBus({
+    bus,
+    combustor: { ...combustor, electric_W_raw: 8 / 0.88 },
+    computeLoad_W: 0.5,
+    dt_s: 1,
+    invariants: INVARIANTS,
+  });
+
+  assert.ok(nearlyBalanced.i_li_A > 0);
+  assert.ok(nearlyBalanced.i_li_A < 0.2);
+  assert.equal(charging.i_li_A, -0.45);
 });
 
 test('compute transitions through compose, tx, and rx on user messaging events', () => {

@@ -1,5 +1,5 @@
-from sim_mini.bus import create_bus_state
-from sim_mini.combustor import TRANSITIONS
+from sim_mini.bus import create_bus_state, step_bus
+from sim_mini.combustor import TRANSITIONS, create_combustor_state
 from sim_mini.compute import compute_draw, create_compute_state, rssi_bars_from_signal
 from sim_mini.headless import (
     cold_start_events,
@@ -190,6 +190,31 @@ def test_bus_recovers_from_warmup_draw_once_raw_electric_output_is_available() -
     assert charged.bus.e_in_J > warmup.bus.e_in_J
     assert charged.bus.soc_cap_pct > warmup.bus.soc_cap_pct
     assert charged.bus.mppt_locked is True
+
+
+def test_li_ion_current_reflects_net_bus_power() -> None:
+    bus = create_bus_state()
+    combustor = create_combustor_state()
+    combustor.running = True
+    combustor.electric_W_raw = 1.0 / 0.88
+
+    nearly_balanced = step_bus(
+        bus=bus,
+        combustor=combustor,
+        compute_load_W=1.5,
+        dt_s=1.0,
+    )
+    combustor.electric_W_raw = 8.0 / 0.88
+    charging = step_bus(
+        bus=bus,
+        combustor=combustor,
+        compute_load_W=0.5,
+        dt_s=1.0,
+    )
+
+    assert nearly_balanced.i_li_A > 0
+    assert nearly_balanced.i_li_A < 0.2
+    assert charging.i_li_A == -0.45
 
 
 def test_compute_transitions_through_compose_tx_and_rx_on_user_messaging_events() -> None:
