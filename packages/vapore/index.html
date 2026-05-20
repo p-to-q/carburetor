@@ -468,7 +468,7 @@
           <span class="label">mcu</span><span class="value" id="v-comp-mcu">0 mA</span>
         </div>
         <div class="row">
-          <span class="label">modem</span><span class="value" id="v-comp-modem">0 mA</span>
+          <span class="label">radio</span><span class="value" id="v-comp-radio">0 mA</span>
         </div>
         <div class="row">
           <span class="label">signal</span><span class="value" id="v-comp-signal">— dBm</span>
@@ -647,7 +647,7 @@
 
         $('v-comp-mode').textContent = state.compute.mode;
         $('v-comp-mcu').textContent = `${fmt(state.compute.mcu_mA, 0)} mA`;
-        $('v-comp-modem').textContent = `${fmt(state.compute.modem_mA, 0)} mA`;
+        $('v-comp-radio').textContent = `${fmt(state.compute.radio_mA, 0)} mA`;
         $('v-comp-signal').textContent = `${fmt(state.compute.signal_dbm, 0)} dBm`;
 
         $('v-rit-stage').textContent = state.ritual.stage;

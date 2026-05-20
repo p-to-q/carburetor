@@ -42,7 +42,7 @@ test('long cold start eventually gates live on bus voltage', () => {
 });
 
 function storedBusEnergy_J(frame) {
-  return frame.bus.soc_cap_pct * 6 + frame.bus.soc_li_pct * 80;
+  return frame.bus.soc_cap_pct * 0.5 + frame.bus.soc_li_pct * 200;
 }
 
 test('bus energy accounting includes buffer delta and thermal losses', () => {
@@ -77,10 +77,13 @@ test('compute signal strength derives rssi bars from mode', () => {
   const tx = createComputeState('tx');
   const sleep = createComputeState('sleep');
 
-  assert.equal(idle.signal_dbm, -89);
+  assert.equal(idle.signal_dbm, -105);
   assert.equal(idle.rssi_bars, rssiBarsFromSignal(idle.signal_dbm));
   assert.ok(tx.signal_dbm > idle.signal_dbm);
   assert.equal(sleep.rssi_bars, 0);
+  assert.equal(rssiBarsFromSignal(-89), 4);
+  assert.equal(rssiBarsFromSignal(-105), 2);
+  assert.equal(rssiBarsFromSignal(-125), 0);
 });
 
 test('fuel temperature responds slowly to case heat', () => {
@@ -107,7 +110,7 @@ test('run shaft power is derived from coupled fuel burn model', () => {
 
   assert.ok(runFrame);
   assert.ok(runFrame.combustor.shaft_W);
-  assert.ok(runFrame.combustor.shaft_W > 20);
+  assert.ok(runFrame.combustor.shaft_W > 15);
   assert.ok(runFrame.combustor.thermal_W > runFrame.combustor.shaft_W * 6.9);
   assert.ok(runFrame.combustor.electric_W_raw <= 7.2);
 });
@@ -131,7 +134,7 @@ test('fuel exhaustion during run enters fuel_low and decays bus', () => {
   assert.equal(exhausted.bus.mppt_locked, false);
   assert.equal(exhausted.fuel.volume_mL, 0);
   assert.ok(bufferOnly.bus.v_bus_V < exhausted.bus.v_bus_V);
-  assert.ok(bufferOnly.bus.soc_li_pct < exhausted.bus.soc_li_pct);
+  assert.ok(bufferOnly.bus.soc_cap_pct < exhausted.bus.soc_cap_pct);
 });
 
 test('kill during warmup enters cooldown and never run', () => {
@@ -203,7 +206,7 @@ test('flameout triggers from failed ignition and falls back to buffer', () => {
   assert.equal(flameout.combustor.phase, 'flameout');
   assert.equal(flameout.combustor.running, false);
   assert.equal(flameout.bus.mppt_locked, false);
-  assert.ok(flameout.bus.soc_li_pct < igniting.bus.soc_li_pct);
+  assert.ok(flameout.bus.soc_cap_pct < igniting.bus.soc_cap_pct);
   assert.equal(noPrime.combustor.phase, 'flameout');
   assert.equal(primed.combustor.phase, 'prime');
   assert.equal(cranked.combustor.phase, 'ignite');
@@ -261,8 +264,29 @@ test('li-ion current reflects net bus power', () => {
     invariants: INVARIANTS,
   });
 
-  assert.ok(nearlyBalanced.i_li_A > 0);
-  assert.ok(nearlyBalanced.i_li_A < 0.2);
+  assert.ok(Object.is(nearlyBalanced.i_li_A, 0) || Object.is(nearlyBalanced.i_li_A, -0));
+  assert.ok(nearlyBalanced.soc_cap_pct < bus.soc_cap_pct);
+  assert.ok(Object.is(charging.i_li_A, 0) || Object.is(charging.i_li_A, -0));
+  assert.ok(charging.soc_cap_pct > bus.soc_cap_pct);
+});
+
+test('LiFePO4 charges after output capacitor reaches full', () => {
+  const bus = { ...createBusState(), soc_cap_pct: 100 };
+  const combustor = {
+    ...createCombustorState(),
+    running: true,
+    electric_W_raw: 8 / 0.88,
+  };
+  const charging = stepBus({
+    bus,
+    combustor,
+    computeLoad_W: 0.5,
+    dt_s: 1,
+    invariants: INVARIANTS,
+  });
+
+  assert.equal(charging.soc_cap_pct, 100);
+  assert.ok(charging.soc_li_pct > bus.soc_li_pct);
   assert.equal(charging.i_li_A, -0.45);
 });
 

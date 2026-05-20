@@ -64,8 +64,8 @@ class BusState:
     i_bus_A: float
     v_li_V: float
     i_li_A: float
-    soc_li_pct: float  # 0–100
-    soc_cap_pct: float  # 0–100
+    soc_li_pct: float  # LiFePO4 buffer, 0–100
+    soc_cap_pct: float  # small regulator/output-cap buffer, 0–100
     t_case_C: float
     mppt_locked: bool
     e_in_J: float  # cumulative
@@ -82,7 +82,7 @@ ComputeMode = Literal["sleep", "idle", "rx", "tx", "compose", "engine_attn"]
 class ComputeState:
     mode: ComputeMode
     mcu_mA: float
-    modem_mA: float
+    radio_mA: float
     lcd_uA: float
     signal_dbm: float
     rssi_bars: int  # 0..4
@@ -186,8 +186,8 @@ class INVARIANTS:
     state_machine_totality_required: bool = True
 
     v_bus_max_V: float = 5.5
-    v_li_max_V: float = 4.2
-    v_li_min_V: float = 3.0
+    v_li_max_V: float = 3.65
+    v_li_min_V: float = 2.8
     t_case_max_C: float = 60.0
 
     warmup_v_bus_threshold_V: float = 4.8

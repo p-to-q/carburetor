@@ -1,5 +1,5 @@
 {
-  "git_sha": "f976dd646a028fd47c1d63c602c0eb863832b6db",
+  "git_sha": "5632835b0173f3019754c2604ca219832bdb11e7",
   "lockfile_hash": "sha256:6d07f4f1dc094f0e8217faa22fcef59b27e2a4b9e6dff92da63a101d34ad9b2d",
   "seed": 42,
   "start_us": 0,
@@ -31,7 +31,7 @@
     "saw_combustor_phase": "run"
   },
   "outputs": {
-    "run.cbf": "sha256:337db94b206f74f9002f096943dbc98d35bf1682d2087e1f26dd95379dbc65d1"
+    "run.cbf": "sha256:26af267b8c5ece3e9e1744131d7ef1792bc6671bcf6b80dbc359d3df875ed8e1"
   },
   "host": {
     "os": "darwin-25.5.0",

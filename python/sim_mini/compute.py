@@ -13,7 +13,7 @@ class ComputeDraw:
 
 
 # Power profile: ESP32-S3 MCU + LoRa SX1262 radio + Sharp Memory LCD.
-# (mcu_mA, modem_mA, lcd_uA)
+# (mcu_mA, radio_mA, lcd_uA)
 MODE_CURRENTS: dict[ComputeMode, tuple[float, float, float]] = {
     "sleep": (0.008, 0.00016, 10.0),
     "idle": (25.0, 4.6, 50.0),
@@ -24,33 +24,33 @@ MODE_CURRENTS: dict[ComputeMode, tuple[float, float, float]] = {
 }
 
 MODE_SIGNAL_DBM: dict[ComputeMode, float] = {
-    "sleep": -105.0,
-    "idle": -89.0,
-    "rx": -78.0,
-    "tx": -70.0,
-    "compose": -82.0,
-    "engine_attn": -92.0,
+    "sleep": -130.0,
+    "idle": -105.0,
+    "rx": -95.0,
+    "tx": -85.0,
+    "compose": -100.0,
+    "engine_attn": -110.0,
 }
 
 
 def rssi_bars_from_signal(signal_dbm: float) -> int:
-    if signal_dbm >= -70:
+    if signal_dbm > -90:
         return 4
-    if signal_dbm >= -80:
+    if signal_dbm > -105:
         return 3
-    if signal_dbm >= -90:
+    if signal_dbm > -115:
         return 2
-    if signal_dbm >= -100:
+    if signal_dbm > -125:
         return 1
     return 0
 
 
 def create_compute_state(mode: ComputeMode = "sleep") -> ComputeState:
-    mcu_mA, modem_mA, lcd_uA = MODE_CURRENTS[mode]
+    mcu_mA, radio_mA, lcd_uA = MODE_CURRENTS[mode]
     return ComputeState(
         mode=mode,
         mcu_mA=mcu_mA,
-        modem_mA=modem_mA,
+        radio_mA=radio_mA,
         lcd_uA=lcd_uA,
         signal_dbm=MODE_SIGNAL_DBM[mode],
         rssi_bars=rssi_bars_from_signal(MODE_SIGNAL_DBM[mode]),
@@ -84,7 +84,7 @@ def step_compute(
     event: UserEvent | None = None,
 ) -> ComputeState:
     mode = choose_compute_mode(prev, bus, event)
-    mcu_mA, modem_mA, lcd_uA = MODE_CURRENTS[mode]
+    mcu_mA, radio_mA, lcd_uA = MODE_CURRENTS[mode]
     queued_delta = 0
     if event is not None and event.kind == "keypress":
         queued_delta = 1
@@ -94,7 +94,7 @@ def step_compute(
     return ComputeState(
         mode=mode,
         mcu_mA=mcu_mA,
-        modem_mA=modem_mA,
+        radio_mA=radio_mA,
         lcd_uA=lcd_uA,
         signal_dbm=MODE_SIGNAL_DBM[mode],
         rssi_bars=rssi_bars_from_signal(MODE_SIGNAL_DBM[mode]),
@@ -106,7 +106,7 @@ def step_compute(
 def compute_draw(compute: ComputeState, bus: BusState) -> ComputeDraw:
     rail_V = max(3.0, bus.v_li_V)
     mcu_A = compute.mcu_mA / 1000
-    modem_A = compute.modem_mA / 1000
+    radio_A = compute.radio_mA / 1000
     lcd_A = compute.lcd_uA / 1_000_000
-    power_W = (mcu_A + modem_A) * rail_V + lcd_A * bus.v_bus_V
+    power_W = (mcu_A + radio_A) * rail_V + lcd_A * bus.v_bus_V
     return ComputeDraw(current_A=power_W / max(0.1, bus.v_bus_V), power_W=power_W)

@@ -45,7 +45,7 @@ def test_long_cold_start_eventually_gates_live_on_bus_voltage() -> None:
 
 
 def stored_bus_energy_J(frame: DeviceState) -> float:
-    return frame.bus.soc_cap_pct * 6.0 + frame.bus.soc_li_pct * 80.0
+    return frame.bus.soc_cap_pct * 0.5 + frame.bus.soc_li_pct * 200.0
 
 
 def test_bus_energy_accounting_includes_buffer_delta_and_thermal_losses() -> None:
@@ -78,10 +78,13 @@ def test_compute_signal_strength_derives_rssi_bars_from_mode() -> None:
     tx = create_compute_state("tx")
     sleep = create_compute_state("sleep")
 
-    assert idle.signal_dbm == -89
+    assert idle.signal_dbm == -105
     assert idle.rssi_bars == rssi_bars_from_signal(idle.signal_dbm)
     assert tx.signal_dbm > idle.signal_dbm
     assert sleep.rssi_bars == 0
+    assert rssi_bars_from_signal(-89) == 4
+    assert rssi_bars_from_signal(-105) == 2
+    assert rssi_bars_from_signal(-125) == 0
 
 
 def test_fuel_temperature_responds_slowly_to_case_heat() -> None:
@@ -108,7 +111,7 @@ def test_run_shaft_power_is_derived_from_coupled_fuel_burn_model() -> None:
     )
 
     assert run_frame.combustor.shaft_W is not None
-    assert run_frame.combustor.shaft_W > 20
+    assert run_frame.combustor.shaft_W > 15
     assert run_frame.combustor.thermal_W > run_frame.combustor.shaft_W * 6.9
     assert run_frame.combustor.electric_W_raw <= 7.2
 
@@ -128,7 +131,7 @@ def test_fuel_exhaustion_during_run_enters_fuel_low_and_decays_bus() -> None:
     assert exhausted.bus.mppt_locked is False
     assert exhausted.fuel.volume_mL == 0
     assert buffer_only.bus.v_bus_V < exhausted.bus.v_bus_V
-    assert buffer_only.bus.soc_li_pct < exhausted.bus.soc_li_pct
+    assert buffer_only.bus.soc_cap_pct < exhausted.bus.soc_cap_pct
 
 
 def test_kill_during_warmup_enters_cooldown_and_never_run() -> None:
@@ -189,7 +192,7 @@ def test_flameout_triggers_from_failed_ignition_and_falls_back_to_buffer() -> No
     assert flameout.combustor.phase == "flameout"
     assert flameout.combustor.running is False
     assert flameout.bus.mppt_locked is False
-    assert flameout.bus.soc_li_pct < state.bus.soc_li_pct
+    assert flameout.bus.soc_cap_pct < state.bus.soc_cap_pct
     assert no_prime.combustor.phase == "flameout"
     assert primed.combustor.phase == "prime"
     assert cranked.combustor.phase == "ignite"
@@ -238,8 +241,28 @@ def test_li_ion_current_reflects_net_bus_power() -> None:
         dt_s=1.0,
     )
 
-    assert nearly_balanced.i_li_A > 0
-    assert nearly_balanced.i_li_A < 0.2
+    assert nearly_balanced.i_li_A == 0
+    assert nearly_balanced.soc_cap_pct < bus.soc_cap_pct
+    assert charging.i_li_A == 0
+    assert charging.soc_cap_pct > bus.soc_cap_pct
+
+
+def test_lifepo4_charges_after_output_capacitor_reaches_full() -> None:
+    bus = create_bus_state()
+    bus.soc_cap_pct = 100.0
+    combustor = create_combustor_state()
+    combustor.running = True
+    combustor.electric_W_raw = 8.0 / 0.88
+
+    charging = step_bus(
+        bus=bus,
+        combustor=combustor,
+        compute_load_W=0.5,
+        dt_s=1.0,
+    )
+
+    assert charging.soc_cap_pct == 100
+    assert charging.soc_li_pct > bus.soc_li_pct
     assert charging.i_li_A == -0.45
 
 

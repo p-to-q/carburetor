@@ -167,7 +167,7 @@ const tolerances = {
   'bus.e_out_J': 0.5,
   'bus.thermal_losses_J': 2.0,
   'compute.mcu_mA': 0.001,
-  'compute.modem_mA': 0.001,
+  'compute.radio_mA': 0.001,
   'compute.lcd_uA': 0.001,
   'compute.signal_dbm': 0.001,
   'ritual.dB_at_ear': 0.01,

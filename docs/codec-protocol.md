@@ -71,11 +71,11 @@ combustor
 
 bus
   bit 1   mppt_locked
-  bit 2   supercap_at_or_above_4_4V
-  bit 3   li_ion_at_or_above_3_5V
+  bit 2   output_cap_at_or_above_4_4V
+  bit 3   lifepo4_at_or_above_3_2V
 
 compute
-  bit 1   modem_registered
+  bit 1   radio_link_active
   bit 2   tx_in_progress
   bit 3   screen_dirty
 
@@ -139,9 +139,9 @@ combustor phase enum:
 ```
 offset  size  name                    type   units / notes
 ------  ----  ----------------------  -----  ------------------------------
-0       2     v_bus_V                 f16    supercap bus
+0       2     v_bus_V                 f16    dc bus
 2       2     i_bus_A                 f16    
-4       2     v_li_V                  f16    li-ion bus
+4       2     v_li_V                  f16    LiFePO4 bus
 6       2     i_li_A                  f16    signed
 8       2     soc_li_pct              f16    0–100
 10      2     soc_cap_pct             f16    0–100
@@ -158,7 +158,7 @@ offset  size  name                    type   units / notes
 ------  ----  ----------------------  -----  ------------------------------
 0       1     mode                    u8     enum (below)
 1       2     mcu_mA                  f16    
-3       2     modem_mA                f16    
+3       2     radio_mA                f16    
 5       2     lcd_uA                  f16    
 7       2     signal_dbm              f16    negative
 9       1     rssi_bars               u8     0..4

@@ -52,10 +52,10 @@ export interface BusState {
   i_bus_A: number;
   v_li_V: number;
   i_li_A: number;
-  soc_li_pct: number; // li-ion state of charge
-  soc_cap_pct: number; // supercap state of charge
+  soc_li_pct: number; // LiFePO4 buffer state of charge
+  soc_cap_pct: number; // small regulator/output-cap buffer state of charge
   t_case_C: number;
-  mppt_locked: boolean;
+  mppt_locked: boolean; // charging regulator is accepting input
   e_in_J: number; // cumulative energy in from combustor
   e_out_J: number; // cumulative energy out to compute
   thermal_losses_J: number; // modeled waste heat rejected by the combustor
@@ -64,17 +64,17 @@ export interface BusState {
 // ============ layer 4: compute ============
 
 export type ComputeMode =
-  | 'sleep' // deep sleep, modem psm, lcd holding image
+  | 'sleep' // deep sleep, radio sleep, lcd holding image
   | 'idle' // mcu awake, screen on, no traffic
-  | 'rx' // modem registered, listening
-  | 'tx' // modem transmitting
+  | 'rx' // radio listening
+  | 'tx' // radio transmitting
   | 'compose' // user typing
   | 'engine_attn'; // engine ui (during warmup or refuel)
 
 export interface ComputeState {
   mode: ComputeMode;
   mcu_mA: number;
-  modem_mA: number;
+  radio_mA: number;
   lcd_uA: number;
   signal_dbm: number;
   rssi_bars: 0 | 1 | 2 | 3 | 4;
@@ -144,8 +144,8 @@ export const INVARIANTS = {
 
   // bus voltages stay within hardware-safe limits
   v_bus_max_V: 5.5,
-  v_li_max_V: 4.2,
-  v_li_min_V: 3.0,
+  v_li_max_V: 3.65,
+  v_li_min_V: 2.8,
 
   // thermal limit on the user-touchable case
   t_case_max_C: 60,
