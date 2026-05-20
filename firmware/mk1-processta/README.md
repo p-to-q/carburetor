@@ -1,6 +1,6 @@
-# firmware/mk1-processta
+# firmware/processta
 
-target hardware: **mk i · processta edition** (ESP32-S3 + onboard TFT + M5 CardKB + BLE serial to paired phone, NO MODEM).
+target hardware: **processta edition** (ESP32-S3 + SX1262 LoRa + Sharp Memory LCD + catalytic TEG / USB-C power).
 
 ## status
 
@@ -11,48 +11,45 @@ target hardware: **mk i · processta edition** (ESP32-S3 + onboard TFT + M5 Card
 - **rtos**: ESP-IDF with FreeRTOS (current candidate). Arduino framework acceptable for low-effort builds.
 - **language**: Rust (preferred, via `esp-rs`). C acceptable for ESP-IDF native code.
 - **build**: `cargo` + `esp-idf-sys` build system, or `idf.py` for the C path.
+- **meshtastic**: processta implements Meshtastic-compatible messaging. the firmware either runs the Meshtastic device firmware directly (ESP32-S3 is a supported target) or implements the Meshtastic protobuf message format for mesh interoperability.
 
 ## planned module layout (mirrors `docs/architecture.md`)
 
 ```
-firmware/mk1-processta/
+firmware/processta/
 ├── README.md                this file
 ├── Cargo.toml               rust workspace (TBD)
 ├── sdkconfig                esp-idf config (TBD)
 ├── src/
-│   ├── main.rs              top-level event loop
-│   ├── combustor.rs         layer 2 — engine RPM via hall sensor, glow plug control
-│   ├── bus.rs               layer 3 — TP4056 charge monitor, MT3608 boost control, soc estimation
-│   ├── compute.rs           layer 4 — TFT driver (ST7789), i2c keyboard, BLE serial bridge
+│   ├── main.rs              top-level event loop (wake → check LoRa RX → check buttons → update LCD → sleep)
+│   ├── combustor.rs         layer 2 — TEG temperature monitoring, catalyst state machine
+│   ├── bus.rs               layer 3 — BQ25170 charge status, LiFePO4 SOC estimation, TPS562200 monitoring
+│   ├── compute.rs           layer 4 — Sharp LCD SPI driver, 5-button input, LoRa SX1262 driver
 │   ├── ritual.rs            layer 5 — stage state machine, LED indicators
-│   ├── safety.rs            thermal limit, CO sensor optional
-│   ├── ble_bridge.rs        bridges incoming/outgoing SMS to paired smartphone
+│   ├── radio.rs             SX1262 LoRa driver — TX/RX/CAD, Meshtastic message format
+│   ├── safety.rs            thermal limit (TEG hot face), BQ25170 fault detection
 │   └── telemetry.rs         emits 64-byte frames over USB-serial @ 100 Hz
 └── dist/
-    └── carburetor-mk1-processta-v0.1.0.bin
+    └── carburetor-processta-v0.1.0.bin
 ```
 
-## the modem question
+## the radio
 
-processta has NO cellular modem. cellular work happens on a paired smartphone, which connects to the carburetor over BLE serial. the smartphone runs a small companion app (or just uses a BLE serial terminal) that:
+processta uses LoRa mesh (SX1262, 868/915 MHz) via the EBYTE E22-900M22S module. it communicates with other carburetors and any Meshtastic-compatible node within range (5–15 km line of sight, 1–3 km urban).
 
-- receives SMS notifications from the phone's normal SMS subsystem
-- relays them as BLE serial messages to the carburetor
-- accepts outbound text from the carburetor and submits them to the phone's SMS app
+there is no cellular modem and no SIM slot. processta cannot send SMS, cannot reach the internet, and cannot call anyone. it can send and receive text messages over LoRa mesh. this is the project's "you cannot call on it" rule made physical.
 
-this means: **the carburetor processta literally cannot communicate without a paired phone.** the phone is acting as a cellular peripheral, the carburetor as the user-facing terminal. this is the project's "you cannot call on it" rule taken even further.
-
-a future variant could swap BLE for a real cat-M1 modem (SIM7080G is cheap and globally available); proposals via issue or PR.
+BLE is available (ESP32-S3 has it built in) for pairing with the Meshtastic phone app, which can relay messages to the internet if you choose. but the device works without it.
 
 ## reference hardware
 
-see `../../hardware/mk1/bom-processta.csv` for the parts list.
+see `../../docs/processta-architecture.md` for the hardware architecture and BOM.
 
 ## doing the work
 
 ```sh
 # (when ready)
-cd firmware/mk1-processta
+cd firmware/processta
 cargo install espup
 espup install
 cargo build --release
