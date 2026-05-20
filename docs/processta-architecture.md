@@ -64,14 +64,16 @@ powered by butane catalytic TEG (mk ii) or USB-C (dev/daily use).
 - SPI master for both LCD and LoRa
 - well-supported: Arduino, ESP-IDF, MicroPython, Meshtastic
 
-### radio: SX1262 via EBYTE E22-900M30S (~$5)
+### radio: SX1262 via EBYTE E22-900M22S (~$4)
 
-- 868/915 MHz LoRa, +22 dBm TX
+- 868/915 MHz LoRa, +22 dBm TX (not the M30S 1W variant — overkill)
 - TX: 118 mA, RX: 4.6 mA, sleep: 0.16 µA
-- IPEX antenna connector
+- IPEX antenna connector, SMD mount
 - SPI interface to ESP32-S3
 - Meshtastic-compatible (can join existing mesh networks)
 - range: 5–15 km line of sight, 1–3 km urban
+- proven combination: TTGO T-Beam, Heltec V3, LilyGO T3-S3 all use
+  ESP32-S3 + SX1262
 
 ### display: Sharp LS027B7DH01 (~$15)
 
@@ -113,23 +115,24 @@ powered by butane catalytic TEG (mk ii) or USB-C (dev/daily use).
 | component | part | qty | unit cost | total |
 |---|---|---|---|---|
 | MCU module | ESP32-S3-WROOM-1-N8 | 1 | $3.00 | $3.00 |
-| LoRa radio | EBYTE E22-900M30S | 1 | $5.00 | $5.00 |
-| display | Sharp LS027B7DH01 | 1 | $15.00 | $15.00 |
-| battery | LiFePO4 18650 | 1 | $4.00 | $4.00 |
-| charger IC | TI BQ25170 | 1 | $1.50 | $1.50 |
+| LoRa radio | EBYTE E22-900M22S | 1 | $4.00 | $4.00 |
+| display | Sharp LS027B7DH01 | 1 | $13.00 | $13.00 |
+| battery | LiFePO4 18650 1800mAh | 1 | $5.00 | $5.00 |
+| charger IC | TI BQ25170DSGR | 1 | $0.80 | $0.80 |
+| input buck | TPS562200 (5V, TEG input) | 1 | $0.40 | $0.40 |
 | voltage regulator | 3.3V LDO (AP2112) | 1 | $0.30 | $0.30 |
-| PCB | 2-layer, 60×100mm | 1 | $2.00 | $2.00 |
-| antenna | spring 868/915 MHz | 1 | $0.50 | $0.50 |
+| PCB | 4-layer, 60×100mm (JLCPCB) | 1 | $3.00 | $3.00 |
+| antenna | 915 MHz SMA or spring | 1 | $1.50 | $1.50 |
 | buttons | tactile switches (5×) | 5 | $0.10 | $0.50 |
 | connector | USB-C (power only) | 1 | $0.40 | $0.40 |
 | enclosure | injection-molded ABS | 1 | $8.00 | $8.00 |
 | passives | caps, resistors, etc. | — | $1.00 | $1.00 |
 | battery holder | 18650 spring clip | 1 | $0.30 | $0.30 |
-| **subtotal (BOM)** | | | | **$41.50** |
-| assembly (PCBA) | | | | $8.00 |
+| **subtotal (BOM)** | | | | **$41.20** |
+| assembly (PCBA, JLCPCB) | | | | $5.00 |
 | packaging | | | | $3.00 |
-| **COGS** | | | | **~$53** |
-| **retail (2.3× markup)** | | | | **~$120** |
+| **COGS** | | | | **~$49** |
+| **retail (2.5× markup)** | | | | **~$120** |
 
 ---
 
