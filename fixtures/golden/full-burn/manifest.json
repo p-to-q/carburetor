@@ -1,4 +1,6 @@
 {
+  "git_sha": "ea3719f7d501c331853e96c154db3992d48860cc",
+  "lockfile_hash": "sha256:6d07f4f1dc094f0e8217faa22fcef59b27e2a4b9e6dff92da63a101d34ad9b2d",
   "seed": 42,
   "inputs": {
     "scenario": "full-burn",
@@ -27,6 +29,6 @@
     "saw_combustor_phase": "run"
   },
   "outputs": {
-    "run.cbf": "sha256:6dda861fe259bd0aabb0b6a89b37464e8db4653e0a5bd3e84d6ba0a826986814"
+    "run.cbf": "sha256:eba70f74d0d9e7f1f4682493c3a872f715b87491c7d32b1a17f27d998823475a"
   }
 }

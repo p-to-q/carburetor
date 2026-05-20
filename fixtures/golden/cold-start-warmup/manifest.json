@@ -1,4 +1,6 @@
 {
+  "git_sha": "ea3719f7d501c331853e96c154db3992d48860cc",
+  "lockfile_hash": "sha256:6d07f4f1dc094f0e8217faa22fcef59b27e2a4b9e6dff92da63a101d34ad9b2d",
   "seed": 42,
   "inputs": {
     "scenario": "cold-start-warmup",
@@ -27,6 +29,6 @@
     "saw_combustor_phase": "warmup"
   },
   "outputs": {
-    "run.cbf": "sha256:6ba79b397f56daba35bda83fc4fe4a181730ca9c1efccaee6c41eabbef46266b"
+    "run.cbf": "sha256:06e00fbf104f69e2ef75aad913f6729b19592755d97a47bff4042ab51a7e5df0"
   }
 }

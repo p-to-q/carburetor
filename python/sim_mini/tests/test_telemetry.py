@@ -1,9 +1,12 @@
+import hashlib
 import json
 import shutil
+import struct
 import subprocess
 from pathlib import Path
 
 import pytest
+from sim_mini.sim_types import DeviceState
 from sim_mini.telemetry import (
     TelemetryFrame,
     create_telemetry_frame,
@@ -13,6 +16,17 @@ from sim_mini.telemetry import (
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 TS_DIST = REPO_ROOT / "packages" / "sim" / "dist" / "index.js"
+PHASES = [
+    "off",
+    "prime",
+    "ignite",
+    "warmup",
+    "run",
+    "cooldown",
+    "flameout",
+    "fuel_low",
+    "thermal_high",
+]
 
 
 def _payload() -> bytes:
@@ -28,6 +42,21 @@ def _frame() -> TelemetryFrame:
         flags=0b101,
         payload=_payload(),
     )
+
+
+def _combustor_payload(frame: DeviceState) -> bytes:
+    combustor = frame.combustor
+    payload = bytearray(32)
+    struct.pack_into("<I", payload, 0, combustor.rpm or 0)
+    struct.pack_into("<e", payload, 4, combustor.hot_C)
+    struct.pack_into("<e", payload, 8, combustor.exhaust_dB_1m)
+    struct.pack_into("<e", payload, 10, combustor.shaft_W or 0.0)
+    struct.pack_into("<e", payload, 12, combustor.thermal_W)
+    struct.pack_into("<e", payload, 14, combustor.electric_W_raw)
+    struct.pack_into("<I", payload, 16, combustor.runtime_s)
+    struct.pack_into("<f", payload, 20, combustor.fuel_consumed_mL)
+    payload[24] = PHASES.index(combustor.phase)
+    return bytes(payload)
 
 
 def _run_node(script: str, *args: str) -> str:
@@ -153,6 +182,29 @@ import(pathToFileURL(process.argv[1]).href).then((mod) => {
     assert decoded.kind == 0x20
     assert decoded.flags == 0b101
     assert decoded.payload == _payload()
+
+
+def test_python_matches_pinned_cold_start_golden() -> None:
+    from sim_mini.headless import cold_start_events, run_headless
+
+    scenario = REPO_ROOT / "fixtures" / "golden" / "cold-start-warmup"
+    manifest = json.loads((scenario / "manifest.json").read_text())
+    frames = run_headless(cold_start_events(15.0), 60)
+    encoded = b"".join(
+        encode_telemetry_frame(
+            create_telemetry_frame(
+                seq=index,
+                t_us=frame.t_us,
+                layer=2,
+                kind=0x10,
+                flags=0b11 if frame.combustor.running else 0b1,
+                payload=_combustor_payload(frame),
+            )
+        )
+        for index, frame in enumerate(frames)
+    )
+
+    assert f"sha256:{hashlib.sha256(encoded).hexdigest()}" == manifest["outputs"]["run.cbf"]
 
 
 def test_telemetry_rejects_wrong_frame_length() -> None:

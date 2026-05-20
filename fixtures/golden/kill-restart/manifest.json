@@ -1,4 +1,6 @@
 {
+  "git_sha": "ea3719f7d501c331853e96c154db3992d48860cc",
+  "lockfile_hash": "sha256:6d07f4f1dc094f0e8217faa22fcef59b27e2a4b9e6dff92da63a101d34ad9b2d",
   "seed": 42,
   "inputs": {
     "scenario": "kill-restart",
@@ -46,6 +48,6 @@
     "saw_combustor_phase": "cooldown"
   },
   "outputs": {
-    "run.cbf": "sha256:025722264f462641a8aa93ba895b5991a28b3d6039112fca0217b50419c5b6d6"
+    "run.cbf": "sha256:ee3441c9289e159ea961cd8cc553c98541fb1aa4cbf0a431efa026380f9f04c0"
   }
 }
