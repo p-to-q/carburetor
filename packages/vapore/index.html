@@ -686,7 +686,8 @@
 
         $('v-comp-mode').textContent = state.compute.mode;
         $('v-comp-mcu').textContent = `${fmt(state.compute.mcu_mA, 0)} mA`;
-        $('v-comp-radio').textContent = `${fmt(state.compute.modem_mA, 0)} mA`;
+        $('v-comp-radio').textContent =
+          `${fmt(state.compute.radio_mA ?? state.compute.modem_mA, 0)} mA`;
         $('v-comp-signal').textContent = `${fmt(state.compute.signal_dbm, 0)} dBm`;
 
         $('v-rit-stage').textContent = state.ritual.stage;
