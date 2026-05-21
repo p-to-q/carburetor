@@ -83,8 +83,10 @@ def test_compute_signal_strength_derives_rssi_bars_from_mode() -> None:
     assert tx.signal_dbm > idle.signal_dbm
     assert sleep.rssi_bars == 0
     assert rssi_bars_from_signal(-89) == 4
-    assert rssi_bars_from_signal(-105) == 2
-    assert rssi_bars_from_signal(-125) == 0
+    assert rssi_bars_from_signal(-90) == 4
+    assert rssi_bars_from_signal(-105) == 3
+    assert rssi_bars_from_signal(-125) == 1
+    assert rssi_bars_from_signal(-126) == 0
 
 
 def test_fuel_temperature_responds_slowly_to_case_heat() -> None:

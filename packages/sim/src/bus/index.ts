@@ -53,9 +53,11 @@ export function stepBus({
   let capDelta_J = 0;
   let liDelta_J = 0;
 
+  let overflow_J = 0;
   if (net_J >= 0) {
     capDelta_J = Math.min(net_J, REGULATOR_BUFFER_J - capStored_J);
     liDelta_J = Math.min(net_J - capDelta_J, LIFEPO4_BUFFER_J - liStored_J);
+    overflow_J = net_J - capDelta_J - liDelta_J;
   } else {
     const demand_J = -net_J;
     capDelta_J = -Math.min(demand_J, capStored_J);
@@ -91,6 +93,6 @@ export function stepBus({
     mppt_locked: rectified_W >= 0.5 && combustor.running,
     e_in_J: bus.e_in_J + eInDelta_J,
     e_out_J: bus.e_out_J + eOutDelta_J,
-    thermal_losses_J: bus.thermal_losses_J + thermalLossDelta_J,
+    thermal_losses_J: bus.thermal_losses_J + thermalLossDelta_J + overflow_J,
   };
 }

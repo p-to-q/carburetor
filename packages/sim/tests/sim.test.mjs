@@ -82,8 +82,10 @@ test('compute signal strength derives rssi bars from mode', () => {
   assert.ok(tx.signal_dbm > idle.signal_dbm);
   assert.equal(sleep.rssi_bars, 0);
   assert.equal(rssiBarsFromSignal(-89), 4);
-  assert.equal(rssiBarsFromSignal(-105), 2);
-  assert.equal(rssiBarsFromSignal(-125), 0);
+  assert.equal(rssiBarsFromSignal(-90), 4);
+  assert.equal(rssiBarsFromSignal(-105), 3);
+  assert.equal(rssiBarsFromSignal(-125), 1);
+  assert.equal(rssiBarsFromSignal(-126), 0);
 });
 
 test('fuel temperature responds slowly to case heat', () => {

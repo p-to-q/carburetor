@@ -46,9 +46,11 @@ def step_bus(
     cap_stored_J = (bus.soc_cap_pct / 100.0) * REGULATOR_BUFFER_J
     li_stored_J = (bus.soc_li_pct / 100.0) * LIFEPO4_BUFFER_J
 
+    overflow_J = 0.0
     if net_J >= 0.0:
         cap_delta_J = min(net_J, REGULATOR_BUFFER_J - cap_stored_J)
         li_delta_J = min(net_J - cap_delta_J, LIFEPO4_BUFFER_J - li_stored_J)
+        overflow_J = net_J - cap_delta_J - li_delta_J
     else:
         demand_J = -net_J
         cap_delta_J = -min(demand_J, cap_stored_J)
@@ -82,5 +84,5 @@ def step_bus(
         mppt_locked=rectified_W >= 0.5 and combustor.running,
         e_in_J=bus.e_in_J + e_in_delta_J,
         e_out_J=bus.e_out_J + e_out_delta_J,
-        thermal_losses_J=bus.thermal_losses_J + thermal_loss_delta_J,
+        thermal_losses_J=bus.thermal_losses_J + thermal_loss_delta_J + overflow_J,
     )

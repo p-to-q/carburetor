@@ -34,13 +34,13 @@ MODE_SIGNAL_DBM: dict[ComputeMode, float] = {
 
 
 def rssi_bars_from_signal(signal_dbm: float) -> int:
-    if signal_dbm > -90:
+    if signal_dbm >= -90:
         return 4
-    if signal_dbm > -105:
+    if signal_dbm >= -105:
         return 3
-    if signal_dbm > -115:
+    if signal_dbm >= -115:
         return 2
-    if signal_dbm > -125:
+    if signal_dbm >= -125:
         return 1
     return 0
 

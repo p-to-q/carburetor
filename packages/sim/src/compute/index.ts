@@ -30,10 +30,10 @@ const MODE_SIGNAL_DBM: Record<ComputeMode, number> = {
 };
 
 export function rssiBarsFromSignal(signal_dbm: number): 0 | 1 | 2 | 3 | 4 {
-  if (signal_dbm > -90) return 4;
-  if (signal_dbm > -105) return 3;
-  if (signal_dbm > -115) return 2;
-  if (signal_dbm > -125) return 1;
+  if (signal_dbm >= -90) return 4;
+  if (signal_dbm >= -105) return 3;
+  if (signal_dbm >= -115) return 2;
+  if (signal_dbm >= -125) return 1;
   return 0;
 }
 
