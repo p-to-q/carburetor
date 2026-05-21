@@ -14,7 +14,7 @@ and never uses "please."
 
 ### the prompts, in order
 
-```
+```text
 stage           prompt text                         tone
 ─────────────── ─────────────────────────────────── ──────────
 COLD            pour fuel                           invitation
@@ -50,7 +50,7 @@ not narration. the prompt is a status line, not a story.
 
 the ritual has a shape. it is not uniform.
 
-```
+```text
 phase         wall clock    sim time     feeling
 ───────────── ───────────── ──────────── ─────────────────
 pour fuel     2–3 sec       instant      quick, decisive
@@ -79,7 +79,7 @@ for you. you use it now, or you waste fuel.
 
 the `.active` class moves between panels to guide attention:
 
-```
+```text
 stage         active panel    why
 ───────────── ─────────────── ─────────────────────────
 COLD          fuel            you need to fill it
@@ -150,9 +150,8 @@ is enough for one message. a full tank is enough for a conversation.
    with a pitch envelope that rises and catches. duration: 200ms.
 
 4. **the engine is alive.** it is not a perfect sine wave. it has
-   variation, slight wobble, harmonics that shift. it sounds small
-   and fierce, like an angry insect. at full run it is steady but
-   never sterile.
+   variation, slight wobble, and harmonics that shift. at full run
+   it is steady but never sterile.
 
 5. **warmup has a rising pitch.** the fundamental frequency climbs
    as RPM rises from 12,000 to 18,000. this is the most important
@@ -175,7 +174,7 @@ is enough for one message. a full tank is enough for a conversation.
 
 the design succeeds if:
 
-- someone who has never seen carburetor can complete the full arc
+- someone who has never seen [carburetor] can complete the full arc
   (pour → prime → crank → warmup → compose → send → flameout)
   in under 4 minutes without any instruction beyond the prompt text.
 
@@ -185,5 +184,5 @@ the design succeeds if:
 - when the fuel runs out, the user's first instinct is to refuel,
   not to close the page.
 
-- if asked "what is carburetor?" after using vapore, the user says
+- if asked "what is [carburetor]?" after using vapore, the user says
   something about fuel or energy, not something about messaging.

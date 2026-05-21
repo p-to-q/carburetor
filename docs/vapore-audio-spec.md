@@ -6,7 +6,7 @@ the engine is the only sound. when it stops, the silence is the point.
 
 ## Web Audio API architecture
 
-```
+```text
 [PeriodicWave oscillator] ─┐
   frequency = RPM / 60      │
   harmonics: 8               ├─► [GainNode: AM depth] ─► [BiquadFilter: lowpass] ─► [GainNode: master] ─► output
@@ -43,7 +43,7 @@ engineOsc.setPeriodicWave(wave);
 
 frequency derived from RPM:
 
-```
+```text
 f = RPM / 60   (2-stroke fires once per revolution)
 
 at 12,000 RPM → 200 Hz
@@ -103,7 +103,8 @@ connect `amOsc` → `amGain` → engine gain node's gain AudioParam.
 // lowpass — tame digital harshness, simulate muffled engine
 const lpf = audioCtx.createBiquadFilter();
 lpf.type = 'lowpass';
-lpf.frequency.value = 2500 + (RPM / 18000) * 1500;  // 2500–4000 Hz
+lpf.frequency.value = Math.min(4000, 2500 + (RPM / 18000) * 1500);
+// 2500–4000 Hz over the modeled 0–18,000 RPM range
 lpf.Q.value = 0.7;
 
 // highpass — remove sub-bass that small engines don't produce
@@ -180,7 +181,7 @@ has a slightly longer tail (the engine catches).
 
 ### cold → warmup (engine start)
 
-```
+```text
 0ms     crank sound plays (3 ratchet clicks)
 200ms   engine oscillator starts at RPM=0, gain=0
 250ms   RPM ramps exponentially from 0 to 12,000 over 400ms
@@ -191,7 +192,7 @@ has a slightly longer tail (the engine catches).
 
 ### run → flameout (fuel exhaustion)
 
-```
+```text
 0ms     fuel hits 0
 0ms     RPM begins exponential decay: 18,000 → 50 over 1.5 seconds
 0ms     gain begins exponential decay: 0.7 → 0 over 1.2 seconds
@@ -227,6 +228,8 @@ during low fuel, before flameout:
   `Math.random() * 2 - 1`. reuse it for all noise sources.
 - **master gain** defaults to 0.3 (30% volume). mute button sets to 0.
 - **performance**: total node count is ~8 nodes. negligible CPU impact.
+- **filter bounds**: clamp lowpass cutoff to 2500–4000 Hz so fuel-low
+  wobble or simulated overspeed cannot create a harsh high-frequency edge.
 
 ---
 
