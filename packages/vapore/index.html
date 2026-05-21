@@ -617,7 +617,7 @@
           const running = combustor.running && rpm > 0;
           const roughness = combustor.phase === 'fuel_low' ? 1.25 : 1;
           const rpmRatio = clamp(rpm / 18_000, 0, 1);
-          const frequency = clamp(70 + rpm / 60, 70, 370) * roughness;
+          const frequency = clamp(rpm / 60, 80, 320) * roughness;
           const gain = running ? clamp(0.02 + rpmRatio * 0.22, 0, 0.24) : 0;
           engineTone.frequency.setTargetAtTime(frequency, now, 0.06);
           engineNoise.frequency.setTargetAtTime(clamp(frequency * 3.2, 260, 1100), now, 0.08);
