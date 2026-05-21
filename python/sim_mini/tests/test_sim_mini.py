@@ -1,4 +1,4 @@
-from sim_mini.bus import create_bus_state, step_bus
+from sim_mini.bus import LIFEPO4_BUFFER_J, REGULATOR_BUFFER_J, create_bus_state, step_bus
 from sim_mini.combustor import TRANSITIONS, create_combustor_state
 from sim_mini.compute import compute_draw, create_compute_state, rssi_bars_from_signal, step_compute
 from sim_mini.headless import (
@@ -274,7 +274,14 @@ def test_bus_clamps_full_output_capacitor_and_lifepo4_stores() -> None:
     bus.soc_li_pct = 99.99
     combustor = create_combustor_state()
     combustor.running = True
+    # Far above realistic combustor output; this directly exercises bus saturation.
     combustor.electric_W_raw = 10_000.0 / 0.88
+    initial_stored_J = (
+        (bus.soc_cap_pct / 100.0) * REGULATOR_BUFFER_J
+        + (bus.soc_li_pct / 100.0) * LIFEPO4_BUFFER_J
+    )
+    final_stored_J = REGULATOR_BUFFER_J + LIFEPO4_BUFFER_J
+    expected_overflow_J = 10_000.0 - (final_stored_J - initial_stored_J)
 
     charged = step_bus(
         bus=bus,
@@ -287,6 +294,9 @@ def test_bus_clamps_full_output_capacitor_and_lifepo4_stores() -> None:
     assert charged.soc_li_pct == 100
     assert charged.i_li_A <= 0
     assert charged.mppt_locked is True
+    assert charged.v_li_V == 3.5
+    assert charged.v_li_V <= INVARIANTS.v_li_max_V
+    assert charged.thermal_losses_J >= expected_overflow_J * 0.99
 
 
 def test_bus_discharges_lifepo4_after_output_capacitor_is_empty() -> None:
@@ -359,12 +369,17 @@ def test_compute_mode_edges_and_currents_match_lora_profile() -> None:
     assert engine_attention.mode == "engine_attn"
     assert engine_attention.radio_mA == 0.00016
     assert tx.mode == "tx"
+    assert tx.mcu_mA == 25
     assert tx.radio_mA == 118
+    assert tx.lcd_uA == 175
     assert rx.mode == "rx"
+    assert rx.mcu_mA == 25
     assert rx.radio_mA == 4.6
+    assert rx.lcd_uA == 175
     assert compose.mode == "compose"
     assert compose.mcu_mA == 35
     assert compose.lcd_uA == 250
+    assert step_compute(compose, online, 1.0).mode == "compose"
 
 
 def test_compute_transitions_through_compose_tx_and_rx_on_user_messaging_events() -> None:

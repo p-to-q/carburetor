@@ -3,8 +3,8 @@ import { clamp, lerp } from '../math.js';
 
 type Invariants = typeof INVARIANTS;
 
-const REGULATOR_BUFFER_J = 50;
-const LIFEPO4_BUFFER_J = 20_000;
+export const REGULATOR_BUFFER_J = 50;
+export const LIFEPO4_BUFFER_J = 20_000;
 
 export interface BusStepInput {
   bus: BusState;

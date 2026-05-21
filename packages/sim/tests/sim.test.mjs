@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   INVARIANTS,
+  LIFEPO4_BUFFER_J,
+  REGULATOR_BUFFER_J,
   TRANSITIONS,
   coldStartEvents,
   computeDraw,
@@ -298,8 +300,13 @@ test('bus clamps full output capacitor and LiFePO4 stores', () => {
   const combustor = {
     ...createCombustorState(),
     running: true,
+    // Far above realistic combustor output; this directly exercises bus saturation.
     electric_W_raw: 10_000 / 0.88,
   };
+  const initialStored_J =
+    (bus.soc_cap_pct / 100) * REGULATOR_BUFFER_J + (bus.soc_li_pct / 100) * LIFEPO4_BUFFER_J;
+  const finalStored_J = REGULATOR_BUFFER_J + LIFEPO4_BUFFER_J;
+  const expectedOverflow_J = 10_000 - (finalStored_J - initialStored_J);
   const charged = stepBus({
     bus,
     combustor,
@@ -312,6 +319,9 @@ test('bus clamps full output capacitor and LiFePO4 stores', () => {
   assert.equal(charged.soc_li_pct, 100);
   assert.ok(charged.i_li_A <= 0);
   assert.equal(charged.mppt_locked, true);
+  assert.equal(charged.v_li_V, 3.5);
+  assert.ok(charged.v_li_V <= INVARIANTS.v_li_max_V);
+  assert.ok(charged.thermal_losses_J >= expectedOverflow_J * 0.99);
 });
 
 test('bus discharges LiFePO4 after output capacitor is empty', () => {
@@ -366,12 +376,17 @@ test('compute mode edges and currents match LoRa profile', () => {
   assert.equal(engineAttention.mode, 'engine_attn');
   assert.equal(engineAttention.radio_mA, 0.00016);
   assert.equal(tx.mode, 'tx');
+  assert.equal(tx.mcu_mA, 25);
   assert.equal(tx.radio_mA, 118);
+  assert.equal(tx.lcd_uA, 175);
   assert.equal(rx.mode, 'rx');
+  assert.equal(rx.mcu_mA, 25);
   assert.equal(rx.radio_mA, 4.6);
+  assert.equal(rx.lcd_uA, 175);
   assert.equal(compose.mode, 'compose');
   assert.equal(compose.mcu_mA, 35);
   assert.equal(compose.lcd_uA, 250);
+  assert.equal(stepCompute(compose, online, 1).mode, 'compose');
 });
 
 test('compute transitions through compose, tx, and rx on user messaging events', () => {
