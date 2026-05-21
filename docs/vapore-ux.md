@@ -88,7 +88,7 @@ CRANK         combustor       you are starting the engine
 WARMUP        bus             watch the voltage climb
 LIVE          compute         the brain is on
 COMPOSE       compute         you are using the brain
-TX            compute         modem spike visible
+TX            compute         radio spike visible
 LOW FUEL      fuel            fuel is the constraint
 FLAMEOUT      ritual          the arc is complete
 ```
@@ -161,9 +161,9 @@ is enough for one message. a full tank is enough for a conversation.
 6. **low fuel changes the sound.** RPM drops slightly, the engine
    note becomes uneven, harmonics shift. the engine is struggling.
 
-7. **flameout is sudden.** the sound cuts to silence over 200ms.
-   no fade-out. the engine stops because the fuel ran out, not
-   because someone turned it off gently.
+7. **flameout is sudden.** RPM decays over ~1.5s, gain fades to
+   silence over ~1.2s. the engine dies because the fuel ran out,
+   not because someone turned it off gently.
 
 8. **volume defaults to 30%.** mute button visible at all times.
    audio is opt-in by default (browser autoplay policy means the

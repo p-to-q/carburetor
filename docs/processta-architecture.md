@@ -60,7 +60,7 @@ powered by butane catalytic TEG (mk ii) or USB-C (dev/daily use).
 - 512 KB SRAM, 8 MB flash (N8 variant)
 - BLE 5.0 (for phone pairing / config)
 - deep sleep: 7–10 µA
-- modem sleep (80 MHz): 25 mA
+- light sleep (80 MHz): 25 mA
 - SPI master for both LCD and LoRa
 - well-supported: Arduino, ESP-IDF, MicroPython, Meshtastic
 
@@ -72,8 +72,8 @@ powered by butane catalytic TEG (mk ii) or USB-C (dev/daily use).
 - SPI interface to ESP32-S3
 - Meshtastic-compatible (can join existing mesh networks)
 - range: 5–15 km line of sight, 1–3 km urban
-- proven combination: TTGO T-Beam, Heltec V3, LilyGO T3-S3 all use
-  ESP32-S3 + SX1262
+- proven combination: TTGO T-Beam, Heltec V3, Heltec Wireless Tracker
+  all use ESP32-S3 + SX1262
 
 ### display: Sharp LS027B7DH01 (~$15)
 
@@ -117,7 +117,7 @@ powered by butane catalytic TEG (mk ii) or USB-C (dev/daily use).
 | MCU module | ESP32-S3-WROOM-1-N8 | 1 | $3.00 | $3.00 |
 | LoRa radio | EBYTE E22-900M22S | 1 | $4.00 | $4.00 |
 | display | Sharp LS027B7DH01 | 1 | $13.00 | $13.00 |
-| battery | LiFePO4 18650 1800mAh | 1 | $5.00 | $5.00 |
+| battery | LiFePO4 18650 1100mAh | 1 | $5.00 | $5.00 |
 | charger IC | TI BQ25170DSGR | 1 | $0.80 | $0.80 |
 | input buck | TPS562200 (5V, TEG input) | 1 | $0.40 | $0.40 |
 | voltage regulator | 3.3V LDO (AP2112) | 1 | $0.30 | $0.30 |
