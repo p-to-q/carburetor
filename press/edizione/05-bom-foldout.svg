@@ -116,7 +116,7 @@
   <!-- bus -->
   <text x="440" y="217" class="layer">BUS</text>
   <g transform="translate(450, 230)">
-    <text class="body">LiFePO4 18650 1800 mAh</text>
+    <text class="body">LiFePO4 18650 1100 mAh</text>
     <text y="10" class="body">BQ25170 charger · TPS562200 input buck</text>
     <text y="20" class="body">AP2112 3.3 V regulator</text>
     <text y="30" class="body">USB-C power · 18650 spring clip</text>

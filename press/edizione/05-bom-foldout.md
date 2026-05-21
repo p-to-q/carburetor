@@ -28,7 +28,7 @@ the actual artwork is `05-bom-foldout.svg`. this markdown documents the layout f
 │    prop hub adapter              │                                   │
 │                                  │                                   │
 │  BUS                             │   BUS                             │
-│    schottky bridge 1N5817 ×4     │     LiFePO4 18650 1800 mAh        │
+│    schottky bridge 1N5817 ×4     │     LiFePO4 18650 1100 mAh        │
 │    LTC3119 MPPT eval             │     BQ25170 charger               │
 │    Maxwell BCAP0300 ×2           │     TPS562200 input buck          │
 │    KeepPower 18350 600 mAh       │     AP2112 3.3 V regulator        │
