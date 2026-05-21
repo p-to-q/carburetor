@@ -24,7 +24,7 @@ compute,CP-03,tactile switches,aliexpress,GENERIC-TACT-6MM,5,0.10,0.50,up down s
 compute,CP-04,passives: capacitors resistors and small signal parts,various,VAR-PASSIVES,1,1.00,1.00,matches architecture-spec estimate
 radio,RA-01,EBYTE E22-900M22S LoRa module,ebyte,E22-900M22S,1,4.00,4.00,SX1262 868/915 MHz +22 dBm; not the 1W M30S variant
 radio,RA-02,915 MHz SMA or spring antenna,aliexpress,GENERIC-915-ANT,1,1.50,1.50,regional 868 MHz variant for EU builds
-bus,BU-01,LiFePO4 18650 cell 1800 mAh,aliexpress,GENERIC-LFP-18650-1800,1,5.00,5.00,3.2 V nominal; architecture target cell
+bus,BU-01,LiFePO4 18650 cell 1100 mAh,aliexpress,GENERIC-LFP-18650-1100,1,5.00,5.00,3.2 V nominal 3.5 Wh; architecture target cell
 bus,BU-02,TI BQ25170 LiFePO4 charger IC,texas instruments,BQ25170DSGR,1,0.80,0.80,single-cell linear charger; 3.6 V LiFePO4 setpoint
 bus,BU-03,TPS562200 5 V input buck,texas instruments,TPS562200,1,0.40,0.40,regulates TEG or USB-C input before charger
 bus,BU-04,AP2112 3.3 V LDO,diodes inc,AP2112K-3.3,1,0.30,0.30,3.3 V rail for compute radio and LCD
